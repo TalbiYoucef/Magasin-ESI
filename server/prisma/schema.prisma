@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        BigInt      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now()) //these are just for logging purposes, they are created/updated automatically by prisma
+  updatedAt DateTime @updatedAt
+  serviceId BigInt?
+  user_role User_Role[] //this line is added to establish a relation between the two entities
+  service Service? @relation(fields: [serviceId], references: [id]) //reference to key as a foreignkey
+  command Command[]
+}
+model Command{
+  id        BigInt   @unique @default(autoincrement())
+  id_user   BigInt   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@id([id, id_user]) //this is the command to set the primary key (if many)
+  user User @relation(fields: [id_user], references: [id])
+  product_command Product_Command[]
+}
+model Product_Command{
+  id_command BigInt
+  id_product BigInt 
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  @@id([id_command, id_product])
+  command Command @relation(fields: [id_command], references: [id])
+  product Product @relation(fields: [id_product], references: [id])
+}
+model Service {
+  id        BigInt   @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User[]
+}
+model Role {
+  id        BigInt      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user_role User_Role[]
+  role_permissions Role_Permissions[]
+}
+model Permission {
+  id        BigInt      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role_permissions Role_Permissions[]
+}
+model User_Role {
+  id_user   BigInt 
+  id_role   BigInt 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@id([id_user, id_role])
+  user User @relation(fields: [id_user], references: [id])
+  role Role @relation(fields: [id_role], references: [id])
+}
+model Role_Permissions {
+  id_role   BigInt 
+  id_permission   BigInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@id([id_role, id_permission])
+  role Role @relation(fields: [id_role], references: [id])
+  permission Permission @relation(fields: [id_permission], references: [id])
+}
+model Product {
+  id        BigInt      @id @default(autoincrement())
+  name      String   @unique
+  id_branch BigInt 
+  qt_physical BigInt
+  qt_logical BigInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  branch Branch @relation(fields: [id_branch], references: [id])
+  product_command Product_Command[]
+}
+model Branch {
+  id        BigInt      @id @default(autoincrement())
+  name      String   @unique
+  id_chapter BigInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product Product[]
+  chapter Chapter @relation(fields: [id_chapter], references: [id])
+}
+model Chapter {
+  id        BigInt      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  branch Branch[]
+}
