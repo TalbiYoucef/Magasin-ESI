@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id        BigInt      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String?
   password  String
+  token     String    @unique  @default("")
   createdAt DateTime @default(now()) //these are just for logging purposes, they are created/updated automatically by prisma
   updatedAt DateTime @updatedAt
-  serviceId BigInt?
+  serviceId Int?
   user_role User_Role[] //this line is added to establish a relation between the two entities
   service Service? @relation(fields: [serviceId], references: [id]) //reference to key as a foreignkey
   command Command[]
 }
 model Command{
-  id        BigInt   @unique @default(autoincrement())
-  id_user   BigInt   
+  id        Int   @unique @default(autoincrement())
+  id_user   Int   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@id([id, id_user]) //this is the command to set the primary key (if many)
@@ -29,8 +30,8 @@ model Command{
   product_command Product_Command[]
 }
 model Product_Command{
-  id_command BigInt
-  id_product BigInt 
+  id_command Int
+  id_product Int 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   @@id([id_command, id_product])
@@ -38,14 +39,14 @@ model Product_Command{
   product Product @relation(fields: [id_product], references: [id])
 }
 model Service {
-  id        BigInt   @id @default(autoincrement())
+  id        Int   @id @default(autoincrement())
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user User[]
 }
 model Role {
-  id        BigInt      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -53,15 +54,15 @@ model Role {
   role_permissions Role_Permissions[]
 }
 model Permission {
-  id        BigInt      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role_permissions Role_Permissions[]
 }
 model User_Role {
-  id_user   BigInt 
-  id_role   BigInt 
+  id_user   Int 
+  id_role   Int 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@id([id_user, id_role])
@@ -69,8 +70,8 @@ model User_Role {
   role Role @relation(fields: [id_role], references: [id])
 }
 model Role_Permissions {
-  id_role   BigInt 
-  id_permission   BigInt
+  id_role   Int 
+  id_permission   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@id([id_role, id_permission])
@@ -78,9 +79,9 @@ model Role_Permissions {
   permission Permission @relation(fields: [id_permission], references: [id])
 }
 model Product {
-  id        BigInt      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String   @unique
-  id_branch BigInt 
+  id_branch Int 
   qt_physical BigInt
   qt_logical BigInt
   createdAt DateTime @default(now())
@@ -89,16 +90,16 @@ model Product {
   product_command Product_Command[]
 }
 model Branch {
-  id        BigInt      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String   @unique
-  id_chapter BigInt
+  id_chapter Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   product Product[]
   chapter Chapter @relation(fields: [id_chapter], references: [id])
 }
 model Chapter {
-  id        BigInt      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
