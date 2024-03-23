@@ -1,0 +1,74 @@
+
+.side-bar{
+    background-color: white;
+    width: 15%;
+    display: flex;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.1); 
+    justify-content: center; /* Center horizontally */
+    align-items: left; /* Center vertically */
+    flex-direction: column;
+    color : #616262;
+    margin-left: 0px;
+     position: fixed;
+     top: 8vh;
+        left: 0;
+        height: 100%; /* Pour qu'elle prenne toute la hauteur de la fenêtre */
+        overflow-y: auto; /* Pour activer le défilement vertical si nécessaire */
+        z-index: 99;
+
+}
+
+.link{
+    margin-top: 10px;
+    padding-left: 15px;
+    height: 40px;
+    display: flex;
+   align-items: center;
+   text-decoration: none;
+   
+}
+
+
+
+   
+.settings{
+    margin-top: 145%;
+ }
+
+ .menu{
+    margin : 0 ;
+ }
+
+.side-bar-text{
+    margin: 0;
+    margin-left: 9px;
+    color: #616262;
+    font-size: 14px;
+}
+
+.side-bar-text-red{
+    color : #D42803 ;
+    margin: 0;
+    margin-left: 9px;
+    font-size: 14px;
+
+}
+
+.icn {
+    color: #616262;
+}
+
+
+.icnRed{
+    color : #D42803 ;
+}
+
+.link.active {
+    text-align: center;
+    color : #FA9E15 ;
+    width: 170px ;
+    background-color: #FCEFDA;
+    text-align: center; /* Centrer le texte horizontalement */
+    transition: none; /* Supprimer toutes les transitions */
+    border-radius: 20px;
+  }

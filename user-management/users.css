@@ -1,0 +1,101 @@
+section{
+    display: flex;
+    height: 92vh;
+}
+
+.Body{
+    width: 85%;
+    margin-left: 15%;
+    margin-top:  8vh;
+}
+
+
+
+.modal-overlay-create {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 102;
+}
+
+.modal-content-create {
+  width: 800px;
+  height: 600px;
+  padding: 20px;
+  background-color: white;
+
+  border-radius: 5px;
+  box-shadow: 0 2px 5px #100B39;
+}
+
+.Search{
+    display: flex;
+    align-items: center;
+    width: 280px;
+    height: 40px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.1); 
+    padding: 20px;
+    color: #616262 ;
+    margin-top: 30px;
+    margin-left: 40px;
+    
+}
+
+.search-text{
+    padding: 10px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.search-input {
+  border: none; /* Supprimer la bordure */
+  outline: none; /* Supprimer la mise en évidence */
+  /* Autres styles personnalisés */
+}
+
+
+.nv{
+   display: flex;
+   align-items: center;
+   gap: 58% ;
+
+}
+
+.nvv{
+  position: fixed;
+  height: 21vh; 
+  background-color: white;
+  width: 85%;
+
+}
+.nvvv{
+  margin-top: 20vh;
+  width:  85%;
+
+}
+  .btn-create-usr{
+    text-decoration: none  ;
+    width: 130px;
+    height: 40px ;
+    border-radius: 15px;
+    margin-top: 30px;
+    transition: border-color 0.3s ease;
+    background-color :#0047FF; 
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500; /* meduim */
+    font-size: 16px;
+    color : white ;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center;
+  }
+
+  
