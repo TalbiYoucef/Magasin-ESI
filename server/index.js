@@ -18,7 +18,6 @@ app.use(
 app.get("/", (req, res) => {
   res.json({ response: "home page" });
 });
-
 app.use("/refresh", require("./Routes/RefreshRouter"));
 app.use("/auth", require("./Routes/AuthRouter"));
 app.use("/users", verifyJWT, require("./Routes/UserRouter"));
@@ -79,17 +78,7 @@ app.get("/create", async (req, res) => {
     permissions.map(async (permission) => {
       await db.Permission.create({ name: permission });
     });
-    // for (let i = 38; i < 42; i++) {
-    //   await db.Role_Permission.create({ role_id: 23, permission_id: i });
-    // }
-    // universityServices.map(async (service) => {
-    //   await db.Service.create({ name: "human ressources service" });
-    // });
 
-    // roleNames.map(async (role) => {
-    //   await db.Role.create({ name: role });
-    //   res.send("done");
-    // });
   } catch (err) {
     res.send(err);
   }
@@ -106,65 +95,7 @@ app.get("/create", async (req, res) => {
   //   await db.Product.create({ name: productName, qt_logique: 10, qt_physique: 10 });
   // }
 });
-// app.delete('/', async(req,res)=>{
-//   await db.Permission.destroy({
-//     where: {}, // This ensures that the table is truncated (i.e., all rows are deleted)
-//   }).then(res.send('done'));
-//   res.end('')
-// })
-app.get("/admin", verifyAdmin, async (req, res) => {
-  const users = await db.User.findAll({});
-  return res.json({ user: req.user, admin: req.isAdmin, users });
-});
-app.use("/auth", require("./Routes/AuthRouter")); //done
-app.use("/users", require("./Routes/UserRouter")); //done
-app.use("/resetpassword", require("./Routes/ResetPasswordRouter")); //done
-app.use("/roles", require("./Routes/RoleRouter")); //don
-app.use("/permissions", require("./Routes/PermissionRouter")); //done
-app.use("/services", require("./Routes/ServiceRouter")); //done
-app.use("/products", require("./Routes/ProductRouter"));
-app.use("/branches", require("./Routes/BranchRouter"));
-app.use("/chapters", require("./Routes/ChapterRouter"));
-app.use("/commands", require("./Routes/CommandRouter"));
-app.get("/create", async (req, res) => {
-  try {
-    // Define the list of permissions
-    const universityServices = [
-      "Teaching Service",
-      "Student Affairs Office",
-      "Student Life Service",
-      "University Library Service",
-      "Human Resources Service",
-      "Student Affairs Office",
-      "Research Service",
-      "IT Service",
-      "Health and Social Service",
-      "Cooperation and International Relations Service",
-    ];
 
-    const permissions = [
-      { name: "Read" },
-      { name: "Write" },
-      { name: "Delete" },
-      { name: "Update" },
-      { name: "Execute" },
-    ];
-
-    // Create permissions in the database
-    const createdPermissions = await Promise.all(
-      permissions.map((permission) => db.Permission.create(permission))
-    );
-
-    const service = await Promise.all(
-      universityServices.map((ser) => db.Service.create({ name: ser }))
-    );
-    console.log("Permissions created:", service);
-    res.end();
-  } catch (error) {
-    console.error("Error creating permissions:", error);
-    res.end();
-  }
-});
 
 const connectToDb = async () => {
   db.sequelize
