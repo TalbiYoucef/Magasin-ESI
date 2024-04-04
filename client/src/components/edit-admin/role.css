@@ -1,0 +1,100 @@
+/* role.css */
+.modal-list-roles {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 30px;
+  box-shadow: 0 2px 5px #100B39;
+  width: 600px;
+  height: 400px;
+  padding: 20px;
+  box-shadow: 0 2px 5px #100B39;
+  z-index: 103;
+}
+
+.modal-content-list-roles {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  color: #5B548E; 
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600; /* Semi-gras */
+  font-size: 25px;
+  margin-bottom: 20px;
+  text-align: center; 
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+
+.role-model-list {
+  color :black;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Aligner les éléments à gauche */
+  padding: 0; /* Supprimer le padding par défaut */
+  list-style: none; /* Supprimer les puces de la liste */
+}
+
+.role-model-list li {
+  margin-bottom: 10px; /* Espacement entre chaque élément de rôle */
+}
+
+.role-model-label {
+  display: flex;
+  align-items: center; /* Aligner les éléments verticalement */
+}
+
+.role-model-name {
+  margin-left: 10px; /* Espacement entre la case à cocher et le nom de rôle */
+  color: rgb(0, 0, 0); /* Couleur du texte */
+}
+
+.btns-role-modal {
+  display: flex;
+  justify-content: center; /* Centrer horizontalement */
+  gap: 10px
+}
+
+
+
+.cancel-role-modal{
+color :#0047FF; 
+background-color : white ;
+border-color:#0047FF ;
+}
+
+.add-role-modal{
+background-color :#0047FF; 
+color : white ;
+width: 70px;
+}
+
+.btn-role-modal{
+text-decoration: none  ;
+width: 130px;
+height: 40px ;
+border-radius: 15px;
+margin-top: 30px;
+transition: border-color 0.3s ease;
+font-family: 'Montserrat', sans-serif;
+font-weight: 500; /* meduim */
+font-size: 16px;
+display: flex;
+justify-content: center; /* Center horizontally */
+align-items: center; /* Center vertically */
+text-align: center;
+
+}
