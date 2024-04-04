@@ -114,7 +114,7 @@ function CreateUserForm({ onCreateUser, onClose }) {
   };
 
   const handleSubmit = (event) => {
-    if (!validateEmail(e.target.value)) {
+    if (!validateEmail(event.target.value)) {
       alert("The domain must be @esi-sba.dz");
       return;
     }

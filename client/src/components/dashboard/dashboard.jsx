@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import Side from '../side/side.jsx';
 import Nav from '../nav/nav.jsx';
 import axios from 'axios';
-
+import {useNavigate} from 'react-router-dom'
 function Dashboard() {
+  const navigate = useNavigate()
  const [user,setUser] = useState({})
  const [token,setToken] = useState('')
  useEffect(() => {

@@ -121,7 +121,7 @@ function Role() {
   };
 
   const handleViewRole = (roleName) => {
-    const roleinfos = rolesData.find((Role) => Role.name === roleName);
+    const roleinfos = roles.find((Role) => Role.name === roleName);
     setSelectedRole(roleinfos); // Stocker les informations du rôle sélectionné
     setShowEditRoleForm(true); // Afficher le formulaire d'édition
     // Implement logic to view role details

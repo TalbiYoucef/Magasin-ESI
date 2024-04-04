@@ -143,7 +143,6 @@ function Users() {
           <div className="modal-overlay-create-user">
             <div className="modal-content-create-user">
               <CreateUserForm
-                servicesData={servicesData}
                 onCreateUser={handleCreateUser}
                 onClose={() => setShowCreateUserForm(false)}
               />

@@ -45,16 +45,13 @@ function Permissions(){
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
  //checkbox
   const [isChecked, setIsChecked] = useState(false);
 
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-  };
   //parcour data
-  const pers = permissions.map(
+   permissions.map(
     per => {
      return <Per pername={per.name}/>
     })
@@ -66,7 +63,7 @@ function Permissions(){
       per.name.toLowerCase().includes(searchTerm.toLowerCase()) 
     );
   
-    const perms = filteredPer.map((per, index) => {
+    filteredPer.map((per, index) => {
       return <Per key={index} pername={per.name}  />;
     });
   
