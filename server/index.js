@@ -20,11 +20,11 @@ app.get("/", (req, res) => {
 });
 app.use("/refresh", require("./Routes/RefreshRouter"));
 app.use("/auth", require("./Routes/AuthRouter"));
-app.use("/users", verifyJWT, require("./Routes/UserRouter"));
+app.use("/users", verifyJWT,verifyAdmin, require("./Routes/UserRouter"));
 app.use("/resetpassword", require("./Routes/ResetPasswordRouter"));
-app.use("/roles", verifyJWT, require("./Routes/RoleRouter"));
-app.use("/permissions", verifyJWT, require("./Routes/PermissionRouter"));
-app.use("/services", verifyJWT, require("./Routes/ServiceRouter"));
+app.use("/roles", verifyJWT,verifyAdmin, require("./Routes/RoleRouter"));
+app.use("/permissions", verifyJWT,verifyAdmin, require("./Routes/PermissionRouter"));
+app.use("/services", verifyJWT,verifyAdmin, require("./Routes/ServiceRouter"));
 app.use("/products", verifyJWT, require("./Routes/ProductRouter")); //done
 app.use("/branches", verifyJWT, require("./Routes/BranchRouter")); //done
 app.use("/chapters", verifyJWT, require("./Routes/ChapterRouter")); //done

@@ -27,25 +27,39 @@ const verifyAdmin = async (req, res, next) => {
             } else {
               // Attach the user object to the request
               req.user = user; // user is the user object
-              req.isAdmin = false 
+              req.isAdmin = false;
               let roles = [];
-              await db.User.findOne({where:{
-                user_id : user.user_id
-              }})
+              await db.User.findOne({
+                where: {
+                  user_id: user.user_id,
+                },
+              })
                 .then(async (resp) => {
-                  await db.User_Role.findAll({ where: { user_id:resp.user_id  } })
+                  await db.User_Role.findAll({
+                    where: { user_id: resp.user_id },
+                  })
                     .then((res) => {
                       res.map((element) => {
-                        roles.push(element.role_id)
+                        roles.push(element.role_id);
                       });
                     })
                     .catch((err) => console.log("err fetching user roles"));
-                  })
-                .catch((err) => console.log("err fetching user " , err));
-              if (roles?.includes(25)) {
-                req.isAdmin = true
-                next()
-              }else{
+                })
+                .catch((err) => console.log("err fetching user ", err));
+              let id;
+              try {
+                await db.Role.findOne({
+                  where: { name: "admin" },
+                }).then((resp) => {
+                  id = resp.role_id;
+                });
+              } catch (err) {
+                console.log("no admin role found");
+              }
+              if (roles?.includes(id)) {
+                req.isAdmin = true;
+                next();
+              } else {
                 res.sendStatus(500);
               }
             }
