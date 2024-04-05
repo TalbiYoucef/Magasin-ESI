@@ -1,0 +1,173 @@
+.profil-user {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin: 20px;
+    margin-left:100px
+   
+  }
+ 
+  .imgBox {
+    border-radius: 50%;
+    width: 9%;
+    height: 8%;
+    overflow: hidden;
+    border: 3px solid white;
+    flex-shrink: 0;
+  }
+  
+  .imgBox img {
+    width: 100%;
+  }
+  
+  .frame1 {
+    color: #5B548E;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    width: 85%;
+    margin-left: 15%;
+    padding: 40px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e2dddd; /* Set border to solid and specify color */
+    text-align: center;
+    box-shadow: 0 0 5px rgba(234, 233, 233, 0.5); /* Add a box shadow for depth */
+    display: flex;
+    flex-direction: column; /* Align items vertically */
+    align-items: center;
+
+  }
+    .e {
+      width: 400px;
+      text-align: left;
+      color: rgba(58, 53, 65, 0.6);
+      padding-left: 10px;
+    }
+  .ed {  font-size: 18px;
+    width: 400px;
+    text-align: center;
+    color: #5b548e;
+  }
+  .username{
+    text-align: center;
+    margin: 8px; 
+  }
+ 
+  .admin {
+    text-align: left;
+ 
+    color: rgba(58, 53, 65, 0.6);
+  }
+  
+  .profilename {
+
+    margin-top:20px;
+    margin-bottom:0PX;
+    color: #100b39;
+    width:  200px;
+  }
+  
+ 
+  .ena {  
+    margin-left: 50%;
+    color: rgba(23, 191, 107, 0.87);
+    display: flex;
+    gap: 20px;
+  }
+  .form-row1 {
+    display: flex;
+    justify-content: space-between;
+  }
+  .form-group1 {
+    flex: 0 0 48%; 
+  }
+  
+  /* Style for select elements */
+/* Style for select elements */
+select {
+  margin-left: 40px; 
+  width: 330px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  color: #c40c0c;
+  font-size: 16px; /* Same font size as input labels */
+  font-weight: normal; /* Same font weight as input labels */
+  font-family: inherit; /* Inherit font family from parent */
+  background-color: #fff; /* Background color */
+  outline: none; /* Remove default focus outline */
+  /* Add any other styles you need */
+}
+
+
+/* Style for select element when focused */
+select:focus {
+  border-color:  rgba(23, 191, 107, 0.87); /* Change border color when focused */
+}
+
+/* Style for select element when hovered */
+select:hover {
+  border-color: #6c757d; /* Change border color on hover */
+}
+
+
+  input[type="text"],input[type="email"] {
+    margin-left: 40px;
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color:#929191;
+
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  
+  
+  
+  .save-button {
+    padding: 15px 30px;
+    border: 2px solid rgba(23, 191, 107, 0.87);
+    background-color: rgba(23, 191, 107, 0.87);
+    border-radius: 30px;
+    margin: 20px; 
+    width: 120px;
+    height: auto;
+    justify-content: end;
+    color: white;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+    margin-left: 70px;
+  }
+
+  
+  
+  .frame1 p {color: #100b39;
+    width: auto;
+    text-align: center;
+    margin: 20px;
+    font-size: larger;
+  
+  }
+  .form-group1 label {
+    text-align:left;
+    margin-left: 50px;
+    display: block;
+    margin-bottom: 5px;
+    color: #100b39;
+    font-size: medium;
+  }
+  
+  .form-group1 input {
+    
+    width: 300Px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+  }
+  

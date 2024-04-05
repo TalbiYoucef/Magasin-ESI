@@ -1,0 +1,137 @@
+.dwnrole{
+    display: flex;
+    height: 92vh;
+    
+}
+
+.Sect2role{
+    width: 85%;
+    margin-left: 10%;
+    margin-top: 8vh;
+}
+
+.create-list{
+    display: flex;
+    gap : 20px ;
+    margin-right : 40px;
+}
+
+.uprole1{
+    display: flex;
+    align-items: center;
+justify-content: space-between;
+ }
+
+ .uprole{
+   position: fixed;
+   height: 22vh; 
+   background-color: white;
+   width: 85%;
+   
+ }
+
+ .downrole{
+    padding-top: 20px;
+    margin-top:150px;
+    width:  85%;
+    margin-left: 28px;
+    
+ }.Search{
+    display: flex;
+    align-items: center;
+    width: 280px;
+    height: 40px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.1); 
+    padding: 20px;
+    color: #616262 ;
+    margin-top: 30px;
+    margin-left: 40px;
+    
+}
+
+.search-text{
+    padding: 10px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.search-input {
+  border: none; /* Supprimer la bordure */
+  outline: none; /* Supprimer la mise en évidence */
+  
+}
+.list{
+    
+    width: 16%;
+    height: 15px;
+    display: flex;
+   background-color: white;
+   border-radius: 30px;
+   text-align: center;
+   gap: 100px;
+   padding: 20px;
+  background-color: #FA9E15;
+  color: white;
+ 
+}
+.fot{
+    display: flex;
+    gap: 50%;
+}
+.permi{
+    
+    width: 93%;
+    height: 15px;
+    display: flex;
+   background-color: white;
+   border-radius: 30px;
+   align-items: center;
+   margin-top: 50px;
+   padding: 20px;
+   gap: 50px;
+   box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-webkit-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-moz-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+}
+.roles{
+   
+    margin-right: 650px;
+
+}
+.roleinp{
+    margin-left: -2px;
+}
+.cre button{
+    background-color: #0047FF;
+    margin-left: 1100px;
+    border-radius: 30px;
+    font-size: 18px;
+    margin-top: 200px;
+    align-items: center;
+
+}
+
+.modal-overlay-create-role {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 102;
+  }
+  
+  .modal-content-create-role {
+    width: 700px;
+    height: 400px;
+    padding: 20px;
+    background-color: white;
+  
+    border-radius: 20px;
+    box-shadow: 0 2px 5px #100B39;
+  }
+  
