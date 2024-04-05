@@ -13,10 +13,6 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  amount_left: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
   comment: {
     type: DataTypes.TEXT,
     allowNull: true,

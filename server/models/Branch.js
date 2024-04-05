@@ -1,5 +1,3 @@
-const Chapter = require("./Chapter");
-
 module.exports = (sequelize, DataTypes) => {
   const Branch = sequelize.define("Branch", {
     branch_id: {
@@ -9,6 +7,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     chapter_id: DataTypes.INTEGER,
+    VAT : {
+      type: DataTypes.DECIMAL(5, 2), // VAT as a percentage with 2 decimal places
+      allowNull: true, // Adjust as needed
+      validate: {
+        min: 0,
+        max: 100,
+      },
+    },
   });
   Branch.associate = (models) => {
     const { Chapter, Product } = models;

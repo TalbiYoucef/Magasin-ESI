@@ -1,0 +1,64 @@
+.oper29{
+    width: 93%;
+    height: 5px;
+    display: flex;
+   background-color: white;
+  
+   align-items: center;
+   margin-top: 10px;
+   padding: 20px;
+   gap: 50px;
+}
+.edi29{
+    text-decoration: none;
+    margin-left: 20px;
+  
+    width: 100px;
+    color: #FA9E15;
+    
+}
+.view29{
+margin-left: 30px;
+text-decoration: none;
+}
+.del29{
+    
+    text-decoration: none;
+    width: 100px;
+    margin-right: 50px;
+    color: #D42803;
+    background-color: white;
+    border: none;
+    font-size: 18px;
+
+}
+.ops{
+    margin-top: 100px;
+}
+.check29{
+    width: 100px;
+}
+.numCMD29{
+    
+    text-align: left;
+    width: 150px;
+    text-align: center;
+    
+}
+
+.sup29{
+    margin-left: 60px;
+    width: 230px;
+    
+    margin-right: 70px;
+}
+.dat29{
+    width: 150px;
+    margin-left: 20px;
+}
+.sta29{
+    width: 200px;
+}
+.numCMD29,.sup29,.dat29,.sta29{
+    color: rgba(58, 53, 65, 0.87) ;
+}

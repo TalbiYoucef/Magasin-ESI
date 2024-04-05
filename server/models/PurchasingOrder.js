@@ -5,12 +5,15 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    type: {
-      type: DataTypes.STRING,
+    supplier_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    total_amount: {
+    total_price: {
       type: DataTypes.FLOAT,
+      validate: {
+        min: 0,
+      },
       allowNull: false,
     },
     status: {
@@ -20,10 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     expected_delivery_date: {
       type: DataTypes.DATE,
-      allowNull: false,
-    },
-    total_price: {
-      type: DataTypes.INTEGER,
       allowNull: false,
     },
     payment_method: {
@@ -36,8 +35,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
   PurchasingOrder.associate = (models) => {
-    const { ReceiptNote, Command } = models;
-
+    const { Supplier, ReceiptNote, Command } = models;
+    Supplier.hasMany(PurchasingOrder, { foreignKey: "supplier_id" });
+    PurchasingOrder.hasMany(Supplier, { foreignKey: "supplier_id" });
     PurchasingOrder.belongsTo(Command, { foreignKey: "command_id" });
     Command.hasOne(PurchasingOrder, { foreignKey: "command_id" });
     PurchasingOrder.hasMany(ReceiptNote, { foreignKey: "order_id" });
