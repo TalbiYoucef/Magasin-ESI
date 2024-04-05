@@ -3,23 +3,23 @@ import React, { useState } from "react";
 import "./log.css";
 import logo from "../../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios'
+import axios from "axios";
 function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [formErrors, setFormErrors] = useState({});
-  const [err,setErr] = useState('')
+  const [err, setErr] = useState("");
   function handleChange(event) {
     const { name, value } = event.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
     validateField(name, value);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     if (formIsValid()) {
       try {
-        axios
+        await axios
           .post(
             "http://localhost:3036/auth/login",
             {
@@ -31,7 +31,8 @@ function Login() {
           .then((resp) => {
             console.log(resp.data);
             localStorage.setItem("accessToken", resp.data.accessToken);
-            navigate('/users')
+            navigate("/users");
+            setErr('')
           })
           .catch((err) => {
             setErr(err.response.data.error);
@@ -82,9 +83,10 @@ function Login() {
           </div>
           <form>
             <div className="container user">
-              <form onSubmit={handleSubmit}>
+              <form >
                 <div className="form-input">
                   <input
+                  className="input_feild "
                     type="xx"
                     name="email"
                     value={formData.email}
@@ -98,6 +100,7 @@ function Login() {
                 </div>
                 <div className="form-input">
                   <input
+                  className="input_feild "
                     type="password"
                     name="password"
                     value={formData.password}
@@ -115,11 +118,11 @@ function Login() {
             <Link to="/reset1" className="forgot">
               Forgot your password?
             </Link>
-            <button type="submit" onClick={handleSubmit} className="button">
+            <button onClick={handleSubmit} className="button">
               Submit
             </button>
           </form>
-          {err && <span style={{color:'red'}}>{err}</span>}
+          {err && <span style={{ color: "red" }}>{err}</span>}
         </div>
       </div>
     </div>

@@ -31,7 +31,7 @@ function Users() {
           setUsers(resp.data);
         } catch (error) {
           console.log(error);
-          navigate('/dashboard')
+          navigate("/dashboard");
         }
       } catch (error) {
         // If an error occurs, redirect to the login page
@@ -48,36 +48,39 @@ function Users() {
   // Fonction pour créer un nouvel utilisateur
   const handleCreateUser = async (newUser) => {
     // Ajouter le nouvel utilisateur à la liste des utilisateurs
-    console.log("user", newUser);
+
     try {
       const res = await axios.get("http://localhost:3036/refresh", {
         withCredentials: true,
       });
       try {
-        const resp = await axios.post("http://localhost:3036/auth/register",{
-          username : newUser.userData.username,
-          firstname : newUser.userData.firstName,
-          lastname : newUser.userData.lastName,
-          email : newUser.userData.email,
-          phone_num : newUser.userData.phone,
-          password : newUser.userData.password,
-          status: 'active',
-          address : newUser.userData.address,
-          service_id : newUser.serviceId
-        } ,{
-          headers: {
-            Authorization: `Bearer ${res.data.accessToken}`,
+        const resp = await axios.post(
+          "http://localhost:3036/auth/register",
+          {
+            username: newUser.userData.username,
+            firstname: newUser.userData.firstName,
+            lastname: newUser.userData.lastName,
+            email: newUser.userData.email,
+            phone_num: newUser.userData.phone,
+            password: newUser.userData.password,
+            status: "active",
+            address: newUser.userData.address,
+            service_id: newUser.serviceId,
           },
-          withCredentials: true,
-        });
-        console.log(resp.data)
+          {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+        setUsers([...users, resp.data.user]);
       } catch (err) {
         console.log(err);
       }
     } catch (err) {
       console.log(err);
     }
-    navigate('/users')
     // Masquer le formulaire de création d'utilisateur après la création
     setShowCreateUserForm(false);
   };

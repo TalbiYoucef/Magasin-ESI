@@ -85,7 +85,7 @@ function CreateRoleForm({ onCreateRole, onClose }) {
         
         <label htmlFor="Permissions" className="input">Permissions:</label>
            <button  className="input1" type="button" onClick={() => setShowPermissionsModal(true)} style={{backgroundColor :'white' , textDecoration :"none " , boxShadow :"none" }}>Choose Permissions</button>
-
+          
         {showPermissionsModal && (
           <PermissionsModal
             Permissions={permissions}

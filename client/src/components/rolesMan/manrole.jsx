@@ -22,7 +22,7 @@ function Role() {
   const [user, setUser] = useState({});
   const [permissions, setPermissions] = useState([]);
   const [showEditRoleForm, setShowEditRoleForm] = useState(false);
-
+  const [accessToken, setAccessToken] = useState();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,7 +31,7 @@ function Role() {
         });
         setUser(res.data.user);
         const accessToken = res.data.accessToken;
-
+        setAccessToken(accessToken);
         try {
           const [rolesResp, permissionsResp] = await Promise.all([
             axios.get("http://localhost:3036/roles", {
@@ -46,7 +46,7 @@ function Role() {
           setRoles(rolesResp.data);
           setPermissions(permissionsResp.data);
         } catch (error) {
-          navigate('/dashboard')
+          navigate("/dashboard");
           console.error("An error occurred:", error);
         }
       } catch (error) {
@@ -69,7 +69,6 @@ function Role() {
         permissions: newRole.selectedPermissions,
       },
     ]);
-    console.log("new :", newRole);
     setSelectedPermissions(
       permissions
         .filter((per) => newRole.selectedPermissions.includes(per.name))
@@ -79,7 +78,6 @@ function Role() {
       const res = await axios.get("http://localhost:3036/refresh", {
         withCredentials: true,
       });
-      const accessToken = res.data.accessToken;
 
       const resp = await axios.post(
         "http://localhost:3036/roles",
@@ -120,24 +118,49 @@ function Role() {
     setShowCreateRoleForm(false);
   };
 
-  const handleViewRole = (roleName) => {
-    const roleinfos = roles.find((Role) => Role.name === roleName);
+  const handleViewRole = (id) => {
+    const roleinfos = roles.filter((Role) => Role.role_id === id);
+    console.log(roleinfos);
     setSelectedRole(roleinfos); // Stocker les informations du rôle sélectionné
     setShowEditRoleForm(true); // Afficher le formulaire d'édition
     // Implement logic to view role details
   };
 
-  const handleUpdateRole = (updatedRole) => {
-    const updatedRoles = roles.map((role) => {
-      if (role.id === updatedRole.id) {
-        return updatedRole;
-      }
-      return role;
-    });
-    setRoles(updatedRoles); // Mettre à jour la liste des rôles avec le rôle mis à jour
-    // Implement logic to update role details
+  const handleUpdateRole = async (updatedRole) => {
+    try {
+      await axios
+        .put(
+          `http://localhost:3036/roles/${updatedRole.new.role_id}`,
+          {
+            name: updatedRole.name,
+          },
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            withCredentials: true,
+          }
+        )
+        .then(async (resp) => {
+          const selected = permissions
+            .filter((per) => updatedRole.permissions.includes(per.name))
+            .map((per) => per.permission_id);
+          selected.forEach(async (element) => {
+            await axios.put(
+              `http://localhost:3036/roles/${updatedRole.new.role_id}/permissions`,
+              {
+                permission_id: element,
+              },
+              {
+                headers: { Authorization: `Bearer ${accessToken}` },
+                withCredentials: true,
+              }
+            );
+          });
+        });
+      window.location.reload();
+    } catch (error) {
+      alert("Could Not Update Role Name");
+    }
   };
-
   const toggleCreateRoleForm = () => {
     setShowCreateRoleForm(true);
   };
@@ -155,7 +178,7 @@ function Role() {
       id={role.role_id}
       key={index}
       roleName={role.name}
-      onView={() => handleViewRole(role.name)}
+      onView={() => handleViewRole(role.role_id)}
     />
   ));
 

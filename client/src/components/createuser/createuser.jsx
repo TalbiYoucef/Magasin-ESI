@@ -114,11 +114,11 @@ function CreateUserForm({ onCreateUser, onClose }) {
   };
 
   const handleSubmit = (event) => {
-    if (!validateEmail(event.target.value)) {
+    event.preventDefault();
+    if (!validateEmail(userData.email)) {
       alert("The domain must be @esi-sba.dz");
       return;
     }
-    event.preventDefault();
     if (userData.password !== confirmPassword) {
       alert("Passwords do not match");
       return;
@@ -147,7 +147,7 @@ function CreateUserForm({ onCreateUser, onClose }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="create-user-form">
+    <form className="create-user-form">
       <div className="title1">Create User</div>
       <div className="form-row1">
         <div className="form-group1">
@@ -221,7 +221,7 @@ function CreateUserForm({ onCreateUser, onClose }) {
             type="password"
             id="password"
             name="password"
-            className="input1"
+            className="input1 input_feild "
             value={userData.password}
             onChange={handleChange}
             minLength={8}
@@ -351,7 +351,7 @@ function CreateUserForm({ onCreateUser, onClose }) {
         <button type="button" onClick={onClose} className="cancel btn">
           Cancel
         </button>
-        <button type="submit" className="create btn">
+        <button onClick={handleSubmit} className="create btn">
           Create User
         </button>
       </div>

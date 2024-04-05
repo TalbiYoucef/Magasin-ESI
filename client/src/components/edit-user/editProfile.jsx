@@ -35,7 +35,7 @@ const EditProfile = () => {
         <Side link='setting'/>
         <div className="Sect2user">
           <div className='downuser'>
-            <EditPro user={user} />
+            <EditPro/>
           </div>
         </div>
       </div>

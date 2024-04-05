@@ -4,20 +4,21 @@ import pro from "../../assets/profil_sans_photo.jpg";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-function EditPro(props) {
+function EditPro() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(props.user);
-  const [firstName, setFirstName] = useState(user.firstname);
-  const [lastName, setLastName] = useState(user.lastname);
-  const [email, setEmail] = useState(user.email);
-  const [address, setAddress] = useState(user.address);
-  const [phoneNumber, setPhoneNumber] = useState(user.phone_num);
-  const [status] = useState(user.status);
+  const [username,setUsername] = useState('')
+  const [serviceId,setServiceId] = useState('')
+   const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [status,setStatus] = useState('');
   const [roles, setRoles] = useState([]);
   const [userRoles, setUserRoles] = useState([]);
   const [services, setServices] = useState([]);
   const [service, setService] = useState("");
-
+  const [user,setUser] = useState({})
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,7 +26,7 @@ function EditPro(props) {
           withCredentials: true,
         });
         const accessToken = res.data.accessToken;
-
+        
         const [servicesResp, rolesResp, userRolesResp] = await Promise.all([
           axios.get("http://localhost:3036/services", {
             headers: { Authorization: `Bearer ${accessToken}` },
@@ -40,18 +41,35 @@ function EditPro(props) {
             withCredentials: true,
           }),
         ]);
-
-        setServices(servicesResp.data);
+        setServices(servicesResp.data)
+        try {
+          const resp = await axios.get(`http://localhost:3036/users/${res.data.id}`, {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+          setUser(resp.data)
+          setUsername(resp.data.username);
+          setAddress(resp.data.address);
+          setEmail(resp.data.email);
+          setStatus(resp.data.status)
+          setFirstName(resp.data.firstname);
+          setLastName(resp.data.lastname);
+          setPhoneNumber(resp.data.phone_num);
+          setServiceId(resp.data.service_id)
+          console.log(services)
+        } catch (error) {
+          console.log(error);
+        }
         setRoles(rolesResp.data);
+        setService(services.filter(ser=> ser.service_id == serviceId).map(ser => ser.name))
         setUserRoles(
           rolesResp.data
             .filter((role) => userRolesResp.data.includes(role.role_id))
             .map((role) => role.name)
         );
-        const userSelectedService = servicesResp.data.find(
-          (ser) => user.service_id === ser.service_id
-        );
-        setService(userSelectedService ? userSelectedService.name : "");
+
       } catch (error) {
         console.log(error);
       }

@@ -12,7 +12,7 @@ function Rollig(props) {
   const [isVisible, setIsVisible] = useState(true);
 
   const handleViewRole = () => {
-    props.onView(props.roleName);
+    props.onView(props.id);
   };
 
   const handleDelete = async () => {
