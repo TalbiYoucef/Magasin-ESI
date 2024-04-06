@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    command_id: {
+    product_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -21,10 +21,11 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
   SupplierProduct.associate = (models) => {
-    const { Supplier, Command } = models;
-    SupplierProduct.belongsTo(Command, { foreignKey: "command_id" });
+    const { Supplier, Product } = models;
+    SupplierProduct.belongsTo(Product, { foreignKey: "product_id" });
+    Product.hasMany(SupplierProduct, { foreignKey: "product_id" });
     SupplierProduct.belongsTo(Supplier, { foreignKey: "supplier_id" });
-   
+    Supplier.hasMany(SupplierProduct, { foreignKey: "Supplier_id" });
   };
   return SupplierProduct;
 };

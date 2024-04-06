@@ -115,6 +115,53 @@ const removeProductFromBranch = async (req, res) => {
         return res.status(500).json({ error: 'Failed to remove product from branch' });
     }
 }
+const updateProductQuantityInCommand=async(req,res)=>{
+    try{
+    const {id}=req.params
+    const {quantity,command_id}=req.body
+    const purchaseOrder= await db.PurchasingOrder.findOne({where:{order_id:command_id}})
+    if(!purchaseOrder){
+        return res.status(404).json({message:"Command not found"})
+    }
+    if(purchaseOrder.status!=="pending"){
+        return res.status(400).json({message:"Cannot update product quantity in a command that is not pending"})
+    }
+    const product=await db.Product_Quantity.findOne({where:{product_id:id,command_id:command_id}})
+    if(!product){
+        return res.status(404).json({message:"Product not found in command"})
+    }
+    product.quantity=quantity
+    await product.save()
+    return res.status(200).json({message:"Product quantity updated successfully"})}
+    catch(error){
+        return res.status(500).json({error:"Failed to update product quantity in command"})
+    }
+}
+const deleteProductFromPurchaseOrder= async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { command_id } = req.body;
+        const purchaseOrder= await db.PurchasingOrder.findOne({where:{order_id:command_id}})
+        if(!purchaseOrder){
+            return res.status(404).json({message:"Command not found"})
+        }
+        if(purchaseOrder.status!=="pending"){
+            return res.status(400).json({message:"Cannot delete product from a command that is not pending"})
+        }
+        const product = await db.Product_Quantity.findOne({
+            where: { product_id:id,command_id:command_id },
+        });
+        if(!product) {
+            return res.status(404).json({message:"Product not found in command"});
+        }
+        await db.Product_Quantity.destroy({
+            where: { product_id:id, command_id:command_id },
+        });
+        return res.status(200).json({message:"Product removed from command"});
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
 module.exports = {
     createProduct,
     getAllProducts,
@@ -122,5 +169,7 @@ module.exports = {
     deleteProduct,
     updateProduct,
     assignProductToBranch,
-    removeProductFromBranch
+    removeProductFromBranch,
+    updateProductQuantityInCommand,
+    deleteProductFromPurchaseOrder
 }

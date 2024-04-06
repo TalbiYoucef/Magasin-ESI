@@ -29,8 +29,8 @@ const getCommandById = async (req, res) => {
 
 const createCommand = async (req, res) => {
     try { 
-        const { user_id } = req.body;
-        const command = await db.Command.create({user_id:user_id});
+        const { user_id,type } = req.body;
+        const command = await db.Command.create({user_id:user_id,type:type});
         return res.status(201).json(command);
     } catch (error) {
         return res.status(500).json({ error: error.message });

@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { getAllProducts, createProduct, getProductById, updateProduct, deleteProduct, removeProductFromBranch, assignProductToBranch } = require('../Controllers/ProductController')
+const { getAllProducts, createProduct, getProductById, updateProduct, deleteProduct, removeProductFromBranch, assignProductToBranch, updateProductQuantityInCommand,deleteProductFromPurchaseOrder } = require('../Controllers/ProductController')
 router
 .get('/', getAllProducts)//done
 .post('/', createProduct)//done 
@@ -8,5 +8,7 @@ router
 .delete('/:id', deleteProduct)//done
 .delete('/:id/branch', removeProductFromBranch)//done
 .post('/:id/branch', assignProductToBranch )//done
+.put('/:id/command', updateProductQuantityInCommand)//done
+.delete('/:id/command', deleteProductFromPurchaseOrder)//done
 
 module.exports=router

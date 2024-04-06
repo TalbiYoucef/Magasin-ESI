@@ -6,7 +6,7 @@ require("dotenv").config();
 const db = require("./models");
 const verifyAdmin = require("./Middlewares/VerifyAdmin");
 const app = express();
-const port = process.env.PORT || 3030;
+const port = process.env.PORT || 3036;
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -29,6 +29,9 @@ app.use("/products", verifyJWT, require("./Routes/ProductRouter")); //done
 app.use("/branches", verifyJWT, require("./Routes/BranchRouter")); //done
 app.use("/chapters", verifyJWT, require("./Routes/ChapterRouter")); //done
 app.use("/commands", verifyJWT, require("./Routes/CommandRouter")); //
+app.use("/purchaseorders", verifyJWT, require("./Routes/PurchasingOrderRouter")); //newest additions
+app.use("/suppliers", verifyJWT, require("./Routes/SupplierRouter"));//newest additions
+app.use("/receipts", verifyJWT, require("./Routes/ReceiptRouter"));//newest additions
 app.post("/finduser", async (req, res) => {
   const { token } = req.body;
   const foundUser = await db.User.findOne({ where: { token: token } });
@@ -77,6 +80,9 @@ app.get("/create", async (req, res) => {
   try {
     permissions.map(async (permission) => {
       await db.Permission.create({ name: permission });
+    });
+    roleNames.map(async (roleName) => {
+      await db.Role.create({ name: roleName });
     });
 
   } catch (err) {
