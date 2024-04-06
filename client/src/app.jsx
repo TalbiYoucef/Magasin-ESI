@@ -34,12 +34,12 @@ function App() {
         <div>
           <Routes>
             <Route path="bonR" element={<BonDeReception/>}/>
-            <Route path="/rl" element={<Rollig/>}/>
-            <Route path="/mgc" element={<Cmds/>} />
             <Route path="/br" element={<Receip />} />
             <Route path='/bc' element={<BonDeComande/>}/>
-            <Route path='/create' element={<CreateCmd/>}/>
-            <Route path="/edit-cmd" element={<EditCmd/>}/>
+            <Route path="/rl" element={<Rollig/>}/>//done
+            <Route path="/commands" element={<Cmds/>} />//done
+            <Route path='/create-cmd' element={<CreateCmd/>}/>//done
+            <Route path="/edit-cmd/:id" element={<EditCmd/>}/>//done
 
 
 

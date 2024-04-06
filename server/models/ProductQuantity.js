@@ -1,12 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-  const ProductQuantity = sequelize.define("Branch", {
+  const ProductQuantity = sequelize.define("productQuantity", {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    product_id: DataTypes.INTEGER,
-    command_id: DataTypes.INTEGER,
     quantity: DataTypes.INTEGER,
   });
   ProductQuantity.associate = (models) => {

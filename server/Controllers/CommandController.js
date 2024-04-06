@@ -64,11 +64,9 @@ const getAllCommandProducts = async (req, res) => {
         if (!commandProducts|| commandProducts.length === 0) {
             return res.status(404).json({ message: "Command or products not found" });
         }
+
         for (const commandProduct of commandProducts) {
-            const product = await db.Product.findOne({ where: { product_id: commandProduct.product_id } });
-            if (product) {
-                products.push(product);
-            }
+            products.push(commandProduct)
         }
         if (!products || products.length === 0) {
             return res.status(404).json({ message: "No products found" });
@@ -91,7 +89,9 @@ const assignProductToCommand = async (req, res) => {
         const createdProductCommand = await db.Product_Command.create({  
             command_id: id,
             product_id: product_id,
-            quantity:quantity
+            quantity:quantity,
+            delivered_amount :0,
+            amount_left: quantity,
         });
         return res.status(201).json(createdProductCommand);
     } catch (error) {

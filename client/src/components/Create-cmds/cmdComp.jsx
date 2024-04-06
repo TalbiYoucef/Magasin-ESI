@@ -5,9 +5,12 @@ import React, { useState } from 'react';
 function CmdComp({ filteredProducts, onAddCmd }) {
   const [selectedPro, setSelectedPro] = useState('');
   const [quantity, setQuantity] = useState('');
- 
+  const [productId,setProductId]=useState('') 
   const productOnChange = (e) => {
+    console.log(filteredProducts)
+    console.log(e.target.value)
     setSelectedPro(e.target.value);
+    
   };
 
   const quantityOnChange = (e) => {
@@ -15,14 +18,14 @@ function CmdComp({ filteredProducts, onAddCmd }) {
   };
 
   const handleAddCmd = () => {
+
     if (selectedPro && quantity) {
       // Créer un objet de données de commande
       if (quantity> 0) {
-
       const cmdData = {
-        id: Math.floor(Math.random() * 10000), // Générer un identifiant unique pour la commande
-        selectedPro: selectedPro,
-        quantity: quantity
+        id: filteredProducts.filter(pro=> pro.name === selectedPro).map(pro => pro.product_id)[0], // Générer un identifiant unique pour la commande
+        product_id :filteredProducts.filter(pro=> pro.name === selectedPro).map(pro => pro.product_id)[0], // Générer un identifiant unique pour la commande
+        quantity:Number(quantity)
       };
 
       // Passer les données de la commande à la fonction de gestion de l'ajout
@@ -47,8 +50,8 @@ function CmdComp({ filteredProducts, onAddCmd }) {
                 style={{ color: '#5B548E',boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)'  , height :'35px' , marginBottom :'30px' ,padding :'0px' , paddingLeft :'20px' }}>
         <option value="">Products</option>
         {filteredProducts.map((produit, index) => (
-          <option key={index} value={produit.nom}>
-            {produit.nom}
+          <option key={produit.product_id} value={produit.name} >
+            {produit.name}
           </option>
         ))}
       </select>

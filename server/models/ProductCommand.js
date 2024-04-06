@@ -5,8 +5,15 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    command_id: DataTypes.INTEGER,
-    product_id: DataTypes.INTEGER,
+    quantity :{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 0, // Ensure it's positive or zero
+        isInt: true, // Ensure it's an integer
+      },
+      default: 0,
+    },
     delivered_amount: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -14,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         min: 0, // Ensure it's positive or zero
         isInt: true, // Ensure it's an integer
       },
-      default: 1,
+      default: 0,
     },
     amount_left: {
       type: DataTypes.INTEGER,

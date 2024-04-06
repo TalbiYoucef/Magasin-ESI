@@ -6,25 +6,57 @@ import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import CmdData from "./commandData.jsx";
 import Per from "./commandLign.jsx";
-
-import { Link } from "react-router-dom";
+import { useNavigate , Link } from "react-router-dom";
+// get comands
+import axios from 'axios'
 
 function Cmds() {
-  const [cmds, setcmds] = useState(CmdData); // État local pour stocker la liste des command
+  const navigate = useNavigate()
+  const [cmds, setcmds] = useState([]); // État local pour stocker la liste des command
   const [isChecked, setIsChecked] = useState(false); // État local pour le bouton de case à cocher
   const [sortOrder, setSortOrder] = useState("asc"); // État local pour l'ordre de tri (ascendant ou descendant)
   const [selectedState, setSelectedState] = useState("State");
   const [selectedCommand, setSelectedCommand] = useState(null);
-
+ // createdAt updatedAt
   useEffect(() => {
-    const storedCommand = JSON.parse(localStorage.getItem("selectedCommand"));
-    setSelectedCommand(storedCommand);
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        console.log("reres", res.data);
+        try {
+          const resp = await axios.get("http://localhost:3036/commands", {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+  
+          setcmds(resp.data)
+          console.log(resp.data)
+        } catch (error) {
+          navigate('/dashboard')
+          console.log(error);
+        }
+      } catch (error) {
+        // If an error occurs, redirect to the login page
+        navigate("/login");
+        console.log(error);
+      }
+    };
+  
+    fetchData();
   }, []);
+  
+
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
-
+  const handleClick = () =>{
+    navigate('/create-cmd')
+  }
   // Gérer les changements de la valeur de recherche
   const [searchTerm, setSearchTerm] = useState(""); // État local pour stocker la valeur de recherche
   const handleSearchChange = (event) => {
@@ -32,11 +64,11 @@ function Cmds() {
   };
 
   // Filtrer les cmd en fonction de la valeur de recherche
-  const filteredCmd = cmds.filter(
-    (cmd) =>
-      cmd.supplier.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cmd.numCmd.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCmd = cmds
+  // .filter(
+  //   (cmd) =>
+  //        cmd.includes(searchTerm.toLowerCase())
+  // );
   // filtrer les dates
 
   const handleSortClick = () => {
@@ -86,7 +118,7 @@ function Cmds() {
                 />
               </div>
               <div className="cre28">
-                <button>create command</button>
+                <button onClick={handleClick}>create command</button>
               </div>
             </div>
             <div className="permi28">
@@ -97,7 +129,8 @@ function Cmds() {
                 className="roleinp28"
               />
               <p className="roles28">N° Commande </p>
-              <p className="supp28">supplier</p>
+              <p className="supp28">type</p>
+              <p className="supp28">userName</p>
               <p className="datte28">
                 <p className="eleDate28">Date</p>
                 <button onClick={handleSortClick} className="btndate28">
@@ -126,10 +159,11 @@ function Cmds() {
               {filteredCmd.map((cmd, index) => (
                 <Per
                   key={index}
-                  numCmd={cmd.numCmd}
-                  supplier={cmd.supplier}
-                  date={cmd.date}
-                  state={cmd.state}
+                  id= {cmd.command_id}
+                  type={cmd.type}
+                  user ={cmd.user_id}
+                  numCmd={cmd.command_id}
+                  date={cmd.createdAt}
                 />
               ))}
             </div>

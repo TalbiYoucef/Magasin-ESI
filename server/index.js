@@ -47,7 +47,7 @@ app.get("/create", async (req, res) => {
     "purchasing service agent",
     "store keeper",
   ];
-
+  
   const permissions = [
     "createBranch",
     "updateBranch",
@@ -78,18 +78,20 @@ app.get("/create", async (req, res) => {
     "Student Affairs Office", // Service des affaires étudiantes
   ];
   try {
-    permissions.map(async (permission) => {
-      await db.Permission.create({ name: permission });
-    });
+    // permissions.map(async (permission) => {
+    //   await db.Permission.create({ name: permission });
+    // });
     roleNames.map(async (roleName) => {
       await db.Role.create({ name: roleName });
     });
+    universityServices.map(async (ser) => {
+      await db.Service.create({ name: ser });
+    });
+    res.end('done')
 
   } catch (err) {
     res.send(err);
   }
-  // await db.Role.create({ name: "admin" });
-
   // for (let i = 1; i <= 20; i++) {
   //   // const productName = `product${i}`;
   //   const chapName=`chap${i}`;
@@ -101,7 +103,17 @@ app.get("/create", async (req, res) => {
   //   await db.Product.create({ name: productName, qt_logique: 10, qt_physique: 10 });
   // }
 });
-
+app.get('/cr', async (req,res)=>{
+  try {
+    for(let i =1;i<= 20 ;i++){
+    await db.Product_Command.create({quantity:100,command_id : i , product_id : i,amount_left:0,delivered_amount:0})
+    }
+    res.end('done')
+  } catch (error) {
+    console.log(error)
+    res.end("err")
+  } 
+})
 
 const connectToDb = async () => {
   db.sequelize

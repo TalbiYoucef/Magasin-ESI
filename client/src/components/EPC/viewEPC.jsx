@@ -550,7 +550,7 @@ const BonDeComande = () => {
                   <Link to="/commands-list" className="commands-list-link">
                     <button
                       className="commands-list"
-                      onClick={() => navigate(-1)}
+                      onClick={() => navigate('/commands')}
                     >
                       Commands List
                     </button>

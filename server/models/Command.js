@@ -5,7 +5,12 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    user_id: DataTypes.INTEGER,
+    type:{
+      type: DataTypes.ENUM("internal","external"),
+      allowNull: false,
+      defaultValue: "internal",
+    
+    }
   });
   Command.associate = (models) => {
     const { User, Product_Command } = models;
