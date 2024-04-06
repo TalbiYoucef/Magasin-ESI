@@ -19,11 +19,13 @@ import {
 } from "./components/index";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AppProvider } from "./components/reset/AppContext";
-import BonDeReception from "./components/BR/ViewBR";
+import CreateCmd from "./components/Create-cmds/createCmd";
+import EditCmd from "./components/EditCMD/EditCommand";
+import BonDeComande from "./components/EPC/viewEPC";
 import Cmds from "./components/CommandManagement/MangCommand";
 import Rollig from "./components/CommandManagement/commandLign";
-import BonDeComande from "./components/EPC/viewEPC";
-import CreateCmd from "./components/Create-cmds/createCmd";
+import BonDeReception from "./components/BR/ViewBR";
+import Receip from "./components/ReceiptMang/CreateReceipt";
 
 function App() {
   return (
@@ -31,11 +33,14 @@ function App() {
       <Router>
         <div>
           <Routes>
-            <Route path="/br" element={<BonDeReception />} />
-            <Route path="/mgc" element={<Cmds />} />
-            <Route path="/roll" element={<Rollig />} />
+            <Route path="bonR" element={<BonDeReception/>}/>
+            <Route path="/rl" element={<Rollig/>}/>
+            <Route path="/mgc" element={<Cmds/>} />
+            <Route path="/br" element={<Receip />} />
             <Route path='/bc' element={<BonDeComande/>}/>
             <Route path='/create' element={<CreateCmd/>}/>
+            <Route path="/edit-cmd" element={<EditCmd/>}/>
+
 
 
             <Route path="/login" element={<Login />} />
