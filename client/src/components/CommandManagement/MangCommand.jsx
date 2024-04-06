@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./MangCommand.css";
-import Side from "./sidcmd.jsx";
-import Nav from "../usersprofil/nav.jsx";
+import Side from "../side/side.jsx";
+import Nav from "../nav/nav.jsx";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import CmdData from "./commandData.jsx";
@@ -67,9 +67,11 @@ function Cmds() {
   };
 
   return (
-    <div className="container">
-      <Nav />
-      <Side />
+    <div className="container" style={{ marginLeft: 0, paddingLeft: 0 }}>
+      <div className="row">
+        <Nav />
+        <Side />
+      </div>
       <div className="row">
         <section className="col-md-12 bordureBleue">
           <div className="col-md-5 bordureBleue section-28">
@@ -137,5 +139,4 @@ function Cmds() {
     </div>
   );
 }
-
 export default Cmds;

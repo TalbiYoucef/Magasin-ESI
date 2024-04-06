@@ -3,6 +3,9 @@
   margin-left: 8%;
 
 }
+.logoesi-img{
+  width: 800px;
+}
 section{
   display: flex;
   height: 92vh;
@@ -52,6 +55,8 @@ margin-top: 0px;
 display: flex;
 }
 .cont{
+  border: 1px solid #111111; /* Add a border around the frame */
+  padding: 5px; /* Add some padding */
   display: flex;
   font-family: Arial, sans-serif;
   flex-direction: column;

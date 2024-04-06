@@ -1,0 +1,158 @@
+
+
+.section-130{
+    width: 15%;
+    height: 900px;   
+}
+
+.section-230{
+    
+    border-color: transparent; 
+    width: 95%;
+    height: 870px;
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.fot30{
+    display: flex;
+    gap: 50%;
+}
+.fotR30{
+    display: flex;
+   background-color: white;
+   border-radius: 30px;
+   text-align: center;
+   align-items: center;
+   padding: 5px 10px;
+  background-color: #100B39;
+  color: white;
+  
+  
+ 
+}
+.fotLEFT30{
+    width: 25%;
+    height: 15px;
+    display: flex;
+   background-color: white;
+   border-radius: 30px;
+   align-items: center;
+   gap: 15%;
+   padding: 20px;
+   }
+
+   .fotLEFT30 > input{
+    width: 16%;
+    height: 10px;
+    display: flex;
+   background-color: white;
+   border-radius: 30px;
+   text-align: center;
+   gap: 100px;
+   padding: 20px;
+  background-color: white;
+  color: white;
+  box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-webkit-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-moz-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+ border: none;
+
+}
+.rec30{
+   color: #5B548E;
+   margin-left: 9%;
+   
+   width: 65%;
+}
+.supCom30{
+    padding: 20px;
+    display: flex;
+    margin-top: 3%;
+    gap: 5%;
+    width: 95%;
+    height: 140px;
+   background-color: white;
+   border-radius: 30px;
+  box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-webkit-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-moz-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+ border: none;
+}
+.supCom30 div {
+    display: block;
+    
+}
+.suppname30,.nCom30,.date30{ 
+    width: 100%;
+    height:50px;
+    margin-left: 5%; 
+   background-color: white;
+   border-radius: 30px;
+  box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-webkit-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-moz-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+ border: none;
+}
+
+.su130{
+    width: 45%;
+}
+.su230,.su330{
+    width: 20%;
+}
+.su130 p,.su230 p,.su330 p,.tit30,.pro30 p,.quan30 p,.totht30 p,.tva30 p ,.totttc30 p {
+   color: #5B548E;
+}
+.desi30{
+    padding: 20px;
+    display: flex; /* Modifier display en flex */
+    flex-direction: column; /* Pour que les éléments à l'intérieur soient disposés en colonne */
+    margin-top: 3%;
+    gap: 5%;
+    width: 95%;
+    max-height: 410px; /* Définissez une hauteur maximale pour le conteneur */
+    overflow-y: auto; /* Ajoutez une barre de défilement verticale si nécessaire */
+   background-color: white;
+   border-radius: 30px;
+  box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-webkit-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-moz-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+ border: none;
+ position: relative; 
+}
+
+.end30 {
+    display: flex;
+    gap: 3%;
+    width: 80%;
+    margin-left: 120px;
+}
+.totht30,.tva30,.totttc30{
+    width: 15%;
+}
+.inpHT30,.inpTVA30,.inpTTC30{
+    width: 90%;
+    padding: 5px;
+    padding-left: 20px;
+    height:45px;
+    margin-left: 5%; 
+   background-color: white;
+   border-radius: 30px;
+  box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-webkit-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+-moz-box-shadow: 0px 1px 18px -12px rgba(0,0,0,0.52);
+ border: none;
+}
+.CONRECEIPT30 {
+    background-color: rgba(23,191,107,0.87);
+    border: 30px;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 60px;
+    width: fit-content;
+    margin-left: 500px;
+    color: white;
+    height:45px;
+}

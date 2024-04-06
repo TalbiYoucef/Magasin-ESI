@@ -7,19 +7,14 @@
 
 .section-28{
     border-color: transparent; 
-    width: 85%;
+    margin: 0;
+    padding: 100px;
     height: 870px;
-    margin-top: 4%;
-    margin-left: 4%;
-    margin-right: 5%;
-
 }
 
 
 .search28{
-    
-   
-    width: 25%;
+
     height: 15px;
     display: flex;
    background-color: white;
@@ -88,6 +83,7 @@
     border-radius: 30px;
     font-size: 18px;
     margin-top: 0px;
+    width: fit-content;
     align-items: center;
     color: white;
 
