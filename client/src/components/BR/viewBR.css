@@ -1,0 +1,184 @@
+.BR{
+  
+  margin-left: 8%;
+
+}
+section{
+  display: flex;
+  height: 92vh;
+  flex-direction: column
+}
+.section-128{
+  width: 15%;
+  height: 900px;   
+}
+.barr{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 100px;
+}
+.bnrespt{
+  
+    text-decoration: none; /* Remove underline from links */
+    justify-content: space-between;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.commands-ls{
+  width: 180px;
+  background-color: #100B39;
+  border-radius: 30px;
+  margin-right: 80px;
+  margin-bottom: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  color: #fff; /* Change the text color */
+  cursor: pointer;
+}
+.frame1 {
+  font-size: 16px;
+  border: 1px solid #ccc; /* Add a border around the frame */
+  padding: 20px; /* Add some padding */
+  margin: auto;
+  height: max-content;
+  width:max-content;
+margin-bottom: 0px;
+margin-top: 0px;
+display: flex;
+}
+.cont{
+  display: flex;
+  font-family: Arial, sans-serif;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap; }
+  .bon-r{
+
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .info-br{
+    font-size:small;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -20px;
+    text-align: center;
+    font-size: 16px;
+    padding-right: 0;
+   
+  }
+  .info-br2{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 0px;
+    
+  }
+  .info1 {
+    font-weight: bold;
+    font-size:small;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+ 
+  }
+  
+  .table1 {
+    margin-bottom: 0;
+    font-size:  x-small;
+    width: 100%;
+
+    border-collapse: collapse;
+    border: 1px solid #000; /* Add border to the table */
+    table-layout: fixed; 
+  }
+  
+ 
+  .head-designation {
+  
+    width: 60%; /* Adjust the width as needed */
+    
+  }
+  .head{
+    font-size:small;
+    background-color: #DCE6F1;
+  text-align: center;
+    border: 1px solid #000;
+    height: 20px;
+  }
+  .info-product{
+    font-size:small;
+    height: 20px;
+    border: 1px solid #000; 
+    text-align: center;
+  }
+  .info-designation{
+    text-align: left;
+    padding-left: 2px;
+    width: 60%;
+  }
+  
+  .magasinier {
+    font-size:small;
+    font-weight: bold;
+    float: right;
+    margin-top: 40px;
+    margin-left: 75%;
+  }
+  .print-button {
+    background-color :#0047FF; 
+    color : white ;
+    width: 130px;
+    height: 40px ; 
+    border-radius: 30px;
+  }
+ .print-cont{
+  margin-top: 20px;
+  transition: border-color 0.3s ease;
+  font-weight: 500; /* meduim */
+  font-size: 16px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  text-align: center;
+
+}
+   @media print {
+          body {
+            -webkit-print-color-adjust: exact; /* For Chrome and Safari */
+            color-adjust: exact; /* For Firefox */
+          }
+          .print-button,.buttons-right-rs ,.BR ,.nav,.section-128{
+            display: none !important;
+          }}
+          .buttons-right-rs{
+           
+            margin-top: -30px;
+            display: flex;
+            flex-direction: column;
+            align-content: flex-end;
+            justify-content: center;
+          }
+          .view-cmd{
+            width: 180px;
+            background-color: #0047FF;
+            border-radius: 30px;
+        margin-right: 80px;
+        margin-bottom: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        color: #fff; /* Change the text color */
+        cursor: pointer;
+          }

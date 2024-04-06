@@ -1,0 +1,269 @@
+.num-com{
+  margin: 20px;
+  margin-left: 15%;
+
+}
+section{
+  display: flex;
+  height: 92vh;
+}
+.section-128{
+  width: 15%;
+  height: 900px;   
+}
+
+.EPC {
+  margin-top: 0;
+  height: min-content;
+  MARGIN-LEFT: 20%;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 60%;
+  padding: 10px;
+  border: 1px solid #0e0e0e;
+ 
+}
+  .Esp-res{
+    width: 25%;
+    padding-left: 10px;
+    margin-top: -80px;
+  }
+  .bar-re{ 
+    
+    text-align: center;
+    font-size: x-small ;
+    padding: inherit;
+    padding-right: 0;
+  }
+  
+.bar-pro{
+  background-color: #DCE6F1;
+}
+.topp{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-color: transparent; 
+  margin-left: 4%;
+ 
+  margin-top: 5%;
+  
+ 
+}
+
+.section-28{
+  border-color: transparent; 
+  width: 85%;
+  height: 870px;
+  margin-top: 4%;
+  margin-left: 4%;
+  margin-right: 5%;
+
+}
+
+  .table1 {
+    margin-bottom: 0;
+    font-size:  x-small;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout:fixed; 
+    padding: inherit;
+  
+  } .LEFT {
+    font-size:  x-small;
+    padding: 10px;
+  
+  }
+  .RIGHT {
+    font-size: x-small;
+    display:flex;
+    justify-content: center;
+  border: 1px solid #0e0e0e;
+  background-color: #D9D9D9;
+  padding: inherit;
+  }
+    
+ .info-service{
+  font-size:  x-small;
+ width: 50%;
+  border: 1px solid #9e9d9d;
+  padding: inherit;
+  
+ }
+ .RIGHT-CARA{
+  font-size:  x-small;
+  display:flex;
+    justify-content: right;
+    padding:10px;
+  }
+  .table2 {
+    margin-bottom: 0;
+    font-size: x-small;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; 
+    padding: inherit;
+  }
+    .table3 {
+      margin-bottom: 0;
+      font-size:  x-small;
+      width: 100%;
+      padding: inherit;
+      border-collapse: collapse;
+      border: 1px solid #000; /* Add border to the table */
+      table-layout: fixed; 
+    }
+    
+    .table3 thead {
+      padding: inherit;
+      background-color: #8cd9f1; /* Color the header background */
+    }
+    .table3 th,
+    .table3 tr,
+    .table3 td {
+      font-size: x-small;
+      border: 1px solid #000;
+      padding: 0px;
+      text-align: center;
+     
+    }
+    .table3 th:nth-child(2){
+      width: 40%; /* Adjust the width as needed */
+  text-align: center;
+    }
+.table3 td:nth-child(2) {
+  width: 40%; /* Adjust the width as needed */
+  text-align: left; /* Center align the content */
+  padding-left: 2px;
+}
+    .obj-cmd{ padding: inherit;
+      display: flex;
+      flex-direction: row;
+     justify-content: space-between;
+     font-size:x-small;
+     align-items: baseline;
+     border: 1px solid #000;
+    }
+    .montant{ 
+      font-size:xx-small ;
+      margin-top: 2px;
+      width:60%;
+      padding-left: 10px;
+      border: 1px solid #000;
+    height: 45px;
+    }
+    .footer {
+      font-size:xx-small;
+      margin-top: 0px;
+     padding-left: 10px;
+    
+    
+  
+    }.directeur{
+      margin-top: 0px;
+      font-size:smaller;
+      text-align: right;
+      margin-bottom: 20px;
+      MARGIN-RIGHT: 30px;
+
+    }
+    .edit1 {
+      background-color: orange;
+      color: white;
+   
+      width: 130px;
+      height: 40px ; 
+      border-radius: 30px;
+    }
+    
+    .delete1 {
+      background-color: red;
+      color: white;
+      margin-left: 10px;
+      width: 130px;
+      height: 40px ; 
+      border-radius: 30px;
+    }
+    
+    .print {
+      background-color :#0047FF; 
+      margin-left: 10px;
+    color : white ;
+    width: 130px;
+    height: 40px ; 
+    border-radius: 30px;
+    }
+    
+    .contner1 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 10px;
+      margin-left: 9%;border-color: transparent;
+    }
+    .right-buttons a {
+      text-decoration: none; /* Remove underline from links */
+    }
+    .buttns1 {
+      text-align: center;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+     
+    }
+   
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact; /* For Chrome and Safari */
+        color-adjust: exact; /* For Firefox */
+      }
+      .buttns1,.right-buttons ,.num-com, .nv,.sd{
+        display: none !important;
+      }
+        .table3 thead {
+         
+          background-color: #8cd9f1; /* Color the header background */
+        }
+      
+    }
+      .right-buttons {
+      
+        margin-top: -30px;
+        display: flex;
+        flex-direction: column;
+        align-content: flex-end;
+        justify-content: center;
+      
+      }
+      
+      .commands-list{
+        background-color: #100B39;
+      }
+      .create-receipt{
+        background-color: #17BF6B;
+      }
+      .view-receipt{
+        background-color: #0047FF;
+      }
+      .right-buttons button {
+        width: 180px;
+        border-radius: 30px;
+        margin-right: 80px;
+        margin-bottom: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        color: #fff; /* Change the text color */
+        cursor: pointer;
+      }
+      .BC-B{
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: flex-start;
+      }
+      .vide td {
+        border: none;
+      }

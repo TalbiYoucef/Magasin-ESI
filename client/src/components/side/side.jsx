@@ -13,6 +13,7 @@ function Side(props) {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
+  const CommandsManagement = true;
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,7 +37,7 @@ function Side(props) {
       const res = await axios.get("http://localhost:3036/auth/logout", {
         withCredentials: true,
       });
-      console.log(res)
+      console.log(res);
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -73,6 +74,19 @@ function Side(props) {
               >
                 <PiSquaresFourLight className="ic" />
                 Roles management
+              </a>
+            </li>
+          </>
+        )}
+        {CommandsManagement && (
+          <>
+            <li className="nav__items ">
+              <a
+                href="commands"
+                className={`link ${props.link === "commands" ? "active" : ""}`}
+              >
+                <CiUser className="ic" />
+                CommandsManagement
               </a>
             </li>
           </>

@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
   });
   Product.associate = (models) => {
     const { Branch, Product_Command } = models;
-    Product.belongsTo(Branch, { foreignKey: 'branch_id' });
-    Product.hasMany(Product_Command, { foreignKey: 'product_id' });
+    Product.belongsTo(Branch, { foreignKey: "branch_id" });
+    Product.hasMany(Product_Command, { foreignKey: "product_id" });
   };
-  return Product
+  return Product;
 };

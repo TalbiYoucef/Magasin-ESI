@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   });
   Supplier.associate = (models) => {
     const { SupplierProduct } = models;
-    Supplier.hasMany(SupplierProduct, { foreignKey: "id_supplier" });
-    SupplierProduct.belongsTo(Supplier, { foreignKey: "id_supplier" });
+    Supplier.hasMany(SupplierProduct, { foreignKey: "supplier_id" });
+    SupplierProduct.belongsTo(Supplier, { foreignKey: "supplier_id" });
   };
   return Supplier;
 };
