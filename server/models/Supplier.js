@@ -1,3 +1,5 @@
+const { FOREIGNKEYS } = require("sequelize/lib/query-types");
+
 module.exports = (sequelize, DataTypes) => {
   const Supplier = sequelize.define("Supplier", {
     supplier_id: {
@@ -18,11 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   });
-  Supplier.associate = (models) => {
-    const { SupplierProduct } = models;
-    Supplier.hasMany(SupplierProduct, { foreignKey: "supplier_id" });
-    SupplierProduct.belongsTo(Supplier, { foreignKey: "supplier_id" });
-  };
   return Supplier;
 };
 
