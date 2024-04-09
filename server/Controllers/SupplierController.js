@@ -69,35 +69,4 @@ const deleteSupplier = async (req, res) => {
         return res.status(500).json({ error: 'Failed to delete supplier' });
     }
 }
-const assignProductPrice= async (req, res) => {
-    try {
-        const {id}=req.params;
-        const { product_id,price } = req.body;
-        const supplierPrice= await db.Supplier_Product.findOne({where: {supplier_id:id,product_id:product_id}});
-        if(supplierPrice){
-            return res.status(400).json({error: 'Price already assigned'});
-        }
-        await db.Supplier_Product.create({supplier_id:id,product_id:product_id,price:price});
-        return res.status(200).json({ message: 'Product Price assigned successfully' })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({ error: 'Failed to assign price to product' });
-    }
-}
-const unassignProductPrice = async (req, res) => {
-    try {
-        const {id}=req.params;
-        const { product_id } = req.body;
-        const supplierPrice= await db.Supplier_Product.findOne({where: {supplier_id:id,product_id:product_id}});
-        if(!supplierPrice){
-            return res.status(400).json({error: 'Price not assigned'});
-        }
-        await supplierPrice.destroy();
-        return res.status(200).json({ message: 'Product Price unassigned successfully' })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({ error: 'Failed to unassign price to product' });
-    }
-}
-
-module.exports={getAllSuppliers,getSupplierById,createSupplier,deleteSupplier,updateSupplier,assignProductPrice,unassignProductPrice}
+module.exports={getAllSuppliers,getSupplierById,createSupplier,deleteSupplier,updateSupplier}
