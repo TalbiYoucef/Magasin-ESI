@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       allowNull: false,
     },
+    //total , partial
     status: {
       type: DataTypes.ENUM("pending", "processing", "shipped", "canceled"),
       allowNull: false,

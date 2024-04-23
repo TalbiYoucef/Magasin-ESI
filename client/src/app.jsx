@@ -26,6 +26,7 @@ import Cmds from "./components/CommandManagement/MangCommand";
 import Rollig from "./components/CommandManagement/commandLign";
 import BonDeReception from "./components/BR/ViewBR";
 import Receip from "./components/ReceiptMang/CreateReceipt";
+import EditCmdEx from "./components/EditCMD/EditCommandEx";
 
 function App() {
   return (
@@ -40,10 +41,9 @@ function App() {
             <Route path="/commands" element={<Cmds/>} />//done
             <Route path='/create-cmd' element={<CreateCmd/>}/>//done
             <Route path="/edit-cmd/:id" element={<EditCmd/>}/>//done
-
-
-
             <Route path="/login" element={<Login />} />
+            <Route path="/edit-cmd" element={<EditCmdEx/>}/>//done
+
             //done
             <Route path="/dashboard" element={<Dashboard />} />
             //done

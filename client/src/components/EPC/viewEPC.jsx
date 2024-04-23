@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom"; // Import useNavigate
-
 import "./viewepc.css";
 import Side from "../side/side.jsx";
 import Nav from "../nav/nav.jsx";
 
-const BonDeComande = () => {
+ const BonDeComande = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [selectedOption, setSelectedOption] = useState(null);
@@ -537,7 +536,7 @@ const BonDeComande = () => {
       <div className="container" style={{marginLeft:0,paddingLeft:0}}>
             <Nav />
             <div >
-              <Side />
+            <Side />
             </div>
         <div className="row">
           <section className="col-md-12 bordureBleue">

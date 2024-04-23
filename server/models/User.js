@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     lastname: DataTypes.STRING,
     email: {
       type: DataTypes.STRING,
-      unique: true,
+      // unique: true,
     },
     address: DataTypes.STRING,
     phone_num: DataTypes.STRING,
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     token: {
       type: DataTypes.STRING,
-      unique: true,
+      // unique: true,
     },
     service_id: DataTypes.INTEGER,
   });

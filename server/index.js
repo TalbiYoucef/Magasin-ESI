@@ -25,13 +25,13 @@ app.use("/resetpassword", require("./Routes/ResetPasswordRouter"));
 app.use("/roles", verifyJWT, require("./Routes/RoleRouter"));
 app.use("/permissions", verifyJWT, require("./Routes/PermissionRouter"));
 app.use("/services", verifyJWT,require("./Routes/ServiceRouter"));
-app.use("/products", verifyJWT, require("./Routes/ProductRouter")); //done
+app.use("/products", require("./Routes/ProductRouter")); //done
 app.use("/branches", verifyJWT, require("./Routes/BranchRouter")); //done
 app.use("/chapters", verifyJWT, require("./Routes/ChapterRouter")); //done
-app.use("/commands", verifyJWT, require("./Routes/CommandRouter")); //
-app.use("/purchaseorders", verifyJWT, require("./Routes/PurchasingOrderRouter")); //newest additions
-app.use("/suppliers", verifyJWT, require("./Routes/SupplierRouter"));//newest additions
-app.use("/receipts", verifyJWT, require("./Routes/ReceiptRouter"));//newest additions
+app.use("/commands",  require("./Routes/CommandRouter")); //
+app.use("/purchaseorders", require("./Routes/PurchasingOrderRouter")); //newest additions
+app.use("/suppliers",  require("./Routes/SupplierRouter"));//newest additions
+app.use("/receipts",  require("./Routes/ReceiptRouter"));//newest additions
 app.post("/finduser", async (req, res) => {
   const { token } = req.body;
   const foundUser = await db.User.findOne({ where: { token: token } });
