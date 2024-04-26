@@ -27,48 +27,44 @@ import Rollig from "./components/CommandManagement/commandLign";
 import BonDeReception from "./components/BR/ViewBR";
 import Receip from "./components/ReceiptMang/CreateReceipt";
 import EditCmdEx from "./components/EditCMD/EditCommandEx";
-
+import ViewArticles from "./components/viewArticle/ViewArticle";
+import ViewChapter from "./components/ViewChapter/ViewChapter";
+import ViewRole from "./components/rolesMan/ViewRole";
+import Produit from "./components/produitMan/manProduits";
+import NotFound from "./components/NotFound/NotFound";
 function App() {
   return (
     <AppProvider>
       <Router>
         <div>
           <Routes>
-            <Route path="bonR" element={<BonDeReception/>}/>
+            {/* //to do : */}
+            <Route path="produit" element={<Produit />} />
+            <Route path="view-ar" element={<ViewArticles />} />
+            <Route path="view-ch" element={<ViewChapter />} />
+            <Route path="viewRole/:id" element={<ViewRole />} />
+            <Route path="bonR" element={<BonDeReception />} />
             <Route path="/br" element={<Receip />} />
-            <Route path='/bc' element={<BonDeComande/>}/>
-            <Route path="/rl" element={<Rollig/>}/>//done
-            <Route path="/commands" element={<Cmds/>} />//done
-            <Route path='/create-cmd' element={<CreateCmd/>}/>//done
-            <Route path="/edit-cmd/:id" element={<EditCmd/>}/>//done
+            <Route path="/bc" element={<BonDeComande />} />
+            {/* // already done */}
+            <Route path="/commands" element={<Cmds />} />
+            <Route path="/create-cmd" element={<CreateCmd />} />
+            <Route path="/edit-cmd/:id" element={<EditCmd />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/edit-cmd" element={<EditCmdEx/>}/>//done
-
-            //done
+            <Route path="/edit-cmd" element={<EditCmdEx />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            //done
             <Route path="/EditPassword" element={<EditPassword />} />
-            //done
             <Route path="/EditProfile" element={<EditProfile />} />
-            //done
             <Route path="/EditUserProfile/:id" element={<EditUser />} />
-            //done
-            <Route path="/roles" element={<Role />} /> //done
+            <Route path="/roles" element={<Role />} /> 
             <Route path="/permissions-management" element={<Permissions />} />
             <Route path="/users" element={<Users />} />
-            //done
             <Route path="/setting" element={<Profils />} />
-            //done
             <Route path="/CreateUser" element={<CreateUser />} />
-            //done
-            {/* <Route path="/delete" element={<Delete />} /> */}
-            {/* <Route path="/view" element={<View />} /> */}
-            {/* <Route path="/dashboard" element={<View />} /> */}
             <Route path="/reset1" element={<Card />} />
-            //done
             <Route path="/reset2" element={<Card2 />} />
-            //done
-            <Route path="/reset3" element={<Card3 />} /> //done
+            <Route path="/reset3" element={<Card3 />} /> 
+            <Route path="*" element={<NotFound/>}/>
           </Routes>
         </div>
       </Router>

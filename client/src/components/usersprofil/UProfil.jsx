@@ -51,13 +51,13 @@ function Profils() {
                     <div className="imgBox">
                       <img src={pro} alt="profil" />
                     </div>
-                    <div style={{ marginLeft: "2%" }}>
+                    <div style={{ marginLeft: "2%",display:"flex",alignItems:"center" }}>
                       <p className="name"> {user.firstname}</p>
                       <p className="admin">{user.role}</p>
                     </div>
                   </div>
                   <p className="ena" style={{ marginLeft: "1px" }}>
-                    {user.status}
+                    {String(user.status).toUpperCase()}
                   </p>
                 </li>
               </ul>

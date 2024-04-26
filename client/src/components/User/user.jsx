@@ -10,7 +10,6 @@ const navigate=useNavigate()
     setIsChecked(!isChecked);
   };
  const handleView = () => {
-  console.log('clicked', props.id)
   navigate(`/EditUserProfile/${props.id}`)
   };
   const handleDelete = () => {

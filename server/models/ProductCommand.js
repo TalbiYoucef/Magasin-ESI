@@ -5,6 +5,15 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
+    unit_price :{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 0, // Ensure it's positive or zero
+        isInt: true, // Ensure it's an integer
+      },
+      default: 0,
+    },
     quantity :{
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -16,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     delivered_amount: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       validate: {
         min: 0, // Ensure it's positive or zero
         isInt: true, // Ensure it's an integer
@@ -31,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
         isInt: true, // Ensure it's an integer
       },
       default: 0,
+    },
+    status_quantity: {
+      type: DataTypes.ENUM("initialized", "validated", "accepted", "satisfied"),
+      allowNull: false,
+      defaultValue: "initialized",
     },
   });
   Product_Command.associate = (models) => {

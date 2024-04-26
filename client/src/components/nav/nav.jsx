@@ -1,5 +1,6 @@
 import React from 'react';
 import './nav.css';
+import {Link } from 'react-router-dom'
 import { IoMoonOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
@@ -14,8 +15,10 @@ function Nav(props) {
           <IoMdNotificationsOutline className='icn-nav icn-size' />
           <IoMoonOutline className='icn-nav icn-size' />
            <div className='nav-profil'>
+          <Link className='link' to={'/setting'}>
           <CgProfile className='icn-nav icn-size' />
           <p className='username'>{props.username}</p>
+          </Link>
           </div>
         </div>
       </nav>

@@ -4,19 +4,18 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 function Rollig(props) {
+  const { id } = props;
   const [isChecked, setIsChecked] = useState(false);
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
-
   const [isVisible, setIsVisible] = useState(true);
-
   const handleViewRole = () => {
     props.onView(props.id);
   };
 
   const handleDelete = async () => {
-    alert(`are you sure you wanna delete this role`)
+    alert(`are you sure you wanna delete this role`);
     try {
       const res = await axios.get("http://localhost:3036/refresh", {
         withCredentials: true,
@@ -45,6 +44,12 @@ function Rollig(props) {
           <p className="name">{props.roleName}</p>
           <Link className="edi" onClick={handleViewRole}>
             Edit
+          </Link>
+          <Link
+            to={`/viewRole/${id}`}
+            style={{ color: "green", textDecoration: "none" }}
+          >
+            view
           </Link>
           <button className="del" onClick={handleDelete}>
             Delete

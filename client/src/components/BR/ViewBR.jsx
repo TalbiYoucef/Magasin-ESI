@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { Link, useNavigate } from 'react-router-dom'; 
 import "./viewBR.css";
-import Nav from "../nav/nav.jsx";
-import Side from "../side/side.jsx";
+import Nav from "../nav/nav";
+import Side from "../side/side";
 import logoesi from "../../assets/image.png";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -56,18 +56,18 @@ const BonDeReception = () => {
 
   return (
     <>
-      <div className="container">
-     
+      <div >
+     <section>
           <nav >
             <Nav/>
           </nav>
       
         <div >
-          <section >
+        
             <div> 
               <Side/>
             </div>
-            <div className="bnrespt">
+            <div className="bnrcpt">
               <h4 className="BR">BON DE RECEPTION N° : {brData[0].id}</h4>
               <div className="buttons-right-rs">
                 <Link to="/commands-list" >
@@ -75,17 +75,17 @@ const BonDeReception = () => {
                     Commands List 
                   </button>
                 </Link>
-                <Link to={`/bondecommand/${cmdData[0].numCmd}`} className="view-cmd-link">
+                <Link to={"/bondecommand"} className="view-cmd-link">
                   <button className="view-cmd" onClick={() => console.log("View cmd clicked")}>View Command</button>
                 </Link>
               </div>
             </div>
             <div className="frame1" ref={frameRef}>
-              <div className="cont" style={{ maxWidth: "800px" }}>
+              <div className="cont-frame" style={{ maxWidth: "800px" }}>
                 <div>
-                  <img style={{width:'100%'}} src={logoesi} alt="My Image"  />
+                  <img className='logoesi-img' src={logoesi} alt="My Image"  />
                 </div>
-                <div className="bon-r">
+                <div className="bon-reception">
                   <h4>BON DE RECEPTION</h4>
                   <div className="info-br">
                     <h4>N° :{brData[0].id}</h4>&nbsp;&nbsp;
@@ -114,22 +114,23 @@ const BonDeReception = () => {
                         <td className="info-product info-designation">{product.nommP}</td>
                         <td className="info-product">{product.quantite}</td>
                       </tr>
-                      ))}
-                      </tbody>
-                    </table>
-                    <p className="magasinier">Le Magasinier</p>
-                  </div>
-                </div>
-                <div className="print-cont">
-                  <button className="print-button" onClick={handleDownload}>
-                    Download PDF
-                  </button>
-                </div>
-              </section>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="magasinier">Le Magasinier</p>
+              </div>
             </div>
-          </div>
-        </>
-      );
-    };
-    
-    export default BonDeReception;
+            <div className="print-cont">
+              <button className="print-button" onClick={handleDownload}>
+                Download PDF
+              </button>
+            </div>
+          
+        </div>
+        </section>
+      </div>
+    </>
+  );
+};
+
+export default BonDeReception;

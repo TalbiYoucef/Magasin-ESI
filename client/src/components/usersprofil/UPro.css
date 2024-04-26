@@ -99,6 +99,7 @@
     }
     .name{
         color: rgba(58, 53, 65,0.87);
+        font-size: 1.6rem;
     }
     .ena{
         margin-left: 50%;

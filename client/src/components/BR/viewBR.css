@@ -1,35 +1,26 @@
-.BR{
-  
-  margin-left: 8%;
-
-}
-.logoesi-img{
-  width: 800px;
-}
 section{
   display: flex;
   height: 92vh;
   flex-direction: column
 }
-.section-128{
-  width: 15%;
-  height: 900px;   
-}
-.barr{
+.bnrcpt{
+  text-decoration: none; /* Remove underline from links */
+  justify-content: space-between;
+  text-align: center;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 100px;
+  margin-top: 8%;
 }
-.bnrespt{
-  
-    text-decoration: none; /* Remove underline from links */
-    justify-content: space-between;
-    text-align: center;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.BR{
+  margin-left: 8%;
+}
+.buttons-right-rs{         
+  margin-top: -30px;
+  display: flex;
+  flex-direction: column;
+  align-content: flex-end;
+  justify-content: center;
 }
 .commands-ls{
   width: 180px;
@@ -42,6 +33,18 @@ section{
   border: none;
   color: #fff; /* Change the text color */
   cursor: pointer;
+  }
+.view-cmd{
+  width: 180px;
+  background-color: #0047FF;
+  border-radius: 30px;
+margin-right: 80px;
+margin-bottom: 5px;
+padding: 10px 20px;
+font-size: 16px;
+border: none;
+color: #fff; /* Change the text color */
+cursor: pointer;
 }
 .frame1 {
   font-size: 16px;
@@ -54,7 +57,7 @@ margin-bottom: 0px;
 margin-top: 0px;
 display: flex;
 }
-.cont{
+.cont-frame{
   border: 1px solid #111111; /* Add a border around the frame */
   padding: 5px; /* Add some padding */
   display: flex;
@@ -63,8 +66,10 @@ display: flex;
   justify-content: center;
   align-content: center;
   flex-wrap: wrap; }
-  .bon-r{
-
+.logoesi-img{
+  width: 100%;
+}
+  .bon-reception{
     display: flex;
     align-content: center;
     flex-wrap: wrap;
@@ -83,13 +88,6 @@ display: flex;
     padding-right: 0;
    
   }
-  .info-br2{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 0px;
-    
-  }
   .info1 {
     font-weight: bold;
     font-size:small;
@@ -98,22 +96,20 @@ display: flex;
     margin-right: 20px;
  
   }
-  
+  .info-br2{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 0px;}
   .table1 {
     margin-bottom: 0;
     font-size:  x-small;
     width: 100%;
-
     border-collapse: collapse;
     border: 1px solid #000; /* Add border to the table */
     table-layout: fixed; 
-  }
-  
- 
-  .head-designation {
-  
-    width: 60%; /* Adjust the width as needed */
-    
+  } .head-designation {
+    width: 60%; /* Adjust the width as needed */ 
   }
   .head{
     font-size:small;
@@ -122,6 +118,7 @@ display: flex;
     border: 1px solid #000;
     height: 20px;
   }
+ 
   .info-product{
     font-size:small;
     height: 20px;
@@ -147,6 +144,7 @@ display: flex;
     width: 130px;
     height: 40px ; 
     border-radius: 30px;
+    border-color: transparent;
   }
  .print-cont{
   margin-top: 20px;
@@ -159,31 +157,5 @@ display: flex;
   text-align: center;
 
 }
-   @media print {
-          body {
-            -webkit-print-color-adjust: exact; /* For Chrome and Safari */
-            color-adjust: exact; /* For Firefox */
-          }
-          .print-button,.buttons-right-rs ,.BR ,.nav,.section-128{
-            display: none !important;
-          }}
-          .buttons-right-rs{
-           
-            margin-top: -30px;
-            display: flex;
-            flex-direction: column;
-            align-content: flex-end;
-            justify-content: center;
-          }
-          .view-cmd{
-            width: 180px;
-            background-color: #0047FF;
-            border-radius: 30px;
-        margin-right: 80px;
-        margin-bottom: 5px;
-        padding: 10px 20px;
-        font-size: 16px;
-        border: none;
-        color: #fff; /* Change the text color */
-        cursor: pointer;
-          }
+ 
+          
