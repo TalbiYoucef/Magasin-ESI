@@ -3,7 +3,7 @@ import React, { useState  , useEffect} from 'react';
 
 import ArticlesData from '../data/Articles.jsx';
 import produitData from '../data/chapitreData.jsx'; // data of chapitres
-import produit from '../data/Produit.jsx'; // data of produits
+import produit from '../data/Produits.jsx'; // data of produits
 
 
 

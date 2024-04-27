@@ -28,12 +28,12 @@ const getSupplierById = async (req, res) => {
 }
 const createSupplier = async (req, res) => {
     try {
-        const { name,address,phone_num } = req.body;
+        const { name,address,email,phone_num,registre_c,NIF,RIB } = req.body;
         const supplierExists= await db.Supplier.findOne({where: {name:name}});
         if(supplierExists){
             return res.status(400).json({error: 'Supplier already exists'});
         }
-        const supplier = await db.Supplier.create({name:name,address:address,phone_num:phone_num});
+        const supplier = await db.Supplier.create({name:name,address:address,email:email,phone_num:phone_num,registre_c:registre_c,NIF:NIF,RIB:RIB});
         return res.status(201).json(supplier);
     }
     catch (error) {
@@ -43,10 +43,10 @@ const createSupplier = async (req, res) => {
 const updateSupplier= async (req, res) => {
     try {
         const { id } = req.params;
-        const { name,address,phone_num } = req.body;
+        const { name,address,email,phone_num,registre_c,NIF,RIB } = req.body;
         const supplier = await db.Supplier.findOne({where: {supplier_id:id}});
         if (supplier) {
-            await supplier.update({name:name,address:address,phone_num:phone_num});
+            await supplier.update({name:name,address:address,email:email,phone_num:phone_num,registre_c:registre_c,NIF:NIF,RIB:RIB});
             return res.status(200).json({ message: 'Supplier updated successfully' });
         } else {
             return res.status(404).json({ error: 'Supplier not found' });

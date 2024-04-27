@@ -2,48 +2,95 @@
 import React, { useState, useEffect } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
-import CmdData from "../data/CmdData";
-import produitData from "../data/ProduitData";
-import FournisseursData from "../data/Fournisseur";
-import { Link, useNavigate } from "react-router-dom";
-import CmdComp from "./cmdComp";
-import axios from "axios";
 
+import produitData from "../data/ProduitData";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import CmdComp from "./cmdComp";
 function CreateCmd() {
-  const navigate = useNavigate();
+  const [suppliers, setSuppliers] = useState([]);
+  const [chapters, setChapters] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [cmdDataList, setCmdDataList] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [user, setUser] = useState({});
+  const [Products, setProduct] = useState([]);
+  const [type, setType] = useState("external");
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
-  const [cmdDataList, setCmdDataList] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [Products, setProducts] = useState([]);
   const [priU, setPriU] = useState("");
-  
   const getPrixUnitaire = (selectedPro) => {
     const product = Products.find((prod) => prod.nom === selectedPro);
     return product ? product.prixUnitaire : "";
   };
 
-  const handleChapterChange = (e) => {
+  const handleChapterChange = async (e) => {
     setSelectedChapter(e.target.value);
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+        withCredentials: true,
+      });
+      console.log("reres", res.data);
+      try {
+        const resp = await axios.get(
+          `http://localhost:3036/chapters/${
+            chapters.find((chap) => e.target.value == chap.name).chapter_id
+          }/branches`,
+          {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+        setBranches(resp.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      // If an error occurs, redirect to the login page
+      navigate("/login");
+      console.log(error);
+    }
+
     setSelectedArticle("");
     setCmdDataList([]);
     setFilteredProducts([]);
   };
 
-  const handleArticleChange = (e) => {
+  const handleArticleChange = async (e) => {
     setSelectedArticle(e.target.value);
-    setCmdDataList([]);
-    setFilteredProducts([]);
-    const chapterData = produitData.find(
-      (chapter) => chapter.chapitre === selectedChapter
-    );
-    const articleData = chapterData
-      ? chapterData.articles.find((article) => article.nom === e.target.value)
-      : null;
-    const produits = articleData ? articleData.produits : [];
-    setFilteredProducts(produits);
-    setProducts(produits);
+    console.log(e.target.value);
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+        withCredentials: true,
+      });
+      console.log("reres", res.data);
+      try {
+        const resp = await axios.get(
+          `http://localhost:3036/branches/${
+            branches.find((branch) => e.target.value == branch.name).branch_id
+          }/products`,
+          {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+        setProducts(resp.data);
+        // console.log(resp.data)
+      } catch (error) {
+        setProducts([]);
+        console.log(error);
+      }
+    } catch (error) {
+      // If an error occurs, redirect to the login page
+      navigate("/login");
+      console.log(error);
+    }
   };
 
   const handleSupplierChange = (e) => {
@@ -51,12 +98,52 @@ function CreateCmd() {
     console.log("selectedSupplier", selectedSupplier);
   };
 
-  console.log("selectedSupplier", selectedSupplier);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        setUser(res.data.user);
+        try {
+          const supp = await axios.get("http://localhost:3036/suppliers", {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+          setSuppliers(supp.data.suppliers);
+          const chap = await axios.get("http://localhost:3036/chapters", {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+          setChapters(chap.data);
+        } catch (error) {
+          // navigate("/dashboard");
+          console.log(error);
+        }
+      } catch (error) {
+        // If an error occurs, redirect to the login page
+        navigate("/login");
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const typeOnChange = (e) => {
+    console.log(e.target.value);
+    setType(e.target.value);
+  };
 
   const handleRemoveCmd = (id) => {
+    // Filtrer la liste des commandes pour supprimer celle avec l'ID spécifié
     setCmdDataList(cmdDataList.filter((cmdData) => cmdData.id !== id));
-    console.log("cmdDataList", cmdDataList);
-
+    // Ajouter le produit supprimé à nouveau à la liste des produits filtrés
     const removedCmd = cmdDataList.find((cmdData) => cmdData.id === id);
     if (removedCmd) {
       setFilteredProducts([
@@ -72,34 +159,61 @@ function CreateCmd() {
     setFilteredProducts(
       filteredProducts.filter((product) => product.nom !== cmdData.selectedPro)
     );
-    setPriU(getPrixUnitaire(cmdData.selectedPro)); // Mettre à jour le prix unitaire lors de l'ajout d'une commande
+    // Mettre à jour le prix unitaire lors de l'ajout d'une commande
   };
 
-  const handleConfirmCommand = () => {
+  const handleConfirmCommand = async () => {
     const confirm = window.confirm(
       "Are you sure you want to Confirm the command?"
     );
+
     if (confirm) {
-      if (cmdDataList.length > 0 && selectedSupplier != "") {
-        const date = new Date().toLocaleDateString("fr-FR");
-        const commandeInfo = {
-          id: CmdData.length,
-          numCmd: CmdData.length + 1,
-          chapitre: selectedChapter,
-          Article: selectedArticle,
-          supplier: selectedSupplier,
-          date: date,
-          state: "initialized",
-          products: cmdDataList.map((cmd) => ({
-            idp: cmd.id,
-            nommP: cmd.selectedPro,
-            quantité: cmd.quantity,
-          })),
-        };
-        console.log("commandeInfo:", commandeInfo);
-        //window.location.href = '/commandManagement';
-      } else {
-        alert("please fill in all  the fileds");
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        try {
+          const resp = await axios.post(
+            `http://localhost:3036/commands/`,
+            {
+              user_id: res.data.user.user_id,
+              type,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
+          console.log(resp.data);
+          cmdDataList.map(async (Element) => {
+            try {
+              const data = await axios.post(
+                `http://localhost:3036/commands/${resp.data.command_id}/products`,
+                {
+                  product_id: Element.product_id,
+                  quantity: Element.quantity,
+                  unit_price:Element.price
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
+                  withCredentials: true,
+                }
+              );
+              navigate("/commands");
+            } catch (error) {
+              console.log(error);
+            }
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } catch (error) {
+        navigate("/login");
+        console.log(error);
       }
     }
   };
@@ -109,13 +223,9 @@ function CreateCmd() {
       "Are you sure you want to cancel the command?"
     );
     if (confirm) {
-      setSelectedChapter(null);
-      setSelectedArticle(null);
-      setSelectedSupplier(null);
       setCmdDataList([]);
       setFilteredProducts([]);
       setProducts([]);
-      //window.location.href = '/commandManagement';
     }
   };
 
@@ -124,13 +234,9 @@ function CreateCmd() {
       "Are you sure you want to Leave this form ?"
     );
     if (confirm) {
-      setSelectedChapter(null);
-      setSelectedArticle(null);
-      setSelectedSupplier(null);
       setCmdDataList([]);
       setFilteredProducts([]);
       setProducts([]);
-      setPriU("");
       navigate("/commands");
     }
   };
@@ -138,7 +244,7 @@ function CreateCmd() {
   const today = new Date().toLocaleDateString("fr-FR");
   return (
     <div>
-      <Nav />
+      <Nav username={user.username} />
       <div className="dwnusers">
         <Side link="commands" />
         <div
@@ -166,22 +272,7 @@ function CreateCmd() {
                 style={{ color: "#5B548E", fontSize: "20px" }}
               >
                 {" "}
-                Create Command N°{" "}
-              </div>
-              <div
-                className="num-cmd-1"
-                style={{
-                  borderRadius: "20px",
-                  height: "30px",
-                  width: "80px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                  color: "#616262",
-                }}
-              >
-                {CmdData.length + 1}
+                Create Command
               </div>
               <div
                 className="num-cmd-1"
@@ -200,7 +291,7 @@ function CreateCmd() {
               </div>
             </div>
             <Link
-              to={'/commands'}
+              to={"/commands"}
               onClick={handleCmdList}
               style={{
                 borderRadius: "20px",
@@ -242,9 +333,9 @@ function CreateCmd() {
               }}
             >
               <option value="">Choisissez un chapitre</option>
-              {produitData.map((chapter, index) => (
-                <option key={index} value={chapter.chapitre}>
-                  {chapter.chapitre}
+              {chapters.map((chapter, index) => (
+                <option key={index} value={chapter.name}>
+                  {chapter.name}
                 </option>
               ))}
             </select>
@@ -262,13 +353,11 @@ function CreateCmd() {
             >
               <option value="">Choisissez un article</option>
               {selectedChapter &&
-                produitData
-                  .find((chapter) => chapter.chapitre === selectedChapter)
-                  ?.articles.map((article, index) => (
-                    <option key={index} value={article.nom}>
-                      {article.nom}
-                    </option>
-                  ))}
+                branches.map((article, index) => (
+                  <option key={index} value={article.name}>
+                    {article.name}
+                  </option>
+                ))}
             </select>
 
             <select
@@ -283,14 +372,13 @@ function CreateCmd() {
               }}
             >
               <option value="">Choisissez un fournisseur</option>
-              {FournisseursData.map((supplier, index) => (
+              {suppliers.map((supplier, index) => (
                 <option key={index} value={supplier.name}>
                   {supplier.name}
                 </option>
               ))}
             </select>
           </div>
-
           <div
             style={{
               height: " auto",
@@ -390,7 +478,6 @@ function CreateCmd() {
                     {cmdData.quantity}{" "}
                   </div>
                 </div>
-
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <div
                     style={{
@@ -400,56 +487,29 @@ function CreateCmd() {
                     }}
                   >
                     {" "}
-                    Prix Unitaire:{" "}
+                    Prix:{" "}
                   </div>
                   <div
                     style={{
                       color: "#666666",
                       borderRadius: "20px",
                       height: "35px",
-                      width: "180px",
+                      width: "100px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
                       border: "none",
-                    }}
-                  >
-                    {Products && <>{getPrixUnitaire(cmdData.selectedPro)}</>}
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      color: "#5B548E",
-                      marginLeft: "18px",
                     }}
                   >
                     {" "}
-                    Montant:{" "}
-                  </div>
-                  <div
-                    style={{
-                      color: "#666666",
-                      borderRadius: "20px",
-                      height: "35px",
-                      width: "180px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                      border: "none",
-                    }}
-                  >
-                    {cmdData.quantity * getPrixUnitaire(cmdData.selectedPro)}
+                    {cmdData.price}{" "}
                   </div>
                 </div>
               </div>
             ))}
             <CmdComp
-              filteredProducts={filteredProducts}
+              filteredProducts={products}
               onAddCmd={(cmdData) => {
                 handleAddCmd(cmdData);
               }}

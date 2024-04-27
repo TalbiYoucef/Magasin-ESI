@@ -48,7 +48,7 @@ cursor: pointer;
 }
 .frame1 {
   font-size: 16px;
-  border: 1px solid #ccc; /* Add a border around the frame */
+  /* border: 1px solid #ccc; Add a border around the frame */
   padding: 20px; /* Add some padding */
   margin: auto;
   height: max-content;

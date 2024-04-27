@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 function CmdComp({ filteredProducts, onAddCmd }) {
   const [selectedPro, setSelectedPro] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [price,setPrice] = useState('')
   const [productId,setProductId]=useState('') 
   const productOnChange = (e) => {
     console.log(filteredProducts)
@@ -16,6 +17,9 @@ function CmdComp({ filteredProducts, onAddCmd }) {
   const quantityOnChange = (e) => {
     setQuantity(e.target.value);
   };
+  const priceOnChange = (e) => {
+    setPrice(e.target.value);
+  };
 
   const handleAddCmd = () => {
 
@@ -25,7 +29,8 @@ function CmdComp({ filteredProducts, onAddCmd }) {
       const cmdData = {
         id: filteredProducts.filter(pro=> pro.name === selectedPro).map(pro => pro.product_id)[0], // Générer un identifiant unique pour la commande
         product_id :filteredProducts.filter(pro=> pro.name === selectedPro).map(pro => pro.product_id)[0], // Générer un identifiant unique pour la commande
-        quantity:Number(quantity)
+        quantity:Number(quantity),
+        price : Number(price)
       };
 
       // Passer les données de la commande à la fonction de gestion de l'ajout
@@ -56,6 +61,21 @@ function CmdComp({ filteredProducts, onAddCmd }) {
         ))}
       </select>
       <input onChange={quantityOnChange} value={quantity} type="number" placeholder="Quantité" 
+       style={{
+        color: '#5B548E',
+        borderRadius: '20px',
+        height: '35px',
+        width: '150px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center', 
+        boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
+        border :'none',
+        border: '1px solid grey', 
+        paddingLeft:'40px'
+      }}
+      />
+      <input onChange={priceOnChange} value={price} type="number" placeholder="Prix" 
        style={{
         color: '#5B548E',
         borderRadius: '20px',

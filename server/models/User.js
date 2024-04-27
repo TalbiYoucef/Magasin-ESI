@@ -23,11 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       // unique: true,
     },
-    service_id: DataTypes.INTEGER,
   });
   User.associate = (models) => {
     const { Service, Role, Command } = models;
-
     User.belongsTo(Service, { foreignKey: "service_id", onDelete: "RESTRICT" });
     User.belongsToMany(Role, { through: "User_Role", foreignKey: "user_id" });
     User.hasMany(Command, { foreignKey: "user_id" });

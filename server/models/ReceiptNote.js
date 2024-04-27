@@ -17,10 +17,6 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  order_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
 });
 ReceiptNote.associate = (models) => {
   const {PurchasingOrder} = models;

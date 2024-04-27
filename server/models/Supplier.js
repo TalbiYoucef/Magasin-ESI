@@ -1,3 +1,4 @@
+const { type } = require("os");
 
 module.exports = (sequelize, DataTypes) => {
   const Supplier = sequelize.define("Supplier", {
@@ -10,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    address: {
+    address: DataTypes.STRING,
+    email:{
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -18,7 +20,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    registre_c: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    NIF: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    RIB: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   });
   return Supplier;
 };
-

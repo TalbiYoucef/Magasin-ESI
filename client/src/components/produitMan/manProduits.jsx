@@ -6,11 +6,9 @@ import { MdNavigateNext } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import produitData from '../data/chapitreData.jsx'; //chapitre data
 import article from '../data/Articles.jsx'; //article data
-import produit from '../data/Produit.jsx'; //Produit data
-
+import produit from '../data/Produits.jsx'; //Produit data
 import Per from './produitLig.jsx';
 import CreateRoleForm from './createProduit.jsx';
-//import Edit from './ViewEdit.jsx';
 import Barr from './barProduit.jsx';
 import { Link } from 'react-router-dom';
 
@@ -110,8 +108,8 @@ function Produit() {
                   />
                 </div>
                 <div className='create-list'>
-                  <Link onClick={toggleCreateChapitreForm} className='btn-create-usr'>Create Produit</Link>
-                  <Link to='/permissions-management' className='btn-create-usr1'> Articles List  <MdNavigateNext /></Link>
+                  <Link onClick={toggleCreateChapitreForm} className='btn-create-usr'>Create Article</Link>
+                  <Link to='/permissions-management' className='btn-create-usr1'> Produits List  <MdNavigateNext /></Link>
                 </div>
               </div>
               <Barr />

@@ -79,9 +79,9 @@ const getAllCommandProducts = async (req, res) => {
 const assignProductToCommand = async (req, res) => {
     try {
         const {id}=req.params;
-        const { product_id,quantity } = req.body;
+        const { product_id,quantity,unit_price } = req.body;
         const productCommand = await db.Product_Command.findOne({
-            where: {command_id: id,product_id: product_id },
+            where: {command_id: id,product_id: product_id},
         });
         if (productCommand) {
             return res.status(400).json({message: "Product already in command"});
@@ -89,6 +89,7 @@ const assignProductToCommand = async (req, res) => {
         const createdProductCommand = await db.Product_Command.create({  
             command_id: id,
             product_id: product_id,
+            unit_price:unit_price,
             quantity:quantity,
             delivered_amount :0,
             amount_left: quantity,

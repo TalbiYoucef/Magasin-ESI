@@ -3,103 +3,84 @@ import React, { useState, useEffect } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
 import CmdData from "../data/CmdData";
-import produitData from "../data/ProduitData";
-import FournisseursData from "../data/Fournisseur";
-import { Link, useNavigate } from "react-router-dom";
+import ProduitData from "../data/Produit";
+import { Link } from "react-router-dom";
 import CmdComp from "./cmdComp";
-import axios from "axios";
-
-function CreateCmd() {
-  const navigate = useNavigate();
+import { MdNavigateNext } from "react-icons/md";
+function CreateRec() {
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
-  const [cmdDataList, setCmdDataList] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [cmdDataList, setCmdDataList] = useState([]); //cmdDataList contient table de produit ajoute
+
   const [Products, setProducts] = useState([]);
   const [priU, setPriU] = useState("");
-  
-  const getPrixUnitaire = (selectedPro) => {
-    const product = Products.find((prod) => prod.nom === selectedPro);
-    return product ? product.prixUnitaire : "";
-  };
-
-  const handleChapterChange = (e) => {
-    setSelectedChapter(e.target.value);
-    setSelectedArticle("");
-    setCmdDataList([]);
-    setFilteredProducts([]);
-  };
-
-  const handleArticleChange = (e) => {
-    setSelectedArticle(e.target.value);
-    setCmdDataList([]);
-    setFilteredProducts([]);
-    const chapterData = produitData.find(
-      (chapter) => chapter.chapitre === selectedChapter
-    );
-    const articleData = chapterData
-      ? chapterData.articles.find((article) => article.nom === e.target.value)
-      : null;
-    const produits = articleData ? articleData.produits : [];
-    setFilteredProducts(produits);
-    setProducts(produits);
-  };
-
-  const handleSupplierChange = (e) => {
-    setSelectedSupplier(e.target.value);
-    console.log("selectedSupplier", selectedSupplier);
-  };
-
-  console.log("selectedSupplier", selectedSupplier);
+  const [command, setCommand] = useState({
+    id: "0",
+    numCmd: "1",
+    chapitre: "Chapitre 1",
+    Article: "Article 1",
+    supplier: "Sarl PC STORE",
+    date: "04-03-2024",
+    state: "initialized",
+    products: [
+      { idp: 0, nommP: "Produit 1", quantite: "100" },
+      { idp: 1, nommP: "Produit 2", quantite: "100" },
+      { idp: 2, nommP: "Produit 3", quantite: "100" },
+      { idp: 3, nommP: "Produit 4", quantite: "100" },
+      { idp: 4, nommP: "Produit 5", quantite: "100" },
+    ],
+  });
+  const [filteredProducts, setFilteredProducts] = useState(command.products);
 
   const handleRemoveCmd = (id) => {
     setCmdDataList(cmdDataList.filter((cmdData) => cmdData.id !== id));
-    console.log("cmdDataList", cmdDataList);
-
     const removedCmd = cmdDataList.find((cmdData) => cmdData.id === id);
     if (removedCmd) {
       setFilteredProducts([
         ...filteredProducts,
-        { nom: removedCmd.selectedPro },
+        { nommP: removedCmd.selectedPro },
       ]);
     }
+    console.log("removedCmd", removedCmd);
+    console.log("filteredProducts remove", filteredProducts);
   };
 
   console.log("cmdDataList", cmdDataList);
+
   const handleAddCmd = (cmdData) => {
     setCmdDataList([...cmdDataList, cmdData]);
+    console.log(cmdData);
     setFilteredProducts(
-      filteredProducts.filter((product) => product.nom !== cmdData.selectedPro)
+      filteredProducts.filter(
+        (product) => product.nommP !== cmdData.selectedPro
+      )
     );
-    setPriU(getPrixUnitaire(cmdData.selectedPro)); // Mettre à jour le prix unitaire lors de l'ajout d'une commande
+    console.log("filteredProducts add", filteredProducts);
   };
-
+  console.log("filteredProducts", filteredProducts);
   const handleConfirmCommand = () => {
     const confirm = window.confirm(
-      "Are you sure you want to Confirm the command?"
+      "Are you sure you want to Confirm the Receipt?"
     );
     if (confirm) {
-      if (cmdDataList.length > 0 && selectedSupplier != "") {
+      if (cmdDataList.length > 0) {
         const date = new Date().toLocaleDateString("fr-FR");
-        const commandeInfo = {
+        const ReceipInfo = {
           id: CmdData.length,
-          numCmd: CmdData.length + 1,
-          chapitre: selectedChapter,
-          Article: selectedArticle,
-          supplier: selectedSupplier,
+          numRecipt: CmdData.length + 1,
+          numCommand: command.numCmd,
           date: date,
-          state: "initialized",
           products: cmdDataList.map((cmd) => ({
             idp: cmd.id,
             nommP: cmd.selectedPro,
             quantité: cmd.quantity,
           })),
         };
-        console.log("commandeInfo:", commandeInfo);
-        //window.location.href = '/commandManagement';
+        console.log("ReceipInfo:", ReceipInfo);
+        //   window.location.href = '/Command';
       } else {
-        alert("please fill in all  the fileds");
+        alert("fill in at least one product ");
       }
     }
   };
@@ -115,7 +96,7 @@ function CreateCmd() {
       setCmdDataList([]);
       setFilteredProducts([]);
       setProducts([]);
-      //window.location.href = '/commandManagement';
+      setPriU("");
     }
   };
 
@@ -131,16 +112,17 @@ function CreateCmd() {
       setFilteredProducts([]);
       setProducts([]);
       setPriU("");
-      navigate("/commands");
+      window.location.href = "/Command";
     }
   };
 
+  const user = JSON.parse(localStorage.getItem("user"));
   const today = new Date().toLocaleDateString("fr-FR");
   return (
     <div>
-      <Nav />
+      <Nav username={user.username} />
       <div className="dwnusers">
-        <Side link="commands" />
+        <Side style={{ marginTop: "90px" }} link="commands" />
         <div
           style={{
             marginTop: "8vh",
@@ -166,7 +148,7 @@ function CreateCmd() {
                 style={{ color: "#5B548E", fontSize: "20px" }}
               >
                 {" "}
-                Create Command N°{" "}
+                Create Receipt N°{" "}
               </div>
               <div
                 className="num-cmd-1"
@@ -200,7 +182,6 @@ function CreateCmd() {
               </div>
             </div>
             <Link
-              to={'/commands'}
               onClick={handleCmdList}
               style={{
                 borderRadius: "20px",
@@ -217,93 +198,140 @@ function CreateCmd() {
               }}
             >
               {" "}
-              Commands List{" "}
+              Commands List <MdNavigateNext />{" "}
             </Link>
           </div>
           <div
             style={{
-              height: " 80px ",
-              borderRadius: "20px",
-              boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-              padding: "20px",
-              marginBottom: "30px",
-              gap: "calcl(height/3-40px)",
+              display: "flex",
+              marginTop: "3%",
+              marginBottom: "3%",
+              gap: "5%",
+              width: "95%",
+              height: "140px",
+              backgroundColor: "white",
+              borderRadius: "30px",
+              boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              border: "none",
             }}
           >
-            <select
-              value={selectedChapter}
-              onChange={handleChapterChange}
-              style={{
-                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                width: " 260px",
-                fontSize: "15px",
-                height: "40px",
-                marginBottom: "30px",
-              }}
-            >
-              <option value="">Choisissez un chapitre</option>
-              {produitData.map((chapter, index) => (
-                <option key={index} value={chapter.chapitre}>
-                  {chapter.chapitre}
-                </option>
-              ))}
-            </select>
+            <div className="su130" style={{ width: "45%" }}>
+              <p
+                htmlFor=""
+                style={{
+                  color: "#5B548E",
+                  marginLeft: "60px",
+                  marginTop: "10px",
+                }}
+              >
+                Supplier
+              </p>
+              <input
+                type="text"
+                name=""
+                id=""
+                className="suppname30"
+                style={{
+                  width: "100%",
+                  height: "50px",
+                  marginLeft: "5%",
+                  backgroundColor: "white",
+                  borderRadius: "30px",
+                  boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  border: "none",
+                }}
+                value={command.supplier}
+              />
+              {/* Remplir le champ avec le nom du fournisseur de la commande sélectionnée */}
+            </div>
 
-            <select
-              value={selectedArticle}
-              onChange={handleArticleChange}
-              style={{
-                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                width: " 260px",
-                fontSize: "15px",
-                height: "40px",
-                marginBottom: "30px",
-              }}
-            >
-              <option value="">Choisissez un article</option>
-              {selectedChapter &&
-                produitData
-                  .find((chapter) => chapter.chapitre === selectedChapter)
-                  ?.articles.map((article, index) => (
-                    <option key={index} value={article.nom}>
-                      {article.nom}
-                    </option>
-                  ))}
-            </select>
-
-            <select
-              value={selectedSupplier}
-              onChange={handleSupplierChange}
-              style={{
-                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                width: " 260px",
-                fontSize: "15px",
-                height: "40px",
-                marginBottom: "30px",
-              }}
-            >
-              <option value="">Choisissez un fournisseur</option>
-              {FournisseursData.map((supplier, index) => (
-                <option key={index} value={supplier.name}>
-                  {supplier.name}
-                </option>
-              ))}
-            </select>
+            <div className="su230" style={{ width: "20%" }}>
+              <p
+                htmlFor=""
+                style={{
+                  color: "#5B548E",
+                  marginLeft: "60px",
+                  marginTop: "10px",
+                }}
+              >
+                N° Command
+              </p>
+              <input
+                type="text"
+                className="nCom30"
+                style={{
+                  width: "100%",
+                  height: "50px",
+                  marginLeft: "5%",
+                  backgroundColor: "white",
+                  borderRadius: "30px",
+                  boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  border: "none",
+                }}
+                value={command.numCmd}
+              />{" "}
+              {/* Remplir le champ avec le numéro de la commande sélectionnée */}
+            </div>
+            <div className="su330">
+              <p
+                htmlFor=""
+                style={{
+                  color: "#5B548E",
+                  marginLeft: "60px",
+                  marginTop: "10px",
+                }}
+              >
+                Date
+              </p>
+              <input
+                type="text"
+                className="date30"
+                style={{
+                  width: "100%",
+                  height: "50px",
+                  marginLeft: "5%",
+                  backgroundColor: "white",
+                  borderRadius: "30px",
+                  boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  border: "none",
+                }}
+                value={command.date}
+              />
+              {/* Remplir le champ avec la date de la commande sélectionnée */}
+            </div>
           </div>
 
           <div
             style={{
-              height: " auto",
-              borderRadius: "20px",
-              boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-              padding: "30px",
+              display: "flex",
+              flexDirection: "column",
+              marginTop: "3%",
+              gap: "5%",
+              width: "95%",
+              overflowY: "100% auto",
+              backgroundColor: "white",
+              borderRadius: "30px",
+              boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              border: "none",
+              position: "relative",
             }}
           >
             <div
               style={{
                 color: "#5B548E",
                 fontSize: "20px",
-                marginBottom: "20px",
+                marginLeft: "60px",
+                marginTop: "20px",
               }}
             >
               Designations :
@@ -315,20 +343,30 @@ function CreateCmd() {
                 key={cmdData.id}
                 style={{ display: "flex", gap: "20px", alignItems: "center" }}
               >
-                <div style={{ display: "flex", flexDirection: "column" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    width: "35%",
+                    marginLeft: "7%",
+                    flexDirection: "column",
+                  }}
+                >
                   <div
                     style={{
-                      fontSize: "15px",
                       color: "#5B548E",
-                      marginLeft: "50px",
+                      fontSize: "20px",
+                      marginLeft: "60px",
+                      marginBottom: "10px",
+                      marginTop: "20px",
                     }}
                   >
                     {" "}
-                    Produit:{" "}
+                    Product:{" "}
                   </div>
                   <div
                     style={{
                       display: "flex",
+                      width: "100%",
                       alignItems: "center",
                       margin: "0px",
                     }}
@@ -348,8 +386,8 @@ function CreateCmd() {
                       style={{
                         color: "#666666",
                         borderRadius: "20px",
-                        height: "35px",
-                        width: "300px",
+                        height: "45px",
+                        width: "500px",
                         display: "flex",
                         alignItems: "center",
                         boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
@@ -365,9 +403,11 @@ function CreateCmd() {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <div
                     style={{
-                      fontSize: "13px",
                       color: "#5B548E",
-                      marginLeft: "18px",
+                      fontSize: "20px",
+                      marginLeft: "10px",
+                      marginTop: "20px",
+                      marginBottom: "10px",
                     }}
                   >
                     {" "}
@@ -377,7 +417,8 @@ function CreateCmd() {
                     style={{
                       color: "#666666",
                       borderRadius: "20px",
-                      height: "35px",
+                      height: "45px",
+
                       width: "100px",
                       display: "flex",
                       alignItems: "center",
@@ -388,62 +429,6 @@ function CreateCmd() {
                   >
                     {" "}
                     {cmdData.quantity}{" "}
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      color: "#5B548E",
-                      marginLeft: "18px",
-                    }}
-                  >
-                    {" "}
-                    Prix Unitaire:{" "}
-                  </div>
-                  <div
-                    style={{
-                      color: "#666666",
-                      borderRadius: "20px",
-                      height: "35px",
-                      width: "180px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                      border: "none",
-                    }}
-                  >
-                    {Products && <>{getPrixUnitaire(cmdData.selectedPro)}</>}
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      color: "#5B548E",
-                      marginLeft: "18px",
-                    }}
-                  >
-                    {" "}
-                    Montant:{" "}
-                  </div>
-                  <div
-                    style={{
-                      color: "#666666",
-                      borderRadius: "20px",
-                      height: "35px",
-                      width: "180px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                      border: "none",
-                    }}
-                  >
-                    {cmdData.quantity * getPrixUnitaire(cmdData.selectedPro)}
                   </div>
                 </div>
               </div>
@@ -511,4 +496,4 @@ function CreateCmd() {
   );
 }
 
-export default CreateCmd;
+export default CreateRec;

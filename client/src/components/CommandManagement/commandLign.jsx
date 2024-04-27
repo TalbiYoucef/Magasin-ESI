@@ -54,11 +54,27 @@ function Rollig(props) {
     fetchData();
   }, []);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     alert("Are you sure You Wanna Delete This Command ?");
-
-    setIsVisible(false);
-    console.log("deleted");
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+        withCredentials: true,
+      });
+      await axios
+        .delete(`http://localhost:3036/commands/${id}`, {
+          headers: {
+            Authorization: `Bearer ${res.data.accessToken}`,
+          },
+          withCredentials: true,
+        })
+        .then((resp) => console.log(resp))
+        .catch((err) => console.log(err));
+        setIsVisible(false);
+        console.log("deleted");
+    } catch (error) {
+      console.log(error)
+      navigate('/login')
+    }
   };
 
   //-------------------------

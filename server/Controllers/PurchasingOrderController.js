@@ -26,20 +26,21 @@ const getPurchasingOrderById = async (req, res) => {
     }
 }
 const createPurchasingOrder = async (req, res) => {
-    try {
-        const { supplier_id, command_id, expected_delivery_date, payment_method, notes } = req.body;
-        const commandProducts = await db.Product_Command.findMany({ where: { command_id: command_id } }); // getting all the command's products
-        const supplierProducts = await Promise.all(commandProducts.map(product => {
-            return db.Product.findOne({ where: { product_id: product.product_id, supplier_id:supplier_id } });
-        }));
-        const totalCost = supplierProducts.reduce((total, product) => total + product.price, 0);
+    // try {
+    //     const { supplier_id, command_id, expected_delivery_date, payment_method, notes } = req.body;
+    //     const commandProducts = await db.Product_Command.findMany({ where: { command_id: command_id } }); // getting all the command's products
+    //     const supplierProducts = await Promise.all(commandProducts.map(product => {
+    //         return db.Product.findOne({ where: { product_id: product.product_id, supplier_id:supplier_id } });
+    //     }));
+    //     const totalCost = supplierProducts.reduce((total, product) => total + product.price, 0);
 
-        const purchasingOrder = await db.PurchasingOrder.create({ id_supplier: id_supplier, expected_delivery_date: expected_delivery_date, id_products: id_products, payment_method: payment_method, notes: notes, total_price: totalCost });
-        return res.status(201).json(purchasingOrder);
-    }
-    catch (error) {
-        return res.status(500).json({ error: 'Failed to create purchasing order' });
-    }
+    //     const purchasingOrder = await db.PurchasingOrder.create({ id_supplier: id_supplier, expected_delivery_date: expected_delivery_date, id_products: id_products, payment_method: payment_method, notes: notes, total_price: totalCost });
+    //     return res.status(201).json(purchasingOrder);
+    // }
+    // catch (error) {
+    //     return res.status(500).json({ error: 'Failed to create purchasing order' });
+    // }
+    // a refaire
 }
 const deletePurchasingOrder = async (req, res) => {
     try {

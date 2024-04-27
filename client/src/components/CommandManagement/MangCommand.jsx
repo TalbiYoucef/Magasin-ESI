@@ -32,11 +32,9 @@ function Cmds() {
             },
             withCredentials: true,
           });
-  
           setcmds(resp.data)
           console.log(resp.data)
         } catch (error) {
-          navigate('/dashboard')
           console.log(error);
         }
       } catch (error) {
@@ -65,12 +63,6 @@ function Cmds() {
 
   // Filtrer les cmd en fonction de la valeur de recherche
   const filteredCmd = cmds
-  // .filter(
-  //   (cmd) =>
-  //        cmd.includes(searchTerm.toLowerCase())
-  // );
-  // filtrer les dates
-
   const handleSortClick = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newOrder);

@@ -86,10 +86,10 @@ const BonDeReception = () => {
                   <img className='logoesi-img' src={logoesi} alt="My Image"  />
                 </div>
                 <div className="bon-reception">
-                  <h4>BON DE RECEPTION</h4>
+                  <h4 >BON DE RECEPTION</h4>
                   <div className="info-br">
-                    <h4>N° :{brData[0].id}</h4>&nbsp;&nbsp;
-                    <h4>Date :{brData[0].date}</h4>
+                    <p>N° :{brData[0].id}</p>&nbsp;&nbsp;
+                    <p>Date :{brData[0].date}</p>
                   </div>
                 </div>
                 <div className="info1">

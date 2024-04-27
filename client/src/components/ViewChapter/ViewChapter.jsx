@@ -36,11 +36,15 @@ function ViewChapter() {
 
    const [showArticlessModal, setShowArticlesModal] = useState(false);
   const [selectedArticles, setSelectedArticles] = useState(Chapter.Articles);
- 
+   const handleViewArticle =() => {
+    ///window.location.href ('/viewArticle')
+    window.confirm("Are you sure you want to Confirm the Role?");
+  }
 
   const ArticlesList = Chapter.Articles.map((article, index) => (
-    <PerLine key={index} rolenam={article}   /> // Passer la fonction handleViewRole comme prop
+    <PerLine key={index} rolenam={article}   handleViewArticle={handleViewArticle} /> // Passer la fonction handleViewRole comme prop
   ));
+
 
 
 
