@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
     },
     name: DataTypes.STRING,
+    VAT:DataTypes.INTEGER,
   });
   Branch.associate = (models) => {
     const { Chapter, Product } = models;

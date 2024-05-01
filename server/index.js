@@ -33,6 +33,11 @@ app.use("/commands", require("./Routes/CommandRouter")); //
 app.use("/purchaseorders", require("./Routes/PurchasingOrderRouter")); //newest additions
 app.use("/suppliers", require("./Routes/SupplierRouter")); //newest additions
 app.use("/receipts", require("./Routes/ReceiptRouter")); //newest additions
+app.use("/internalorders", require("./Routes/InternalOrderRouter")); //newest additions
+app.use("/exitnotes", require("./Routes/ExitNoteRouter")); //newest additions
+app.use("/returnnotes", require("./Routes/ReturningNoteRouter")); //newest additions
+
+
 app.post("/finduser", async (req, res) => {
   const { token } = req.body;
   const foundUser = await db.User.findOne({ where: { token: token } });
@@ -42,7 +47,7 @@ app.post("/finduser", async (req, res) => {
 
 app.delete("/", async (req, res) => {
   try {
-    await db.Supplier.destroy({
+    await db.PurchasingOrder.destroy({
       where: {},
       // truncate: true
     })
@@ -54,92 +59,92 @@ app.delete("/", async (req, res) => {
     res.status(500).send(error);
   }
 });
-// app.get("/create-br", (req, res) => {
-//   const chapters = [
-//     " Remboursement frais",
-//     "Matériel et mobilier",
-//     "Fournitures",
-//     "Documentation",
-//     "Habillement personnel",
-//     "Parc auto",
-//     "Travaux entretien",
-//     "Matériel accessoires informatique",
-//     "Matériel et mobilier pédagogique",
-//     "Frais liés aux études de post-graduation",
-//     "Participation aux organismes nationaux et internationaux",
-//     "Activités culturelles sportives et scientifiques aux étudiants",
-//     "Frais de fonctionnement liées à la recherche scientifique et au développement",
-//   ];
+app.get("/create-br", (req, res) => {
+  const chapters = [
+    " Remboursement frais",
+    "Matériel et mobilier",
+    "Fournitures",
+    "Documentation",
+    "Habillement personnel",
+    "Parc auto",
+    "Travaux entretien",
+    "Matériel accessoires informatique",
+    "Matériel et mobilier pédagogique",
+    "Frais liés aux études de post-graduation",
+    "Participation aux organismes nationaux et internationaux",
+    "Activités culturelles sportives et scientifiques aux étudiants",
+    "Frais de fonctionnement liées à la recherche scientifique et au développement",
+  ];
 
-//   const array11 = ["Frais de réception"];
+  const array11 = ["Frais de réception"];
 
-//   const array12 = [
-//     "Acquisition du matériels et mobiliers de bureaux",
-//     "Acquisition du matériel de prévision et de sécurité",
-//     "Acquisition de materiel audiovisuel",
-//     "Acquisitions du matériel de reprographie et d'imprimante",
-//     "Acquisition et entretien du matériel médicale",
-//   ];
+  const array12 = [
+    "Acquisition du matériels et mobiliers de bureaux",
+    "Acquisition du matériel de prévision et de sécurité",
+    "Acquisition de materiel audiovisuel",
+    "Acquisitions du matériel de reprographie et d'imprimante",
+    "Acquisition et entretien du matériel médicale",
+  ];
 
-//   const array13 = [
-//     "Papeterie et fournitures de bureaux 1",
-//     "Produit d'entretien",
-//     "Fournitures de laboratoires et des ateliers d'enseignement et de recherche",
-//     "Produits pharmaceutiques et chimiques",
-//     "Frais de rellures et d'impression",
-//     "Papier d'ensignement",
-//     "Acquisition de drapeaux nationaux",
-//   ];
+  const array13 = [
+    "Papeterie et fournitures de bureaux 1",
+    "Produit d'entretien",
+    "Fournitures de laboratoires et des ateliers d'enseignement et de recherche",
+    "Produits pharmaceutiques et chimiques",
+    "Frais de rellures et d'impression",
+    "Papier d'ensignement",
+    "Acquisition de drapeaux nationaux",
+  ];
 
-//   const array14 = ["Ouvrages des bibliothéques"];
+  const array14 = ["Ouvrages des bibliothéques"];
 
-//   const array16 = ["Habillement des personnels de service"];
+  const array16 = ["Habillement des personnels de service"];
 
-//   const array17 = [
-//     "Acquisitions du carburant et lubrifiants et graisses",
-//     "Acquisition des pneu pour voiture",
-//     "Entretien, réparation et achat d'outillage et pièces de recharges",
-//   ];
-//   const array18 = ["Quincaillerie"];
+  const array17 = [
+    "Acquisitions du carburant et lubrifiants et graisses",
+    "Acquisition des pneu pour voiture",
+    "Entretien, réparation et achat d'outillage et pièces de recharges",
+  ];
+  const array18 = ["Quincaillerie"];
 
-//   const array21 = ["Acqisition du matériels informatiques"];
+  const array21 = ["Acqisition du matériels informatiques"];
 
-//   const array22 = ["Acquisition du matériels et mobiliers pédagogiques."];
+  const array22 = ["Acquisition du matériels et mobiliers pédagogiques."];
 
-//   const array23 = [
-//     "Matériels et fournitures au profit poste graduation",
-//     "Logiciels informatiques Spécialisé",
-//   ];
+  const array23 = [
+    "Matériels et fournitures au profit poste graduation",
+    "Logiciels informatiques Spécialisé",
+  ];
 
-//   const array27 = ["Activité culturelle", "Activite sportive"];
+  const array27 = ["Activité culturelle", "Activite sportive"];
 
-//   const array32 = ["Matériels, instrument et petit outillages scientifiques"];
-//   const branches = [
-//     { id: 1, array: array11 },
-//     { id: 2, array: array12 },
-//     { id: 3, array: array13 },
-//     { id: 4, array: array14 },
-//     { id: 5, array: array16 },
-//     { id: 6, array: array17 },
-//     { id: 7, array: array18 },
-//     { id: 8, array: array21 },
-//     { id: 9, array: array22 },
-//     { id: 10, array: array23 },
-//     { id:11, array: array27 },
-//     { id: 12, array: array32 },
-//   ];
+  const array32 = ["Matériels, instrument et petit outillages scientifiques"];
+  const branches = [
+    { id: 1, array: array11 },
+    { id: 2, array: array12 },
+    { id: 3, array: array13 },
+    { id: 4, array: array14 },
+    { id: 5, array: array16 },
+    { id: 6, array: array17 },
+    { id: 7, array: array18 },
+    { id: 8, array: array21 },
+    { id: 9, array: array22 },
+    { id: 10, array: array23 },
+    { id:11, array: array27 },
+    { id: 12, array: array32 },
+  ];
 
-//   try {
-//     branches.map((element) => {
-//       element.array.map(async (ele) => {
-//         await db.Branch.create({ name: ele, chapter_id: element.id });
-//       });
-//     });
-//     res.end("done");
-//   } catch (err) {
-//     res.status(500).send({ error: err.message });
-//   }
-// });
+  try {
+    branches.map((element) => {
+      element.array.map(async (ele) => {
+        await db.Branch.create({ name: ele, chapter_id: element.id,VAT:19 });
+      });
+    });
+    res.end("done");
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
 
 app.get("/create", async (req, res) => {
   const services = [
@@ -172,10 +177,8 @@ app.get("/create", async (req, res) => {
     "Frais liés aux études de post-graduation",
     "Participation aux organismes nationaux et internationaux",
     "Activités culturelles sportives et scientifiques aux étudiants",
-    "Frais de fonctionnement liées à la recherche scientifique et au développement"
-];
-
-
+    "Frais de fonctionnement liées à la recherche scientifique et au développement",
+  ];
   const fourni = [
     "Sarl PC STORE",
     "Nedjma Computer",
@@ -259,7 +262,7 @@ app.get("/create", async (req, res) => {
     "updateUser_Roles",
     "deleteUser_Roles",
   ];
-  const products=[
+  const products = [
     "Arrache clou",
     "Ballast pour néon",
     "Bipolaire 10,16,20,25A",
@@ -451,24 +454,70 @@ app.get("/create", async (req, res) => {
     "Venne d'arret32",
     "Vernis 01 KG",
     "Verrou G/M",
-    "Vis parker boite 4*25"
-];
-
-
-  try {
-    products.map(async (ele) => {
+    "Vis parker boite 4*25",
+  ];
+   try {
+    products.map(async pro=>{
       await db.Product.create({
-        name: ele,
-        qt_logique:100,
-        qt_physique:100,
-        branch_id:4
-      });
-    });
-    // await db.User.create({username :"hamida2004",firstname:"dadda",lastname:"hamida",email:"h.dadda@esi-sba.dz",address:"adrar",phone_num:"0987654321",password:"name my say",service_id:1})
-    res.end("done");
-  } catch (err) {
-    res.status(500).send({ error: err.message });
-  }
+       name:pro,
+       qt_physique:1000,
+       qt_logique:1000,
+       branch_id:19
+      })
+    })
+   } catch (error) {
+    
+   }
+  // try {
+  //   fourni.map(async (ele) => {
+  //     await db.Supplier.create({
+  //       name: ele,
+  //       email:'suplier@sup.com',
+  //       address:"SBA Algeria",
+  //       phone_num:"0987654321",
+  //       registre_c:"8013489734",
+  //       RIB:"000899848193",
+  //       NIF:"0078678425"
+  //     });
+  //   });
+  //   services.map(async (ele) => {
+  //     await db.Service.create({
+  //       name: ele,
+  //     });
+  //   });
+  //   await db.User.create({
+  //     username: "hamida2004",
+  //     firstname: "dadda",
+  //     lastname: "hamida",
+  //     address: "ADRAR Algeria",
+  //     phone_num:"0657199109",
+  //     email: "h.dadda@esi-sba.dz",
+  //     password: "name my say",
+  //     service_id: 1,
+  //   });
+
+  //   permissions.map(async (ele) => {
+  //     await db.Permission.create({
+  //       name: ele,
+  //     });
+  //   });
+
+  //   roles.map(async (ele) => {
+  //     await db.Role.create({
+  //       name: ele,
+  //     });
+  //   });
+  //   chapters.map(async (ele) => {
+  //     await db.Chapter.create({
+  //       name: ele,
+  //     });
+  //   });
+
+  //   // await db.User.create({username :"hamida2004",firstname:"dadda",lastname:"hamida",email:"h.dadda@esi-sba.dz",address:"adrar",phone_num:"0987654321",password:"name my say",service_id:1})
+  //   res.end("done");
+  // } catch (err) {
+  //   res.status(500).send({ error: err.message });
+  // }
 });
 const connectToDb = async () => {
   db.sequelize

@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       },
     });
     InternalOrder.associate = (models) => {
-      const { ExitNote } = models;
-      InternalOrder.hasOne(ExitNote, { foreignKey: 'exit_note_id' });
-      ExitNote.belongsTo(InternalOrder, { foreignKey: 'exit_note_id' });
-    };
+      const { Command} = models;
+      Command.hasOne(InternalOrder,{foreignKey :"command_id"})
+      InternalOrder.belongsTo(Command, { foreignKey: "command_id",onDelete: 'CASCADE'});
+          };
     return InternalOrder
   };

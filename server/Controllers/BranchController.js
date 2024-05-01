@@ -28,12 +28,12 @@ const getBranchById = async (req, res) => {
 
 const createBranch = async (req, res) => {
     try {
-        const { name,VAT } = req.body;
+        const { name,VAT,chapter_id } = req.body;
         const branch = await db.Branch.findOne({where:{ name:name} });
         if(branch){
             return res.status(400).json({ error: 'Branch already exists' });
         }
-        const newBranch = await db.Branch.create({ name: name ,VAT:VAT});
+        const newBranch = await db.Branch.create({ name: name ,VAT:VAT,chapter_id:chapter_id});
         return res.status(201).json({message:"Branch created successfully",branch:newBranch});
     } catch (error) {
         return res.status(500).json({ error: error.message });

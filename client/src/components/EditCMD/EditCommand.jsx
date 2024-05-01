@@ -120,6 +120,7 @@ function EditCmd() {
           const resp = await axios.post(`http://localhost:3036/commands/${id}/products`,{
             product_id : Element.product_id ,
             quantity : Element.quantity,
+            unit_price : Element.price
           }, {
             headers: {
               Authorization: `Bearer ${res.data.accessToken}`,

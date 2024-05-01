@@ -28,11 +28,15 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
   PurchasingOrder.associate = (models) => {
-    const { Supplier, ReceiptNote, Command } = models;
+    const { Supplier, ReceiptNote, Command,Chapter,Branch } = models;
     Supplier.hasMany(PurchasingOrder, { foreignKey: "supplier_id" });
     PurchasingOrder.belongsTo(Supplier, { foreignKey: "supplier_id" });
-    PurchasingOrder.belongsTo(Command, { foreignKey: "command_id" });
-    Command.hasOne(PurchasingOrder, { foreignKey: "command_id" });
+    Chapter.hasMany(PurchasingOrder, { foreignKey: "chapter_id" });
+    PurchasingOrder.belongsTo(Branch, { foreignKey: "branch_id" });
+    Branch.hasMany(PurchasingOrder, { foreignKey: "branch_id" });
+    PurchasingOrder.belongsTo(Chapter, { foreignKey: "chapter_id" });
+    PurchasingOrder.belongsTo(Command, { foreignKey: "command_id",onDelete: 'CASCADE'});
+    Command.hasOne(PurchasingOrder, { foreignKey: "command_id" , onDelete: 'CASCADE'});
     PurchasingOrder.hasMany(ReceiptNote, { foreignKey: "order_id" });
     ReceiptNote.belongsTo(PurchasingOrder, { foreignKey: "order_id" });
   };

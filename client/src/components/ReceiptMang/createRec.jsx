@@ -2,121 +2,235 @@
 import React, { useState, useEffect } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
-import CmdData from "../data/CmdData";
-import ProduitData from "../data/Produit";
-import { Link } from "react-router-dom";
-import CmdComp from "./cmdComp";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { MdNavigateNext } from "react-icons/md";
+import axios from "axios";
 function CreateRec() {
+  const { id } = useParams();
+  console.log(id);
+  // id bon de cmnd
+  const handleEditQuantity = (event, index) => {
+    if (
+      Number(event.target.value) > initialQuantities[index] ||
+      type == "total"
+    ) {
+      alert("illegal quantity");
+    } else {
+      const newQuantities = [...quantities];
+      newQuantities[index] = Number(event.target.value); // Update the quantity at the specified index
+      setQuantities(newQuantities);
+    }
+  };
+  const [type, setType] = useState("total");
+  const [commandId, setCommandID] = useState();
+  const [quantities, setQuantities] = useState([]);
+  const [initialQuantities, setInitialQuantities] = useState([]);
+  const [order, setOrder] = useState({});
+  const [user, setUser] = useState({});
+  const [supplier, setSupplier] = useState({});
+  const [article, setArticle] = useState({});
+  const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        setUser(res.data.user);
+
+        try {
+          const pro = await axios.get(`http://localhost:3036/products`, {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+          setAllProducts(pro.data);
+        } catch (error) {
+          console.log(error);
+        }
+        try {
+          const resp = await axios.get(
+            `http://localhost:3036/purchaseorders/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
+          setOrder(resp.data.purchasingOrder);
+          setCommandID(resp.data.purchasingOrder.command_id);
+          console.log(resp.data.purchasingOrder);
+          try {
+            const article = await axios.get(
+              `http://localhost:3036/commands/${resp.data.purchasingOrder.command_id}/`,
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.accessToken}`,
+                },
+                withCredentials: true,
+              }
+            );
+            console.log(article.data);
+          } catch (error) {
+            console.log(error);
+          }
+
+          try {
+            const article = await axios.get(
+              `http://localhost:3036/commands/${resp.data.purchasingOrder.command_id}/products`,
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.accessToken}`,
+                },
+                withCredentials: true,
+              }
+            );
+
+            console.log(article.data);
+            setProducts(article.data);
+            const initial = article.data.map((product) => product.amount_left);
+            setInitialQuantities(initial);
+            setQuantities(initial);
+          } catch (error) {
+            console.log(error);
+          }
+
+          try {
+            const article = await axios.get(
+              `http://localhost:3036/branches/${resp.data.purchasingOrder.branch_id}/`,
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.accessToken}`,
+                },
+                withCredentials: true,
+              }
+            );
+            console.log(article.data);
+            setArticle(article.data);
+          } catch (error) {
+            console.log(error);
+          }
+
+          try {
+            const supplier = await axios.get(
+              `http://localhost:3036/suppliers/${resp.data.purchasingOrder.supplier_id}/`,
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.accessToken}`,
+                },
+                withCredentials: true,
+              }
+            );
+            // setCmdDataList(resp.data);
+            console.log(supplier.data.supplier);
+            setSupplier(supplier.data.supplier);
+          } catch (error) {
+            console.log(error);
+          }
+        } catch (error) {
+          alert(error.response.data.message);
+          navigate("/commands");
+          console.log(error);
+        }
+      } catch (error) {
+        // If an error occurs, redirect to the login page
+        navigate("/login");
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  const getproduct = (id) => {
+    const product = allProducts.find((pro) => pro.product_id === id);
+    if (product) {
+      return product;
+    }
+    return "";
+  };
+
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [cmdDataList, setCmdDataList] = useState([]); //cmdDataList contient table de produit ajoute
+  console.log(quantities);
 
-  const [Products, setProducts] = useState([]);
-  const [priU, setPriU] = useState("");
-  const [command, setCommand] = useState({
-    id: "0",
-    numCmd: "1",
-    chapitre: "Chapitre 1",
-    Article: "Article 1",
-    supplier: "Sarl PC STORE",
-    date: "04-03-2024",
-    state: "initialized",
-    products: [
-      { idp: 0, nommP: "Produit 1", quantite: "100" },
-      { idp: 1, nommP: "Produit 2", quantite: "100" },
-      { idp: 2, nommP: "Produit 3", quantite: "100" },
-      { idp: 3, nommP: "Produit 4", quantite: "100" },
-      { idp: 4, nommP: "Produit 5", quantite: "100" },
-    ],
-  });
-  const [filteredProducts, setFilteredProducts] = useState(command.products);
-
-  const handleRemoveCmd = (id) => {
-    setCmdDataList(cmdDataList.filter((cmdData) => cmdData.id !== id));
-    const removedCmd = cmdDataList.find((cmdData) => cmdData.id === id);
-    if (removedCmd) {
-      setFilteredProducts([
-        ...filteredProducts,
-        { nommP: removedCmd.selectedPro },
-      ]);
-    }
-    console.log("removedCmd", removedCmd);
-    console.log("filteredProducts remove", filteredProducts);
-  };
-
-  console.log("cmdDataList", cmdDataList);
-
-  const handleAddCmd = (cmdData) => {
-    setCmdDataList([...cmdDataList, cmdData]);
-    console.log(cmdData);
-    setFilteredProducts(
-      filteredProducts.filter(
-        (product) => product.nommP !== cmdData.selectedPro
-      )
-    );
-    console.log("filteredProducts add", filteredProducts);
-  };
-  console.log("filteredProducts", filteredProducts);
-  const handleConfirmCommand = () => {
+  const handleConfirmCommand = async () => {
+    //delevery_date // type // comments
     const confirm = window.confirm(
       "Are you sure you want to Confirm the Receipt?"
     );
     if (confirm) {
-      if (cmdDataList.length > 0) {
-        const date = new Date().toLocaleDateString("fr-FR");
-        const ReceipInfo = {
-          id: CmdData.length,
-          numRecipt: CmdData.length + 1,
-          numCommand: command.numCmd,
-          date: date,
-          products: cmdDataList.map((cmd) => ({
-            idp: cmd.id,
-            nommP: cmd.selectedPro,
-            quantité: cmd.quantity,
-          })),
-        };
-        console.log("ReceipInfo:", ReceipInfo);
-        //   window.location.href = '/Command';
-      } else {
-        alert("fill in at least one product ");
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        try {
+          const respo = await axios.post(
+            `http://localhost:3036/receipts/${id}/`,
+            {
+              deliveryDate: today,
+              type: type,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
+          console.log(respo.data);
+          console.log(products);
+          products.map(async (pro, index) => {
+            try {
+              const respo = await axios.put(
+                `http://localhost:3036/commands/${commandId}/products`,
+                {
+                  product_id: pro.product_id,
+                  delivered_amount: quantities[index],
+                  amount_left: initialQuantities[index] - quantities[index],
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
+                  withCredentials: true,
+                }
+              );
+              console.log(respo.data);
+            } catch (error) {
+              console.log("product amount have not changed");
+            }
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        navigate(-1);
+      } catch (error) {
+        console.log(error);
+        navigate("/login");
       }
+      //modifier Product-Command
     }
   };
-
   const handleCancel = () => {
     const confirm = window.confirm(
       "Are you sure you want to cancel the command?"
     );
-    if (confirm) {
-      setSelectedChapter(null);
-      setSelectedArticle(null);
-      setSelectedSupplier(null);
-      setCmdDataList([]);
-      setFilteredProducts([]);
-      setProducts([]);
-      setPriU("");
-    }
   };
 
   const handleCmdList = () => {
     const confirm = window.confirm(
       "Are you sure you want to Leave this form ?"
     );
-    if (confirm) {
-      setSelectedChapter(null);
-      setSelectedArticle(null);
-      setSelectedSupplier(null);
-      setCmdDataList([]);
-      setFilteredProducts([]);
-      setProducts([]);
-      setPriU("");
-      window.location.href = "/Command";
+    if(confirm){
+      navigate(-1)
     }
   };
-
-  const user = JSON.parse(localStorage.getItem("user"));
   const today = new Date().toLocaleDateString("fr-FR");
   return (
     <div>
@@ -148,14 +262,14 @@ function CreateRec() {
                 style={{ color: "#5B548E", fontSize: "20px" }}
               >
                 {" "}
-                Create Receipt N°{" "}
+                Create Receipt{" "}
               </div>
               <div
                 className="num-cmd-1"
                 style={{
                   borderRadius: "20px",
                   height: "30px",
-                  width: "80px",
+                  width: "120px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -163,7 +277,19 @@ function CreateRec() {
                   color: "#616262",
                 }}
               >
-                {CmdData.length + 1}
+                <select
+                  name="type"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  style={{
+                    outline: "none",
+                    border: "none",
+                    width: "100%",
+                  }}
+                >
+                  <option value="total">total</option>
+                  <option value="partial">partial</option>
+                </select>
               </div>
               <div
                 className="num-cmd-1"
@@ -244,7 +370,7 @@ function CreateRec() {
                   MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
                   border: "none",
                 }}
-                value={command.supplier}
+                value={supplier.name}
               />
               {/* Remplir le champ avec le nom du fournisseur de la commande sélectionnée */}
             </div>
@@ -274,7 +400,7 @@ function CreateRec() {
                   MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
                   border: "none",
                 }}
-                value={command.numCmd}
+                value={id}
               />{" "}
               {/* Remplir le champ avec le numéro de la commande sélectionnée */}
             </div>
@@ -303,9 +429,8 @@ function CreateRec() {
                   MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
                   border: "none",
                 }}
-                value={command.date}
+                value={today}
               />
-              {/* Remplir le champ avec la date de la commande sélectionnée */}
             </div>
           </div>
 
@@ -324,6 +449,7 @@ function CreateRec() {
               MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
               border: "none",
               position: "relative",
+              paddingBottom: "20px",
             }}
           >
             <div
@@ -338,9 +464,9 @@ function CreateRec() {
             </div>
 
             {/* La liste des composants de commande */}
-            {cmdDataList.map((cmdData) => (
+            {products.map((cmdData, index) => (
               <div
-                key={cmdData.id}
+                key={index}
                 style={{ display: "flex", gap: "20px", alignItems: "center" }}
               >
                 <div
@@ -371,17 +497,6 @@ function CreateRec() {
                       margin: "0px",
                     }}
                   >
-                    <button
-                      onClick={() => handleRemoveCmd(cmdData.id)}
-                      style={{
-                        fontSize: "30px",
-                        color: "red",
-                        border: "none",
-                        backgroundColor: "white",
-                      }}
-                    >
-                      -
-                    </button>
                     <div
                       style={{
                         color: "#666666",
@@ -395,7 +510,7 @@ function CreateRec() {
                         paddingLeft: "20px",
                       }}
                     >
-                      {cmdData.selectedPro}{" "}
+                      {getproduct(cmdData.product_id).name}{" "}
                     </div>
                   </div>
                 </div>
@@ -427,18 +542,21 @@ function CreateRec() {
                       border: "none",
                     }}
                   >
-                    {" "}
-                    {cmdData.quantity}{" "}
+                    <input
+                      type="number"
+                      value={quantities[index]}
+                      onChange={(e) => handleEditQuantity(e, index)}
+                      style={{
+                        outline: "none",
+                        border: "none",
+                        width: "80%",
+                      }}
+                    />{" "}
+                    {/* {cmdData.quantity}{" "} */}
                   </div>
                 </div>
               </div>
             ))}
-            <CmdComp
-              filteredProducts={filteredProducts}
-              onAddCmd={(cmdData) => {
-                handleAddCmd(cmdData);
-              }}
-            />
           </div>
 
           <div

@@ -1,103 +1,18 @@
 // CreateCmd.js
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
-
 import produitData from "../data/ProduitData";
 import { Link, useNavigate } from "react-router-dom";
+import CmdComp from "./CmdinterneComp";
 import axios from "axios";
-import CmdComp from "./cmdComp";
-function CreateCmd() {
-  const [suppliers, setSuppliers] = useState([]);
+
+function CreateCmdinterne() {
+  const [accessToken, setAccessToken] = useState("");
   const [chapters, setChapters] = useState([]);
-  const [branches, setBranches] = useState([]);
-  const [cmdDataList, setCmdDataList] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [products, setProducts] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [Products, setProducts] = useState([]);
   const [user, setUser] = useState({});
-  const [Products, setProduct] = useState([]);
-  const [type, setType] = useState("external");
-  const [selectedChapter, setSelectedChapter] = useState(null);
-  const [selectedArticle, setSelectedArticle] = useState(null);
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
-  const [priU, setPriU] = useState("");
-  const getPrixUnitaire = (selectedPro) => {
-    const product = Products.find((prod) => prod.nom === selectedPro);
-    return product ? product.prixUnitaire : "";
-  };
-
-  const handleChapterChange = async (e) => {
-    setSelectedChapter(e.target.value);
-    try {
-      const res = await axios.get("http://localhost:3036/refresh", {
-        withCredentials: true,
-      });
-      console.log("reres", res.data);
-      try {
-        const resp = await axios.get(
-          `http://localhost:3036/chapters/${
-            chapters.find((chap) => e.target.value == chap.name).chapter_id
-          }/branches`,
-          {
-            headers: {
-              Authorization: `Bearer ${res.data.accessToken}`,
-            },
-            withCredentials: true,
-          }
-        );
-        setBranches(resp.data);
-      } catch (error) {
-        console.log(error);
-      }
-    } catch (error) {
-      // If an error occurs, redirect to the login page
-      navigate("/login");
-      console.log(error);
-    }
-
-    setSelectedArticle("");
-    setCmdDataList([]);
-    setFilteredProducts([]);
-  };
-
-  const handleArticleChange = async (e) => {
-    setSelectedArticle(e.target.value);
-    console.log(e.target.value);
-    try {
-      const res = await axios.get("http://localhost:3036/refresh", {
-        withCredentials: true,
-      });
-      console.log("reres", res.data);
-      try {
-        const resp = await axios.get(
-          `http://localhost:3036/branches/${
-            branches.find((branch) => e.target.value == branch.name).branch_id
-          }/products`,
-          {
-            headers: {
-              Authorization: `Bearer ${res.data.accessToken}`,
-            },
-            withCredentials: true,
-          }
-        );
-        setProducts(resp.data);
-        // console.log(resp.data)
-      } catch (error) {
-        setProducts([]);
-        console.log(error);
-      }
-    } catch (error) {
-      // If an error occurs, redirect to the login page
-      navigate("/login");
-      console.log(error);
-    }
-  };
-
-  const handleSupplierChange = (e) => {
-    setSelectedSupplier(e.target.value);
-    console.log("selectedSupplier", selectedSupplier);
-  };
-
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
@@ -105,28 +20,21 @@ function CreateCmd() {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
         });
-        setUser(res.data.user);
         try {
-          const supp = await axios.get("http://localhost:3036/suppliers", {
+          const resp = await axios.get("http://localhost:3036/chapters", {
             headers: {
               Authorization: `Bearer ${res.data.accessToken}`,
             },
             withCredentials: true,
           });
-          setSuppliers(supp.data.suppliers);
-          const chap = await axios.get("http://localhost:3036/chapters", {
-            headers: {
-              Authorization: `Bearer ${res.data.accessToken}`,
-            },
-            withCredentials: true,
-          });
-          setChapters(chap.data);
+          setChapters(resp.data);
+          console.log(resp.data);
         } catch (error) {
-          // navigate("/dashboard");
           console.log(error);
         }
+        setAccessToken(res.data.accessToken);
+        setUser(res.data.user);
       } catch (error) {
-        // If an error occurs, redirect to the login page
         navigate("/login");
         console.log(error);
       }
@@ -134,86 +42,190 @@ function CreateCmd() {
 
     fetchData();
   }, []);
-
-  const typeOnChange = (e) => {
-    console.log(e.target.value);
-    setType(e.target.value);
+  const [selectedChapter, setSelectedChapter] = useState(null);
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [cmdDataList, setCmdDataList] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const getChapterId = (name) => {
+    const chap = chapters.find((chap) => chap.name === name);
+    if (chap) {
+      return chap.chapter_id;
+    } else {
+      return "";
+    }
   };
-
-  const handleRemoveCmd = (id) => {
-    // Filtrer la liste des commandes pour supprimer celle avec l'ID spécifié
-    setCmdDataList(cmdDataList.filter((cmdData) => cmdData.id !== id));
-    // Ajouter le produit supprimé à nouveau à la liste des produits filtrés
-    const removedCmd = cmdDataList.find((cmdData) => cmdData.id === id);
-    if (removedCmd) {
-      setFilteredProducts([
-        ...filteredProducts,
-        { nom: removedCmd.selectedPro },
-      ]);
+  const getArticleId = (name) => {
+    const art = articles.find((chap) => chap.name === name);
+    if (art) {
+      return art.branch_id;
+    } else {
+      return "";
+    }
+  };
+  const handleChapterChange = async (e) => {
+    setSelectedChapter(e.target.value);
+    console.log(getChapterId(e.target.value));
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+        withCredentials: true,
+      });
+      try {
+        const resp = await axios.get(
+          `http://localhost:3036/chapters/${getChapterId(
+            e.target.value
+          )}/branches`,
+          {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+        setArticles(resp.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      navigate("/login");
+      console.log(error);
     }
   };
 
-  console.log("cmdDataList", cmdDataList);
+  const handleArticleChange = async (e) => {
+    setSelectedArticle(e.target.value);
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+        withCredentials: true,
+      });
+      try {
+        const resp = await axios.get(
+          `http://localhost:3036/branches/${getArticleId(
+            e.target.value
+          )}/products`,
+          {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+        console.log(resp.data);
+        setProducts(resp.data);
+        setFilteredProducts(resp.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      navigate("/login");
+      console.log(error);
+    }
+  };
+
+
+  const handleRemoveCmd = (id) => {
+    // Supprimer la commande avec l'ID spécifié de cmdDataList
+    setCmdDataList(cmdDataList.filter((cmdData) => cmdData.id !== id));
+    console.log("cmdDataList:", cmdDataList);
+    // Rechercher la commande supprimée dans cmdDataList
+    const removedCmd = cmdDataList.find(
+      (cmdData) => cmdData.id === id
+    ).selectedPro;
+    const removedProduct = removedCmd.selectedPro;
+    // Trouver les données de l'article correspondant à selectedChapter et selectedArticle
+    const chapterData = produitData.find(
+      (chapter) => chapter.chapitre === selectedChapter
+    );
+    const articleData = chapterData
+      ? chapterData.articles.find((article) => article.nom === selectedArticle)
+      : null;
+
+    // Si la commande supprimée existe et si l'article correspondant contient des produits
+    if (removedCmd && articleData && articleData.produits.length > 0) {
+      console.log("Condition 1111");
+      console.log("articleData.produits", articleData.produits);
+      console.log("ID to find:", id);
+      const removedProduct = articleData.produits.find(
+        (produit) => produit.nom === removedCmd
+      );
+      console.log("Removed product:", removedProduct);
+      if (removedProduct) {
+        console.log("Condition 2222");
+        // Ajouter le produit supprimé à filteredProducts
+        setFilteredProducts([...filteredProducts, { nom: removedCmd }]);
+      }
+    }
+  };
+  const getProductId = (name) => {
+    const pro = Products.find((pro) => pro.name === name);
+    if (pro) {
+      return pro.product_id;
+    } else {
+      return "";
+    }
+  };
   const handleAddCmd = (cmdData) => {
     setCmdDataList([...cmdDataList, cmdData]);
-    setFilteredProducts(
-      filteredProducts.filter((product) => product.nom !== cmdData.selectedPro)
-    );
-    // Mettre à jour le prix unitaire lors de l'ajout d'une commande
+    console.log([...cmdDataList, cmdData])
   };
 
   const handleConfirmCommand = async () => {
     const confirm = window.confirm(
       "Are you sure you want to Confirm the command?"
     );
-
     if (confirm) {
       try {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
         });
+
         try {
-          const resp = await axios.post(
-            `http://localhost:3036/commands/`,
-            {
-              user_id: res.data.user.user_id,
-              type,
-            },
-            {
+          const resp = await axios.post(`http://localhost:3036/commands`,{
+                user_id : res.data.user.user_id
+                , type :"internal"
+              }, {
+                headers: {
+                  Authorization: `Bearer ${res.data.accessToken}`,
+                },
+                withCredentials: true,
+              });
+          cmdDataList.map( async (pro)=>{
+            try {
+              const response = await axios.post(`http://localhost:3036/commands/${resp.data.command_id}/products`,{
+                product_id : getProductId(pro.selectedPro), quantity : pro.quantity, unit_price:0
+              }, {
+                headers: {
+                  Authorization: `Bearer ${res.data.accessToken}`,
+                },
+                withCredentials: true,
+              });
+              console.log(response)
+            } catch (error) {
+              console.log(error);
+            }
+          })
+          try {
+            const response = axios.post(`http://localhost:3036/internalorders/`,{
+              command_id : resp.data.command_id
+            },{
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
               },
               withCredentials: true,
-            }
-          );
-          console.log(resp.data);
-          cmdDataList.map(async (Element) => {
-            try {
-              const data = await axios.post(
-                `http://localhost:3036/commands/${resp.data.command_id}/products`,
-                {
-                  product_id: Element.product_id,
-                  quantity: Element.quantity,
-                  unit_price:Element.price
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${res.data.accessToken}`,
-                  },
-                  withCredentials: true,
-                }
-              );
-              navigate("/commands");
-            } catch (error) {
-              console.log(error);
-            }
-          });
+            })
+          } catch (error) {
+            
+          }
         } catch (error) {
-          console.log(error);
+          
         }
       } catch (error) {
         navigate("/login");
         console.log(error);
+      }
+      if (cmdDataList.length > 0) {
+      } else {
+        alert("please fill in all  the fileds Correctly ");
       }
     }
   };
@@ -223,9 +235,7 @@ function CreateCmd() {
       "Are you sure you want to cancel the command?"
     );
     if (confirm) {
-      setCmdDataList([]);
-      setFilteredProducts([]);
-      setProducts([]);
+      //   window.location.href =  '/List des  demandes de fourniture  de ce user ';
     }
   };
 
@@ -234,10 +244,7 @@ function CreateCmd() {
       "Are you sure you want to Leave this form ?"
     );
     if (confirm) {
-      setCmdDataList([]);
-      setFilteredProducts([]);
-      setProducts([]);
-      navigate("/commands");
+      // window.location.href =  '/List des  demandes de fourniture  de ce user ';
     }
   };
 
@@ -250,8 +257,8 @@ function CreateCmd() {
         <div
           style={{
             marginTop: "8vh",
-            marginLeft: " 60px",
-            width: "100%",
+            marginLeft: " 15%",
+            width: "70%",
             height: "92vh",
             padding: "60px",
           }}
@@ -262,7 +269,7 @@ function CreateCmd() {
               display: "flex ",
               alignItems: "center",
               justifyContent: "space-between",
-              gap: "300px",
+              gap: "200px",
               marginBottom: "40px",
             }}
           >
@@ -272,8 +279,9 @@ function CreateCmd() {
                 style={{ color: "#5B548E", fontSize: "20px" }}
               >
                 {" "}
-                Create Command
+                Demande de Fourniture{" "}
               </div>
+
               <div
                 className="num-cmd-1"
                 style={{
@@ -285,18 +293,18 @@ function CreateCmd() {
                   justifyContent: "center",
                   boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
                   color: "#616262",
+                  marginLeft: "30px",
                 }}
               >
                 {today}
               </div>
             </div>
             <Link
-              to={"/commands"}
               onClick={handleCmdList}
               style={{
                 borderRadius: "20px",
                 height: "30px",
-                width: "200px",
+                width: "250px",
                 padding: "10px",
                 display: "flex",
                 alignItems: "center",
@@ -308,17 +316,16 @@ function CreateCmd() {
               }}
             >
               {" "}
-              Commands List{" "}
+              Mes Demandes Fourniture{" "}
             </Link>
           </div>
           <div
             style={{
-              height: " 80px ",
+              height: "  auto ",
               borderRadius: "20px",
               boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-              padding: "20px",
+              paddingTop: "25px",
               marginBottom: "30px",
-              gap: "calcl(height/3-40px)",
             }}
           >
             <select
@@ -326,10 +333,12 @@ function CreateCmd() {
               onChange={handleChapterChange}
               style={{
                 boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                width: " 260px",
+                width: " 280px",
                 fontSize: "15px",
                 height: "40px",
                 marginBottom: "30px",
+                marginLeft: "120px",
+                color: "black",
               }}
             >
               <option value="">Choisissez un chapitre</option>
@@ -345,40 +354,23 @@ function CreateCmd() {
               onChange={handleArticleChange}
               style={{
                 boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                width: " 260px",
+                width: " 280px",
                 fontSize: "15px",
                 height: "40px",
                 marginBottom: "30px",
+                color: "black",
               }}
             >
               <option value="">Choisissez un article</option>
               {selectedChapter &&
-                branches.map((article, index) => (
+                articles.map((article, index) => (
                   <option key={index} value={article.name}>
                     {article.name}
                   </option>
                 ))}
             </select>
-
-            <select
-              value={selectedSupplier}
-              onChange={handleSupplierChange}
-              style={{
-                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                width: " 260px",
-                fontSize: "15px",
-                height: "40px",
-                marginBottom: "30px",
-              }}
-            >
-              <option value="">Choisissez un fournisseur</option>
-              {suppliers.map((supplier, index) => (
-                <option key={index} value={supplier.name}>
-                  {supplier.name}
-                </option>
-              ))}
-            </select>
           </div>
+
           <div
             style={{
               height: " auto",
@@ -391,7 +383,8 @@ function CreateCmd() {
               style={{
                 color: "#5B548E",
                 fontSize: "20px",
-                marginBottom: "20px",
+                marginBottom: "30px",
+                marginLeft: "40%",
               }}
             >
               Designations :
@@ -401,7 +394,13 @@ function CreateCmd() {
             {cmdDataList.map((cmdData) => (
               <div
                 key={cmdData.id}
-                style={{ display: "flex", gap: "20px", alignItems: "center" }}
+                style={{
+                  display: "flex",
+                  gap: "40px",
+                  alignItems: "center",
+                  width: "100%",
+                  marginLeft: "10%",
+                }}
               >
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <div
@@ -414,13 +413,7 @@ function CreateCmd() {
                     {" "}
                     Produit:{" "}
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      margin: "0px",
-                    }}
-                  >
+                  <div style={{ display: "flex", alignItems: "center" }}>
                     <button
                       onClick={() => handleRemoveCmd(cmdData.id)}
                       style={{
@@ -428,6 +421,7 @@ function CreateCmd() {
                         color: "red",
                         border: "none",
                         backgroundColor: "white",
+                        marginRight: "10px",
                       }}
                     >
                       -
@@ -437,7 +431,7 @@ function CreateCmd() {
                         color: "#666666",
                         borderRadius: "20px",
                         height: "35px",
-                        width: "300px",
+                        width: "350px",
                         display: "flex",
                         alignItems: "center",
                         boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
@@ -453,9 +447,9 @@ function CreateCmd() {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <div
                     style={{
-                      fontSize: "13px",
+                      fontSize: "15px",
                       color: "#5B548E",
-                      marginLeft: "18px",
+                      marginLeft: "35px",
                     }}
                   >
                     {" "}
@@ -466,7 +460,7 @@ function CreateCmd() {
                       color: "#666666",
                       borderRadius: "20px",
                       height: "35px",
-                      width: "100px",
+                      width: "150px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -478,38 +472,10 @@ function CreateCmd() {
                     {cmdData.quantity}{" "}
                   </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      color: "#5B548E",
-                      marginLeft: "18px",
-                    }}
-                  >
-                    {" "}
-                    Prix:{" "}
-                  </div>
-                  <div
-                    style={{
-                      color: "#666666",
-                      borderRadius: "20px",
-                      height: "35px",
-                      width: "100px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                      border: "none",
-                    }}
-                  >
-                    {" "}
-                    {cmdData.price}{" "}
-                  </div>
-                </div>
               </div>
             ))}
             <CmdComp
-              filteredProducts={products}
+              filteredProducts={filteredProducts}
               onAddCmd={(cmdData) => {
                 handleAddCmd(cmdData);
               }}
@@ -571,4 +537,4 @@ function CreateCmd() {
   );
 }
 
-export default CreateCmd;
+export default CreateCmdinterne;

@@ -4,7 +4,6 @@ import Side from "../side/side.jsx";
 import Nav from "../nav/nav.jsx";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import CmdData from "./commandData.jsx";
 import Per from "./commandLign.jsx";
 import { useNavigate , Link } from "react-router-dom";
 // get comands
@@ -80,7 +79,7 @@ function Cmds() {
   // Fonction pour filtrer les commandes par état sélectionné
   const handleStateFilter = (state) => {
     setSelectedState(state);
-    const filteredCommands = CmdData.filter((cmd) => {
+    const filteredCommands = cmds.filter((cmd) => {
       if (state === null || state === "State") {
         return true; // Si aucun état n'est sélectionné, affiche toutes les commandes
       } else {
@@ -134,6 +133,7 @@ function Cmds() {
                   className="selctstat28"
                   value={selectedState}
                   onChange={(event) => setSelectedState(event.target.value)}
+                  
                   onClick={() => handleStateFilter(selectedState)}
                 >
                   <option value="State">State</option>

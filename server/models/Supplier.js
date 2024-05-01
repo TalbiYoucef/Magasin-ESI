@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     address: DataTypes.STRING,
-    email:{
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
     },

@@ -19,11 +19,10 @@ import {
 } from "./components/index";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AppProvider } from "./components/reset/AppContext";
-import CreateCmd from "./components/Create-cmds/createCmd1";
+import CreateCmd from "./components/Create-cmds/createCmd";
 import EditCmd from "./components/EditCMD/EditCommand";
 import BonDeComande from "./components/EPC/viewEPC";
 import Cmds from "./components/CommandManagement/MangCommand";
-import Rollig from "./components/CommandManagement/commandLign";
 import BonDeReception from "./components/BR/ViewBR";
 import EditCmdEx from "./components/EditCMD/EditCommandEx";
 import ViewArticles from "./components/viewArticle/ViewArticle";
@@ -33,6 +32,17 @@ import Produit from "./components/produitMan/manProduits";
 import NotFound from "./components/NotFound/NotFound";
 import CreateRec from "./components/ReceiptMang/createRec";
 import Fornisseur from "./components/fournisseurMan/manFournisseur";
+import Articles from "./components/Article/Articles";
+import Produits from "./components/Produit/manProduits";
+import DemandeDeFourniture from "./components/bondesortie/bndesortie";
+import Decharge from "./components/decharge/decharge";
+import CreateCmdinterne from "./components/create-cmd-interne/CreateCmdinterne";
+import EditDecharge from "./components/edit-decharge/EditDecharge";
+import CreateDecharge from "./components/create-decharge/CreateDecharge";
+import ListBonRecp from "./components/EPC/listbc";
+import CommandInterne from "./components/CommandINMan/manCommandIN";
+import CreateBonSortie from "./components/BonSortie/createBonSortie";
+import EditBonSortie from "./components/BonSortie/editBonSortie";
 
 function App() {
   return (
@@ -40,16 +50,49 @@ function App() {
       <Router>
         <div>
           <Routes>
+            {/* sprint 3  */}
+            {/* 
+              //decharge
+              //edit cmnd-intern
+              //bon de sortie 
+              //create decharge
+              //edit decharge
+              // create bon sortie
+              // edit bon sortie
+              3nda interface ll magasigner w interface ll user psk l magasignier tani consumer
+              // cmds magasigner
+              // cmdi user
+              */}
+            <Route path="/cr-srt" element={<CreateBonSortie />} />
+            <Route path="/edit-srt" element={<EditBonSortie />} />
+            <Route path="/cr-dchrg" element={<CreateDecharge />} />
+            <Route path="/edit-dchrg" element={<EditDecharge />} />
+            <Route path="/cmdis" element={<CommandInterne />} />
+            <Route path="/cmdi-doc" element={<DemandeDeFourniture />} />
+            <Route path="/dchrg" element={<Decharge />} />
+            {/* create cmdi :
+            - create cmd 
+            -create cmdi
+          */}
+
             {/* //to do : */}
-            <Route path="produit" element={<Produit />} />
-            <Route path="view-article" element={<ViewArticles />} />
-            <Route path="view-chapter" element={<ViewChapter />} />
-            <Route path="bonR" element={<BonDeReception />} />
-            <Route path="/br" element={<CreateRec />} />
-            <Route path="/bc" element={<BonDeComande />} />
-            <Route path="/create-cmd" element={<CreateCmd />} />
+            <Route path="bon-reception/:id" element={<BonDeReception />} />
+            {/* <Route path="/cmdi" element={<CommandInterne />} /> */}
             {/* // already done */}
-            <Route path="supp" element={<Fornisseur />}/>
+            <Route path="/bonsdereception/:id" element={<ListBonRecp />} />
+            <Route path="/cr-cmdi" element={<CreateCmdinterne />} />
+            <Route path="/bon-cmd/:id" element={<BonDeComande />} />
+            <Route
+              path="/order/:id/create-bon-reception"
+              element={<CreateRec />}
+            />
+            <Route path="/chapters" element={<ViewChapter />} />
+            <Route path="/produits" element={<Produit />} />
+            <Route path="/chapter/:id" element={<Articles />} />
+            <Route path="/articles" element={<ViewArticles />} />
+            <Route path="/article/:id/produits" element={<Produits />} />
+            <Route path="/create-cmd" element={<CreateCmd />} />
+            <Route path="supp" element={<Fornisseur />} />
             <Route path="viewRole/:id" element={<ViewRole />} />
             <Route path="/commands" element={<Cmds />} />
             <Route path="/edit-cmd/:id" element={<EditCmd />} />
@@ -59,15 +102,15 @@ function App() {
             <Route path="/EditPassword" element={<EditPassword />} />
             <Route path="/EditProfile" element={<EditProfile />} />
             <Route path="/EditUserProfile/:id" element={<EditUser />} />
-            <Route path="/roles" element={<Role />} /> 
+            <Route path="/roles" element={<Role />} />
             <Route path="/permissions-management" element={<Permissions />} />
             <Route path="/users" element={<Users />} />
             <Route path="/setting" element={<Profils />} />
             <Route path="/CreateUser" element={<CreateUser />} />
             <Route path="/reset1" element={<Card />} />
             <Route path="/reset2" element={<Card2 />} />
-            <Route path="/reset3" element={<Card3 />} /> 
-            <Route path="*" element={<NotFound/>}/>
+            <Route path="/reset3" element={<Card3 />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </Router>

@@ -9,7 +9,7 @@ function Baarr() {
   return (
     <div className='barrr'>
     <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
-    <div className='prr'>Articles </div>
+    <div className='prr'>Chapitres </div>
     </div> 
   )
 }

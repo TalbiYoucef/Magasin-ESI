@@ -21,9 +21,12 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
     ExitNote.associate = (models) => {
-        const { ReturnNote } = models;
+        const { ReturnNote,InternalOrder } = models;
         ExitNote.hasOne(ReturnNote, { foreignKey: {allowNull:true} });
         ReturnNote.belongsTo(ExitNote, { foreignKey: 'exit_note_id' });
+        InternalOrder.hasOne(ExitNote, { foreignKey: 'internal_order_id' });
+        ExitNote.belongsTo(InternalOrder, { foreignKey: 'internal_order_id' });
+  
       };
     return ExitNote
   };
