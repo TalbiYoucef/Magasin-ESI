@@ -30,7 +30,7 @@ function CmdComp({ filteredProducts, onAddCmd }) {
         id: filteredProducts.filter(pro=> pro.name === selectedPro).map(pro => pro.product_id)[0], // Générer un identifiant unique pour la commande
         product_id :filteredProducts.filter(pro=> pro.name === selectedPro).map(pro => pro.product_id)[0], // Générer un identifiant unique pour la commande
         quantity:Number(quantity),
-        price : Number(price)
+        price : 0
       };
 
       // Passer les données de la commande à la fonction de gestion de l'ajout
@@ -75,21 +75,7 @@ function CmdComp({ filteredProducts, onAddCmd }) {
         paddingLeft:'40px'
       }}
       />
-      <input onChange={priceOnChange} value={price} type="number" placeholder="Prix" 
-       style={{
-        color: '#5B548E',
-        borderRadius: '20px',
-        height: '35px',
-        width: '150px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center', 
-        boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
-        border :'none',
-        border: '1px solid grey', 
-        paddingLeft:'40px'
-      }}
-      />
+     
       </div>
    
       <button onClick={handleAddCmd}

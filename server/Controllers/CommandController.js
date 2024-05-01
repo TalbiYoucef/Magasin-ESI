@@ -1,8 +1,23 @@
+const { where } = require("sequelize");
 const db = require("../models");
 
 const getCommands = async (req, res) => {
   try {
     const commands = await db.Command.findAll();
+    if (!commands || commands.length === 0) {
+      return res.status(404).json({ message: "No commands found" });
+    }
+    return res.status(200).json(commands);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const getExternalCommands = async (req, res) => {
+  try {
+    const commands = await db.Command.findAll({where:{
+      type : "external"
+    }});
     if (!commands || commands.length === 0) {
       return res.status(404).json({ message: "No commands found" });
     }
@@ -81,7 +96,7 @@ const getAllCommandProducts = async (req, res) => {
 const assignProductToCommand = async (req, res) => {
   try {
     const { id } = req.params;
-    const { product_id, quantity, unit_price } = req.body;
+    const { product_id, quantity, unit_price , num_inventaire } = req.body;
     const productCommand = await db.Product_Command.findOne({
       where: { command_id: id, product_id: product_id },
     });
@@ -95,6 +110,7 @@ const assignProductToCommand = async (req, res) => {
       quantity: quantity,
       delivered_amount: 0,
       amount_left: quantity,
+      num_inventaire:num_inventaire
     });
     return res.status(201).json(createdProductCommand);
   } catch (error) {
@@ -105,13 +121,14 @@ const assignProductToCommand = async (req, res) => {
 const updateProductToCommand = async (req, res) => {
   try {
     const { id } = req.params;
-    const { product_id,delivered_amount,amount_left } = req.body;
+    const { product_id,delivered_amount,amount_left,num_inventaire } = req.body;
     const productCommand = await db.Product_Command.findOne({
       where: { command_id: id, product_id: product_id },
     });
     if (productCommand) {
       productCommand.delivered_amount = delivered_amount;
-      productCommand.amount_left = amount_left
+      productCommand.amount_left = amount_left;
+      productCommand.num_inventaire = num_inventaire;
       await productCommand.save();
     }
     else{
@@ -156,6 +173,23 @@ const getPurchasingOrder = async (req, res) => {
       res.status(500).send("no purshasing orders found");
     });
 };
+
+const getInteranlOrder = async (req, res) => {
+  const { id } = req.params;
+  await db.InternalOrder.findOne({
+    where: { command_id: id },
+  })
+    .then((order) => {
+      if (!order) {
+        res.status(500).send("no internal orders found");
+      } else {
+        res.status(200).send(order);
+      }
+    })
+    .catch((error) => {
+      res.status(500).send("no purshasing orders found");
+    });
+};
 module.exports = {
   getCommands,
   getPurchasingOrder,
@@ -165,5 +199,7 @@ module.exports = {
   assignProductToCommand,
   removeProductFromCommand,
   getAllCommandProducts,
-  updateProductToCommand
+  updateProductToCommand,
+  getInteranlOrder,
+  getExternalCommands
 };

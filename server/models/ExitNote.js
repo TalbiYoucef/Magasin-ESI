@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
+      // exit_date , type :"discharge", comment:"",expected_retrning_date 
       exit_date:{
           type: DataTypes.DATE,
           allowNull: false,

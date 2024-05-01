@@ -1,8 +1,9 @@
 const router = require('express').Router();
-const{ getCommands,getPurchasingOrder,updateProductToCommand, getCommandById,createCommand,deleteCommand,assignProductToCommand,removeProductFromCommand, getAllCommandProducts} = require('../Controllers/CommandController');
+const{ getCommands,getPurchasingOrder,updateProductToCommand, getCommandById,createCommand,deleteCommand,assignProductToCommand,removeProductFromCommand, getAllCommandProducts, getInteranlOrder, getExternalCommands} = require('../Controllers/CommandController');
 
 router
 .get('/', getCommands)
+.get('/external-commands', getExternalCommands)
 .get('/:id', getCommandById)
 .post('/', createCommand)
 .delete('/:id', deleteCommand)
@@ -10,6 +11,7 @@ router
 .put('/:id/products', updateProductToCommand)
 .delete('/:id/products', removeProductFromCommand)
 .get('/:id/products', getAllCommandProducts)
-.get('/:id/purchasing-order', getPurchasingOrder);
+.get('/:id/purchasing-order', getPurchasingOrder)
+.get('/:id/internal-order', getInteranlOrder);
 
 module.exports = router;

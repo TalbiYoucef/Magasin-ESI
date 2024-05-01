@@ -43,6 +43,9 @@ import ListBonRecp from "./components/EPC/listbc";
 import CommandInterne from "./components/CommandINMan/manCommandIN";
 import CreateBonSortie from "./components/BonSortie/createBonSortie";
 import EditBonSortie from "./components/BonSortie/editBonSortie";
+import CommandInterneUser from "./components/cmdi-User/manCmdInUser";
+import EditCmdinterne from "./components/edit-cmd-intern/EditCmdinterne";
+import DemandeFourniture from "./components/DemandeFourniture/df";
 
 function App() {
   return (
@@ -63,23 +66,21 @@ function App() {
               // cmds magasigner
               // cmdi user
               */}
-            <Route path="/cr-srt" element={<CreateBonSortie />} />
-            <Route path="/edit-srt" element={<EditBonSortie />} />
-            <Route path="/cr-dchrg" element={<CreateDecharge />} />
-            <Route path="/edit-dchrg" element={<EditDecharge />} />
-            <Route path="/cmdis" element={<CommandInterne />} />
-            <Route path="/cmdi-doc" element={<DemandeDeFourniture />} />
-            <Route path="/dchrg" element={<Decharge />} />
-            {/* create cmdi :
-            - create cmd 
-            -create cmdi
-          */}
 
-            {/* //to do : */}
+            {/* <Route path="/edit-bon-sortie/:id" element={<EditBonSortie />} /> */}
             <Route path="bon-reception/:id" element={<BonDeReception />} />
-            {/* <Route path="/cmdi" element={<CommandInterne />} /> */}
+            <Route path="/cmdi/:id/create-bon-decharge" element={<CreateDecharge />} />
+            <Route path="/edit-bon-decharge/:id" element={<EditDecharge />} />
+            <Route path="/veiw-bon-decharge/:id" element={<Decharge />} />
+            {/* //to do : */}
             {/* // already done */}
+            <Route path="/veiw-bon-sortie/:id" element={<DemandeDeFourniture />} />
+            <Route path="/cmdi/:id/create-bon-sortie" element={<CreateBonSortie />} />
+            <Route path="/view-demande-fourniture/:id" element={<DemandeFourniture />} />
+            <Route path="/edit-cmdi/:id" element={<EditCmdinterne />}/>
+            <Route path="/mes-cmnd" element={<CommandInterneUser/>} />
             <Route path="/bonsdereception/:id" element={<ListBonRecp />} />
+            <Route path="/cmdis" element={<CommandInterne />} />
             <Route path="/cr-cmdi" element={<CreateCmdinterne />} />
             <Route path="/bon-cmd/:id" element={<BonDeComande />} />
             <Route

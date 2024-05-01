@@ -1,3 +1,5 @@
+const { type } = require("os");
+
 module.exports = (sequelize, DataTypes) => {
   const Product_Command = sequelize.define("Product_Command", {
     id: {
@@ -40,6 +42,10 @@ module.exports = (sequelize, DataTypes) => {
         isInt: true, // Ensure it's an integer
       },
       default: 0,
+    },
+    num_inventaire : {
+      type: DataTypes.INTEGER,
+      allowNull : true,
     },
     status_quantity: {
       type: DataTypes.ENUM("initialized", "validated", "accepted", "satisfied"),

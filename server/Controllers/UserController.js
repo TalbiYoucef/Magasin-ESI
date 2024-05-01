@@ -92,6 +92,23 @@ const getUserRoles = async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch user roles" });
   }
 };
+
+const getUserCommands = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await db.User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const userCommands = await db.Command.findAll({
+      where: { user_id: user.user_id ,type:'internal' },
+    });
+       return res.send(userCommands);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to fetch user roles" });
+  }
+};
 const updateUserRoles = async (req, res) => {
   const { id } = req.params;
   const { roles } = req.body;
@@ -154,4 +171,5 @@ module.exports = {
   addRoleToUser,
   updateUserRoles,
   deleteRoleFromUser,
+  getUserCommands
 };

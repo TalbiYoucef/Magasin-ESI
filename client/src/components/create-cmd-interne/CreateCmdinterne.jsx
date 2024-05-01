@@ -122,7 +122,6 @@ function CreateCmdinterne() {
     }
   };
 
-
   const handleRemoveCmd = (id) => {
     // Supprimer la commande avec l'ID spécifié de cmdDataList
     setCmdDataList(cmdDataList.filter((cmdData) => cmdData.id !== id));
@@ -166,7 +165,7 @@ function CreateCmdinterne() {
   };
   const handleAddCmd = (cmdData) => {
     setCmdDataList([...cmdDataList, cmdData]);
-    console.log([...cmdDataList, cmdData])
+    console.log([...cmdDataList, cmdData]);
   };
 
   const handleConfirmCommand = async () => {
@@ -180,45 +179,55 @@ function CreateCmdinterne() {
         });
 
         try {
-          const resp = await axios.post(`http://localhost:3036/commands`,{
-                user_id : res.data.user.user_id
-                , type :"internal"
-              }, {
-                headers: {
-                  Authorization: `Bearer ${res.data.accessToken}`,
-                },
-                withCredentials: true,
-              });
-          cmdDataList.map( async (pro)=>{
-            try {
-              const response = await axios.post(`http://localhost:3036/commands/${resp.data.command_id}/products`,{
-                product_id : getProductId(pro.selectedPro), quantity : pro.quantity, unit_price:0
-              }, {
-                headers: {
-                  Authorization: `Bearer ${res.data.accessToken}`,
-                },
-                withCredentials: true,
-              });
-              console.log(response)
-            } catch (error) {
-              console.log(error);
-            }
-          })
-          try {
-            const response = axios.post(`http://localhost:3036/internalorders/`,{
-              command_id : resp.data.command_id
-            },{
+          const resp = await axios.post(
+            `http://localhost:3036/commands`,
+            {
+              user_id: res.data.user.user_id,
+              type: "internal",
+            },
+            {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
               },
               withCredentials: true,
-            })
-          } catch (error) {
-            
-          }
-        } catch (error) {
-          
-        }
+            }
+          );
+          cmdDataList.map(async (pro) => {
+            try {
+              const response = await axios.post(
+                `http://localhost:3036/commands/${resp.data.command_id}/products`,
+                {
+                  product_id: getProductId(pro.selectedPro),
+                  quantity: pro.quantity,
+                  unit_price: 0,
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
+                  withCredentials: true,
+                }
+              );
+              console.log(response);
+            } catch (error) {
+              console.log(error);
+            }
+          });
+          try {
+            const response = axios.post(
+              `http://localhost:3036/internalorders/`,
+              {
+                command_id: resp.data.command_id,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.accessToken}`,
+                },
+                withCredentials: true,
+              }
+            );
+          } catch (error) {}
+        } catch (error) {}
       } catch (error) {
         navigate("/login");
         console.log(error);
@@ -300,6 +309,7 @@ function CreateCmdinterne() {
               </div>
             </div>
             <Link
+              to="/mes-cmnd"
               onClick={handleCmdList}
               style={{
                 borderRadius: "20px",

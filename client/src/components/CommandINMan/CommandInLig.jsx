@@ -1,90 +1,130 @@
 import React, { useState } from "react";
 
-import { Link } from 'react-router-dom';
-import Roledata from '../CommandManagement/commandData.jsx';
+import { Link, useNavigate } from "react-router-dom";
+import Roledata from "../CommandManagement/commandData.jsx";
+import axios from "axios";
 
 function Rollig(props) {
-    const [isChecked, setIsChecked] = useState(false);
-    const [isVisible, setIsVisible] = useState(true);
-    const [selectedCommand, setSelectedCommand] = useState(null); // État local pour stocker les données de la commande sélectionnée
 
-    const handleCheckboxChange = () => {
-        setIsChecked(!isChecked);
-    };
+  const [isChecked, setIsChecked] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [selectedCommand, setSelectedCommand] = useState(null); // État local pour stocker les données de la commande sélectionnée
 
-    const handleDelete = () => {
-        setIsVisible(false);
-        console.log("cha");
-    };
-
-    //-------------------------
-    const handleViewClick = (numCmd) => {
-      console.log("Numéro de commande:", numCmd);
-      const cmdinfos = Roledata.find(command => command.numCmd === numCmd);
-      console.log('Informations cmd:', cmdinfos);
-      setSelectedCommand(cmdinfos);
-      if (cmdinfos) {
-          localStorage.setItem('selectedCommand', JSON.stringify(cmdinfos));
-          console.log('Commande sélectionnée stockée dans le stockage local.');
-          // Rediriger vers la page où vous souhaitez afficher les détails de la commande
-          // window.location.href = "/CommandDetails";
-      } else {
-          console.log("Aucune commande trouvée avec ce numéro.");
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+  const navigate = useNavigate();
+  const handleDelete = async () => {
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+        withCredentials: true,
+      });
+      try {
+        const resp = await axios.delete(`http://localhost:3036/commands/${props.id}`, {
+          headers: {
+            Authorization: `Bearer ${res.data.accessToken}`,
+          },
+          withCredentials: true,
+        });
+        console.log('deleted',props.id)
+      } catch (error) {
+        console.log(error);
       }
+    } catch (error) {
+      // If an error occurs, redirect to the login page
+      navigate("/login");
+      console.log(error);
+    }
+    setIsVisible(false);
   };
 
+  //-------------------------
+
   //------------------
-  const handleEditClick = (numCmd) => {
-    console.log("Numéro de commande:", numCmd);
-    const cmdinfos = Roledata.find(command => command.numCmd === numCmd);
-    console.log('Informations cmd:', cmdinfos);
-    if (cmdinfos) {
-        localStorage.setItem('selectedCommand', JSON.stringify(cmdinfos));
-        console.log('Commande sélectionnée stockée dans le stockage local.');
-        // Rediriger vers la page où vous souhaitez afficher les détails de la commande
-        // window.location.href = "/CommandEdit";
-    } else {
-        console.log("Aucune commande trouvée avec ce numéro.");
-    }
-};
-  
 
-    return (
-        <div>
-            {isVisible && (
-                <div  style={{
-                    width: '95%',
-                    height: '5px',
-                    display: 'flex',
-                    backgroundColor: 'white',
-                    alignItems: 'center',
-                    marginTop: '10px',
-                    padding: '20px',
-                    gap: '50px'
-                  }}>
-                    <input type="checkbox"  style={{marginLeft:'-110px',width:'38%'}} checked={isChecked} onChange={handleCheckboxChange} />
-                    <div style={{display:'flex',gap:'30px',width:'100%'}}>
-                    <p  style={{fontSize: '15px',width:'20%',color: 'rgba(58, 53, 65, 0.87)',marginTop:'10px'}}>{props.id}</p>
-
-                    <p  style={{fontSize: '15px',width:'50%',color: 'rgba(58, 53, 65, 0.87)',marginTop:'10px'}}>{props.service}</p>
-                    <p  style={{width:'30%',fontSize: '15px',width:'200px',color: 'rgba(58, 53, 65, 0.87)',marginTop:'10px'}}>{props.date}</p>
-                    </div>
-                    <a href=""   style={{marginLeft:'50px',textDecoration: 'none',color:'blue'}} onClick={() => handleViewClick(props.numCmd)}>View</a>
-                    <a href=""  style={{textDecoration: 'none',
-  marginLeft: '20px',
-  width: '100px',
-  color: '#FA9E15'}} onClick={() => handleEditClick(props.numCmd)}>Edit</a>
-                    <button style={{textDecoration: 'none',
-  width: '100px',
-  marginRight: '50px',
-  color: '#D42803',
-  backgroundColor: 'white',
-  border: 'none',
-  fontSize: '18px'}} onClick={handleDelete}>Delete</button>
-                </div>
-            )}
+  return (
+    <div>
+      {isVisible && (
+        <div
+          style={{
+            width: "95%",
+            height: "5px",
+            display: "flex",
+            backgroundColor: "white",
+            alignItems: "center",
+            marginTop: "10px",
+            padding: "20px",
+            gap: "50px",
+          }}
+        >
+          <input
+            type="checkbox"
+            style={{ marginLeft: "-110px", width: "38%" }}
+            checked={isChecked}
+            onChange={handleCheckboxChange}
+          />
+          <div style={{ display: "flex", gap: "30px", width: "100%" }}>
+            <p
+              style={{
+                fontSize: "15px",
+                width: "20%",
+                color: "rgba(58, 53, 65, 0.87)",
+                marginTop: "10px",
+              }}
+            >
+              {props.id}
+            </p>
+            <p
+              style={{
+                width: "30%",
+                fontSize: "15px",
+                width: "200px",
+                color: "rgba(58, 53, 65, 0.87)",
+                marginTop: "10px",
+              }}
+            >
+              {props.date}
+            </p>
+          </div>
+          <Link
+            to={`/veiw-cmdi/${props.id}`}
+            style={{
+              marginLeft: "50px",
+              textDecoration: "none",
+              color: "blue",
+            }}
+          >
+            View
+          </Link>
+          <Link
+            to={`/edit-cmdi/${props.id}`}
+            style={{
+              textDecoration: "none",
+              marginLeft: "20px",
+              width: "100px",
+              color: "#FA9E15",
+            }}
+          >
+            Edit
+          </Link>
+          <button
+            style={{
+              textDecoration: "none",
+              width: "100px",
+              marginRight: "50px",
+              color: "#D42803",
+              backgroundColor: "white",
+              border: "none",
+              fontSize: "18px",
+            }}
+            onClick={handleDelete}
+          >
+            Delete
+          </button>
         </div>
-    );
+      )}
+    </div>
+  );
 }
 
 export default Rollig;

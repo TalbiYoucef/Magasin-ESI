@@ -7,16 +7,16 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { GrNext } from "react-icons/gr";
 import axios from "axios";
-const DemandeDeFourniture = () => {
-  //utilisateur
 
+const DemandeFourniture = () => {
+  //utilisateur
+  const [date,setDate] = useState('')
   const navigate = useNavigate();
   const { id } = useParams();
   const [allProducts, setAllProducts] = useState([]);
   const [user, setUser] = useState({});
   const [products, setProducts] = useState([]);
   const [service, setService] = useState("");
-  const [date,setDate]=useState('')
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,22 +48,24 @@ const DemandeDeFourniture = () => {
               withCredentials: true,
             }
           );
-          setDate(String((resp.data)[0].createdAt).split('T')[0])
           setProducts(resp.data);
-          console.log(resp.data);
+          setDate(String((resp.data)[0].updatedAt).split('T')[0])
         } catch (error) {
           console.log(error);
         }
 
         try {
-          const resp = await axios.get(`http://localhost:3036/products`, {
-            headers: {
-              Authorization: `Bearer ${res.data.accessToken}`,
-            },
-            withCredentials: true,
-          });
+          const resp = await axios.get(
+            `http://localhost:3036/products`,
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
           setAllProducts(resp.data);
-          console.log(resp.data);
+          
         } catch (error) {
           console.log(error);
         }
@@ -75,6 +77,7 @@ const DemandeDeFourniture = () => {
     };
     fetchData();
   }, [navigate]);
+
   const getProductName =(id)=>{
     const name = allProducts.find(pro => pro.product_id == id)
     if(name){
@@ -96,7 +99,7 @@ const DemandeDeFourniture = () => {
       height: "92vh",
       flexDirection: "column",
     },
-    bnsort: {
+    bnfrnt: {
       marginLeft: "8%",
       textDecoration: "none",
       justifyContent: "space-between",
@@ -106,16 +109,16 @@ const DemandeDeFourniture = () => {
       alignItems: "center",
       marginTop: "8%",
     },
-    buttonsRightsortie: {
+    buttonsRightFr: {
       display: "flex",
       flexDirection: "column",
       alignContent: "flex-end",
       justifyContent: "center",
     },
-    fourntList: {
+    fournitureList: {
       display: "flex",
       justifyContent: " space-between",
-      width: "240px",
+      width: "220px",
       backgroundColor: "#100B39",
       borderRadius: "30px",
       marginRight: "80px",
@@ -126,7 +129,31 @@ const DemandeDeFourniture = () => {
       color: "#fff",
       cursor: "pointer",
     },
-    infoframe: {
+    createsortie: {
+      backgroundColor: "#17BF6B",
+      width: "220px",
+      borderRadius: "30px",
+      marginRight: "80px",
+      marginBottom: "5px",
+      padding: "10px 20px",
+      fontSize: "16px",
+      border: "none",
+      color: "#fff" /* Change the text color */,
+      cursor: "pointer",
+    },
+    viewSortie: {
+      backgroundColor: "#0047FF",
+      width: "220px",
+      borderRadius: "30px",
+      marginRight: "80px",
+      marginBottom: "5px",
+      padding: "10px 20px",
+      fontSize: "16px",
+      border: "none",
+      color: "#fff" /* Change the text color */,
+      cursor: "pointer",
+    },
+    framee: {
       fontSize: "16px",
       border: "1px solid #ccc",
       padding: "20px",
@@ -137,11 +164,11 @@ const DemandeDeFourniture = () => {
       marginTop: "0px",
       display: "flex",
     },
-    bsort: {
+    bonfrnt: {
       marginTop: "5px",
       marginLeft: " 8%",
     },
-    continfoframe: {
+    contframee: {
       padding: "5px",
       display: "flex",
       fontFamily: "Arial, sans-serif",
@@ -154,25 +181,27 @@ const DemandeDeFourniture = () => {
       width: "95%",
       marginLeft: "4%",
     },
-    bondecharge: {
+    demandeFourniture: {
       textDecoration: "underline",
       display: "flex",
-      display: "flex",
+      alignContent: "center",
+      flexWrap: "wrap",
       flexDirection: "column",
       justifyContent: "center",
-      alignItems: "center",
-      textAlign: "center",
     },
-    service: {
+    infoDirection: {
+      marginBottom: "10px",
+      marginLeft: "5%",
+      marginRight: "20px",
       display: "flex",
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginTop: "5%",
-      marginLeft: "5%",
-      marginRight: "8%",
     },
-    tablesortie: {
+    demandeur: {
+      marginLeft: "8%",
+    },
+    tabledeDemande: {
       marginTop: "10px",
       marginLeft: "40px",
       marginRight: "20px",
@@ -183,7 +212,7 @@ const DemandeDeFourniture = () => {
       tableLayout: "fixed",
     },
     headDesignation: {
-      width: "25%",
+      width: "60%",
     },
     head: {
       fontSize: "small",
@@ -191,7 +220,7 @@ const DemandeDeFourniture = () => {
       border: "1px solid #000",
       height: "20px",
     },
-    infdesortie: {
+    infoprodDemender: {
       fontSize: "small",
       height: "20px",
       border: "1px solid #000",
@@ -202,16 +231,13 @@ const DemandeDeFourniture = () => {
       paddingLeft: "2px",
       width: "60%",
     },
-    signature: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
+    benificier: {
       marginLeft: "10%",
-      marginRight: "10%",
-      marginBottom: "20%",
+      fontWeight: "bold",
+      float: "left",
+      marginTop: "40px",
+      textDecoration: "underline",
     },
-
     printButton: {
       backgroundColor: "#0047FF",
       color: "white",
@@ -225,48 +251,24 @@ const DemandeDeFourniture = () => {
     printCont: {
       marginTop: "20px",
       transition: "border-color 0.3s ease",
-      fontWeight: "500",
       fontSize: "16px",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       textAlign: "center",
-      flexDirection: "row",
     },
-    createsortie: {
-      backgroundColor: "#17BF6B",
-      width: "240px",
-      borderRadius: "30px",
-      marginRight: "80px",
-      marginBottom: "5px",
-      padding: "10px 20px",
-      fontSize: "16px",
-      border: "none",
-      color: "#fff" /* Change the text color */,
-      cursor: "pointer",
-    },
-    viewSortie: {
-      backgroundColor: "#0047FF",
-      width: "240px",
-      borderRadius: "30px",
-      marginRight: "80px",
-      marginBottom: "5px",
-      padding: "10px 20px",
-      fontSize: "16px",
-      border: "none",
-      color: "#fff" /* Change the text color */,
-      cursor: "pointer",
-    },
-    editbs: {
+    editdf: {
       backgroundColor: "orange",
       color: "white",
       width: "130px",
       height: "40px",
       borderRadius: "30px",
       borderColor: "transparent",
+      borderRadius: "30px",
+      borderColor: "transparent",
       padding: "10px 20px",
     },
-    deletebs: {
+    deletedf: {
       backgroundColor: "red",
       color: "white",
       marginLeft: "10px",
@@ -274,69 +276,12 @@ const DemandeDeFourniture = () => {
       height: "40px",
       borderRadius: "30px",
       borderColor: "transparent",
+      borderRadius: "30px",
+      borderColor: "transparent",
       padding: "10px 20px",
     },
   };
-
-  const sortieData = [
-    {
-      id: "0",
-      numSortie: "1",
-      demandeur: "prof",
-      service: "service",
-      date: "23/04/2024",
-      products: [
-        {
-          idp: 9,
-          nommP: "Produit 1",
-          quantiteDemandee: 2,
-          quantiteServie: 2,
-          numInventaire: 1,
-          observation: "observation produit",
-        },
-        {
-          idp: 1,
-          nommP: "Produit 1",
-          quantiteDemandee: 5,
-          quantiteServie: 2,
-          numInventaire: 11,
-          observation: "observation produit",
-        },
-        {
-          idp: 2,
-          nommP: "Produit 2",
-          quantiteDemandee: 1,
-          quantiteServie: 1,
-          numInventaire: 4,
-          observation: "observation produit",
-        },
-        {
-          idp: 3,
-          nommP: "Produit 1",
-          quantiteDemandee: 10,
-          quantiteServie: 10,
-          numInventaire: 8,
-          observation: "observation produit",
-        },
-        {
-          idp: 4,
-          nommP: "Produit 2",
-          quantiteDemandee: 7,
-          quantiteServie: 4,
-          numInventaire: 19,
-          observation: "observation produit",
-        },
-        {
-          idp: 5,
-          nommP: "Produit 3",
-          quantiteDemandee: 2,
-          quantiteServie: 2,
-          numInventaire: 13,
-          observation: "observation produit",
-        },
-      ],
-    },
-  ];
+  
   const frameRef = useRef(null);
   const handleDelete = () => {
     const confirmDelete = window.confirm(
@@ -369,6 +314,7 @@ const DemandeDeFourniture = () => {
     <>
       <div>
         <section>
+          {" "}
           <nav>
             {" "}
             <Nav />{" "}
@@ -377,21 +323,22 @@ const DemandeDeFourniture = () => {
             <div>
               <Side />
             </div>
-            <div style={styles.bnsort}>
-              <h3 className="bsort">
-                BON DE SORTIE 
+            <div style={styles.bnfrnt}>
+              <h3 className="bonfrnt">
+                DEMANDE DE FOURNITURE 
               </h3>
-              <div style={styles.buttonsRightsortie}>
-                <Link to="/mes-cmnd" style={{ textDecoration: "none" }}>
+              <div style={styles.buttonsRightFr}>
+                <Link to="/mes-dmnd" style={{ textDecoration: "none" }}>
                   <button
-                    style={styles.fourntList}
+                    style={styles.fournitureList}
                     onClick={() => navigate(-2)}
                   >
-                    <span>Fourniture List</span> <GrNext />
+                    Fourniture List <GrNext />
                   </button>
                 </Link>
+
                 {userData[0].roleuser === "magasinier" && (
-                  <Link to="/another-page" className="create-bnsortie-link">
+                  <Link to={`/cmdi/${id}/create-bon-sortie`} className="create-bnsortie-link">
                     <button
                       style={styles.createsortie}
                       onClick={() => console.log("Create sortie clicked")}
@@ -400,99 +347,101 @@ const DemandeDeFourniture = () => {
                     </button>
                   </Link>
                 )}
-                <Link to="/bondedecharge" className="viewbnsortie-link">
+                <Link to={`/veiw-bon-sortie/${id}`} className="viewbnsortie-link">
                   <button
                     style={styles.viewSortie}
                     onClick={() => console.log("View bn de sortie clicked")}
                   >
-                    View Bon De Decharge
+                    View Bon De Sortie
                   </button>
                 </Link>
               </div>
             </div>
-            <div style={styles.infoframe}>
+            <div style={styles.framee}>
               <div
-                style={{ ...styles.continfoframe, maxWidth: "800px" }}
+                style={{ ...styles.contframee, maxWidth: "800px" }}
                 ref={frameRef}
               >
                 <div>
                   <img style={styles.logoesiImg} src={logoesi} alt="My Image" />
                 </div>
-
-                <div style={styles.bondecharge}>
-                  <h2 style={{ textDecoration: "underline" }}>BON DE SORTIE</h2>
-                  <strong style={{ textDecoration: "underline" }}>
-                    MAGASIN CENTRAL
-                  </strong>
+                <div style={styles.infoDirection}>
+                  <h4>
+                    Direction <br /> Secretariat general{" "}
+                  </h4>
+                  <h4> Sidi Bel Abbes le: {date} </h4>
                 </div>
-                <div style={styles.service}>
+                <div style={styles.demandeFourniture}>
+                  <h3>
+                    <i style={{ textDecoration: "underline" }}>
+                      DEMANDE DE FOURNITURE
+                    </i>
+                  </h3>
+                </div>
+                <div style={styles.demandeur}>
                   {" "}
-                  <span>Service: {service}</span>
-                  <span> Le: {date}</span>{" "}
+                  <h4>
+                    <i style={{ textDecoration: "underline" }}>
+                      {" "}
+                      Le Demandeur:{" "}
+                    </i>
+                    {`${user.firstname} ${user.lastname}`}{" "}
+                  </h4>{" "}
                 </div>
-
-                <table style={styles.tablesortie}>
+                <table style={styles.tabledeDemande}>
                   <thead>
                     <tr>
                       <th style={styles.head}>N°</th>
                       <th style={{ ...styles.head, ...styles.headDesignation }}>
-                        Désignation des Articles
+                        Désignation
                       </th>
                       <th style={styles.head}>Quantité demandee</th>
-                      <th style={styles.head}>Quantité servie</th>
-                      <th style={styles.head}>N° inventaire</th>
-                      <th style={{ ...styles.head, ...styles.headDesignation }}>
-                        Observation{" "}
-                      </th>
+                      <th style={styles.head}>Quantité accordee</th>
+                      <th style={styles.head}>Quantité validee</th>
                     </tr>
                   </thead>
                   <tbody>
                     {products.map((product, index) => (
                       <tr key={index}>
-                        <td style={styles.infdesortie}>{index + 1}</td>
+                        <td style={styles.infoprodDemender}>{index + 1}</td>
                         <td
-                          style={{ ...styles.infdesortie, ...styles.infoNom }}
+                          style={{
+                            ...styles.infoprodDemender,
+                            ...styles.infoNom,
+                          }}
                         >
                           {getProductName(product.product_id)}
                         </td>
-                        <td style={styles.infdesortie}>
+                        <td style={styles.infoprodDemender}>
                           {product.quantity}
                         </td>
-                        <td style={styles.infdesortie}>
-                          {product.delivered_amount}
+                        <td style={styles.infoprodDemender}>
+                          { }
                         </td>
-                        <td style={styles.infdesortie}>
-                          {product.num_inventaire}
-                        </td>
-                        <td style={styles.infdesortie}>
-                          {''}
+                        <td style={styles.infoprodDemender}>
+                          { }
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                <h4>
-                  <div style={styles.signature}>
-                    {" "}
-                    <span> Le Magasinier</span> <span> Le Responsable</span>{" "}
-                  </div>
+                <h4 style={styles.benificier}>
+                  <i>Le beneficiaire</i>
                 </h4>
               </div>
             </div>
             <div style={styles.printCont}>
-              {userData[0].roleuser === "magasinier" && (
+              {userData[0].roleuser === "consumer" && (
                 <button
-                  style={styles.editbs}
+                  style={styles.editdf}
                   onClick={() => (window.location.href = "/edit-page")}
                 >
                   Edit
                 </button>
-              )}
-              {userData[0].roleuser === "magasinier" && (
-                <button style={styles.deletebs} onClick={handleDelete}>
-                  Delete
-                </button>
               )}{" "}
+              <button style={styles.deletedf} onClick={handleDelete}>
+                Delete
+              </button>
               <button style={styles.printButton} onClick={handleDownload}>
                 Download
               </button>
@@ -504,4 +453,4 @@ const DemandeDeFourniture = () => {
   );
 };
 
-export default DemandeDeFourniture;
+export default DemandeFourniture;

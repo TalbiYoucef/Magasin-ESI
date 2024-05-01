@@ -70,3 +70,32 @@ exports.deleteInternalOrder = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getOrdersByStatus = async (req, res) => {
+  const { status } = req.params;
+  console.log(status)
+  try {
+    const orders = await db.InternalOrder.findAll({
+      where: { status: status }
+    });
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Function to update the status of an order
+exports.updateOrderStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    const order = await db.InternalOrder.findByPk(id);
+    if (!order) {
+      res.status(404).json({ error: 'Order not found' });
+    } else {
+      await order.update({ status: status });
+      res.status(200).json(order);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
