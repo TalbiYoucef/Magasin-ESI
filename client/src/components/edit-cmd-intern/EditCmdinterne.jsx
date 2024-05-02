@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import CmdComp from "../Create-cmds/cmdComp";
+import CmdComp from "./cmdComp";
 import axios from "axios";
 function EditCmdinterne() {
   const { id } = useParams();

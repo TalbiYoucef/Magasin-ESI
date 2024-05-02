@@ -8,7 +8,6 @@ import axios from "axios";
 function CreateRec() {
   const { id } = useParams();
   console.log(id);
-  // id bon de cmnd
   const handleEditQuantity = (event, index) => {
     if (
       Number(event.target.value) > initialQuantities[index] ||

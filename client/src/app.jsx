@@ -53,27 +53,13 @@ function App() {
       <Router>
         <div>
           <Routes>
-            {/* sprint 3  */}
-            {/* 
-              //decharge
-              //edit cmnd-intern
-              //bon de sortie 
-              //create decharge
-              //edit decharge
-              // create bon sortie
-              // edit bon sortie
-              3nda interface ll magasigner w interface ll user psk l magasignier tani consumer
-              // cmds magasigner
-              // cmdi user
-              */}
-
             {/* <Route path="/edit-bon-sortie/:id" element={<EditBonSortie />} /> */}
-            <Route path="bon-reception/:id" element={<BonDeReception />} />
             <Route path="/cmdi/:id/create-bon-decharge" element={<CreateDecharge />} />
             <Route path="/edit-bon-decharge/:id" element={<EditDecharge />} />
             <Route path="/veiw-bon-decharge/:id" element={<Decharge />} />
             {/* //to do : */}
             {/* // already done */}
+            <Route path="/:idcmd/bon-reception/:id" element={<BonDeReception />} />
             <Route path="/veiw-bon-sortie/:id" element={<DemandeDeFourniture />} />
             <Route path="/cmdi/:id/create-bon-sortie" element={<CreateBonSortie />} />
             <Route path="/view-demande-fourniture/:id" element={<DemandeFourniture />} />

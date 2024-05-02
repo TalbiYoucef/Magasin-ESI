@@ -195,7 +195,7 @@ const ListBonRecp = ({ onClose }) => {
             <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
             <div className='champ'>{recept.receipt_id}</div>
             <div className='champdate'>{String(recept.delivery_date).split('T')[0]}</div>
-            <Link to={`/bon-reception/${recept.receipt_id}`} className='v'>View </Link>
+            <Link to={`/${id}/bon-reception/${recept.receipt_id}`} className='v'>View </Link>
             <button onClick={(event) => handleDelete(index, event)} className='d'>Delete</button>
           </div>
         ))}
