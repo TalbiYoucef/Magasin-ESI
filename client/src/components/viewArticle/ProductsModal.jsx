@@ -1,6 +1,4 @@
-
 import React, { useState, useEffect } from 'react';
-
 function ProductsModal({ Products, selectedProducts, onClose, onAddProducts }) {
   const [selected, setSelected] = useState([...selectedProducts]); // Utilisez le spread operator pour créer une copie de selectedPermissions
 

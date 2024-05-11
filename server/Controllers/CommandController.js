@@ -15,9 +15,11 @@ const getCommands = async (req, res) => {
 
 const getExternalCommands = async (req, res) => {
   try {
-    const commands = await db.Command.findAll({where:{
-      type : "external"
-    }});
+    const commands = await db.Command.findAll({
+      where: {
+        type: "external",
+      },
+    });
     if (!commands || commands.length === 0) {
       return res.status(404).json({ message: "No commands found" });
     }
@@ -96,7 +98,7 @@ const getAllCommandProducts = async (req, res) => {
 const assignProductToCommand = async (req, res) => {
   try {
     const { id } = req.params;
-    const { product_id, quantity, unit_price , num_inventaire } = req.body;
+    const { product_id, quantity, unit_price, num_inventaire } = req.body;
     const productCommand = await db.Product_Command.findOne({
       where: { command_id: id, product_id: product_id },
     });
@@ -110,7 +112,7 @@ const assignProductToCommand = async (req, res) => {
       quantity: quantity,
       delivered_amount: 0,
       amount_left: quantity,
-      num_inventaire:num_inventaire
+      num_inventaire: num_inventaire,
     });
     return res.status(201).json(createdProductCommand);
   } catch (error) {
@@ -121,17 +123,16 @@ const assignProductToCommand = async (req, res) => {
 const updateProductToCommand = async (req, res) => {
   try {
     const { id } = req.params;
-    const { product_id,delivered_amount,amount_left,num_inventaire } = req.body;
+    const { product_id, delivered_amount, amount_left } =
+      req.body;
     const productCommand = await db.Product_Command.findOne({
       where: { command_id: id, product_id: product_id },
     });
     if (productCommand) {
       productCommand.delivered_amount = delivered_amount;
       productCommand.amount_left = amount_left;
-      productCommand.num_inventaire = num_inventaire;
       await productCommand.save();
-    }
-    else{
+    } else {
       return res.status(400).json({ message: "Product not found" });
     }
   } catch (error) {
@@ -173,7 +174,31 @@ const getPurchasingOrder = async (req, res) => {
       res.status(500).send("no purshasing orders found");
     });
 };
-
+const updateQuantities = async (req, res) => {
+  const { id } = req.params;
+  const quantities = req.body;
+  console.log(quantities)
+  try {
+    const result = quantities.map(async (quantity) => {
+      const productCommand = await db.Product_Command.findOne({
+        where: { command_id: id, product_id: quantity.product },
+      });
+      if (productCommand) {
+        productCommand.delivered_amount = quantity.quantity;
+        productCommand.amount_left =
+          productCommand.amount_left - quantity.quantity;
+        await productCommand.save();
+        return productCommand;
+      } else {
+        return ({ message: "Product not found" });
+      }
+    });
+    res.status(200).json({ result });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({error});
+  }
+};
 const getInteranlOrder = async (req, res) => {
   const { id } = req.params;
   await db.InternalOrder.findOne({
@@ -187,7 +212,7 @@ const getInteranlOrder = async (req, res) => {
       }
     })
     .catch((error) => {
-      res.status(500).send("no purshasing orders found");
+      res.status(500).send("no internal orders found");
     });
 };
 module.exports = {
@@ -201,5 +226,6 @@ module.exports = {
   getAllCommandProducts,
   updateProductToCommand,
   getInteranlOrder,
-  getExternalCommands
+  updateQuantities,
+  getExternalCommands,
 };

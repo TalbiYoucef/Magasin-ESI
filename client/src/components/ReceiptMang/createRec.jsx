@@ -25,6 +25,7 @@ function CreateRec() {
   const [quantities, setQuantities] = useState([]);
   const [initialQuantities, setInitialQuantities] = useState([]);
   const [order, setOrder] = useState({});
+  const [date,setDate]=useState('')
   const [user, setUser] = useState({});
   const [supplier, setSupplier] = useState({});
   const [article, setArticle] = useState({});
@@ -89,7 +90,7 @@ function CreateRec() {
               }
             );
 
-            console.log(article.data);
+            setDate(String(article.data[0].updatedAt).split('T')[0]);
             setProducts(article.data);
             const initial = article.data.map((product) => product.amount_left);
             setInitialQuantities(initial);
@@ -182,29 +183,47 @@ function CreateRec() {
               withCredentials: true,
             }
           );
-          console.log(respo.data);
-          console.log(products);
-          products.map(async (pro, index) => {
-            try {
-              const respo = await axios.put(
-                `http://localhost:3036/commands/${commandId}/products`,
-                {
-                  product_id: pro.product_id,
-                  delivered_amount: quantities[index],
-                  amount_left: initialQuantities[index] - quantities[index],
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${res.data.accessToken}`,
-                  },
-                  withCredentials: true,
-                }
-              );
-              console.log(respo.data);
-            } catch (error) {
-              console.log("product amount have not changed");
-            }
+          const result = products.map((product, index) => {
+            return {
+              product: product.product_id,
+              quantity: quantities[index],
+            };
           });
+          console.log(result);
+          try {
+            const resp = await axios.put(
+              `http://localhost:3036/commands/${commandId}/updateQuantities`,
+              [...result],
+              {
+                headers: { Authorization: `Bearer ${res.data.accessToken}` },
+                withCredentials: true,
+              }
+            );
+            console.log(resp.data);
+          } catch (error) {
+            console.log(error);
+          }
+          // products.map(async (pro, index) => {
+            // try {
+            //   const respo = await axios.put(
+            //     `http://localhost:3036/commands/${commandId}/products`,
+            //     {
+            //       product_id: pro.product_id,
+            //       delivered_amount: quantities[index],
+            //       amount_left: initialQuantities[index] - quantities[index],
+            //     },
+            //     {
+            //       headers: {
+            //         Authorization: `Bearer ${res.data.accessToken}`,
+            //       },
+            //       withCredentials: true,
+            //     }
+            //   );
+            //   console.log(respo.data);
+            // } catch (error) {
+            //   console.log("product amount have not changed");
+            // }
+          // });
         } catch (error) {
           console.log(error);
         }
@@ -428,7 +447,7 @@ function CreateRec() {
                   MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
                   border: "none",
                 }}
-                value={today}
+                value={date}
               />
             </div>
           </div>

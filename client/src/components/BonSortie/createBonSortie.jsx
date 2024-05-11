@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
-import CmdData from "../data/CommandInterne";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { MdNavigateNext } from "react-icons/md";
 import axios from "axios";
@@ -52,6 +51,7 @@ function CreateBonSortie() {
               withCredentials: true,
             }
           );
+          setDate(String(resp.data[0].updatedAt).split('T')[0]);
           setProducts(resp.data);
           let initial = resp.data.map((ele) => ele.quantity);
           setInitialQuantitie(initial);
@@ -80,7 +80,7 @@ function CreateBonSortie() {
       }
     };
     fetchData();
-  }, [navigate]);
+  }, []);
 
   const getProductName = (id) => {
     const pro = allProducts.find((pro) => pro.product_id == id);
@@ -112,100 +112,98 @@ function CreateBonSortie() {
 
   const handleConfirmCommand = async () => {
     const confirm = window.confirm(
-      "Are you sure you want create this exit note ?"
+      "Are you sure you want to create this exit note?"
     );
     if (confirm) {
+      console.log(quantities);
       try {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
         });
-        products.forEach( async (pro, index) => {
-          try {
-            const resp = await axios.put(
-              `http://localhost:3036/commands/${id}/products`,
-              {
-                product_id: pro.product_id,
-                delivered_amount: quantities[index],
-                amount_left: initialQuantities[index] - quantities[index],
-                num_inventaire: inventaires[index],
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${res.data.accessToken}`,
-                },
-                withCredentials: true,
-              }
-            );
-            console.log("updated");
-            console.log(resp.data);
-          } catch (error) {
-            console.log(error);
-          }
-        });
         try {
-          const resp = await axios.get(
+          const internalOrderResponse = await axios.get(
             `http://localhost:3036/commands/${id}/internal-order`,
             {
-              headers: {
-                Authorization: `Bearer ${res.data.accessToken}`,
-              },
+              headers: { Authorization: `Bearer ${res.data.accessToken}` },
               withCredentials: true,
             }
           );
-          try {
+          const respp = await axios.get(
+            `http://localhost:3036/internalorders/${internalOrderResponse.data.internal_order_id}`,
+            {
+              headers: { Authorization: `Bearer ${res.data.accessToken}` },
+              withCredentials: true,
+            }
+          );
+          console.log(respp.data);
+          if (respp.data.status == "satisfied") {
+            alert("you can not recreate an exit note");
+          } else {
             const response = await axios.put(
-              `http://localhost:3036/internalorders/${resp.data.internal_order_id}/status`,
+              `http://localhost:3036/internalorders/${internalOrderResponse.data.internal_order_id}/status`,
+              { status: "satisfied" },
               {
-                status: "satisfied",
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${res.data.accessToken}`,
-                },
+                headers: { Authorization: `Bearer ${res.data.accessToken}` },
                 withCredentials: true,
               }
             );
             console.log(response.data);
-          } catch (error) {
-            console.log(error);
-          }
-
-          try {
-            const response = await axios.post(
-              `http://localhost:3036/exitnotes/`,
-              {
-                exit_date:today ,
-                type: "discharge",
-                comment: "",
-                expected_returning_date: date,
-                internal_order_id:resp.data.internal_order_id,
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${res.data.accessToken}`,
+            const result = products.map((product, index) => {
+              return {
+                product: product.product_id,
+                quantity: quantities[index],
+              };
+            });
+            console.log(result);
+            try {
+              const resp = await axios.put(
+                `http://localhost:3036/commands/${id}/updateQuantities`,
+                [...result],
+                {
+                  headers: { Authorization: `Bearer ${res.data.accessToken}` },
+                  withCredentials: true,
+                }
+              );
+              console.log(resp.data);
+            } catch (error) {
+              console.log(error);
+            }
+            try {
+              const response = await axios.post(
+                `http://localhost:3036/exitnotes/`,
+                {
+                  exit_date: today,
+                  type: "discharge",
+                  comment: "",
+                  internal_order_id:
+                    internalOrderResponse.data.internal_order_id,
                 },
-                withCredentials: true,
-              }
-            );
-            console.log(response.data);
-          } catch (error) {
-            console.log(error);
+                {
+                  headers: { Authorization: `Bearer ${res.data.accessToken}` },
+                  withCredentials: true,
+                }
+              );
+              console.log(response.data);
+            } catch (error) {
+              console.log(error);
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        navigate(-1)
+        navigate(-1);
       } catch (error) {
+        // Redirect to login if there's an error
         navigate("/login");
       }
     }
   };
-
   const handleCancel = () => {
     const confirm = window.confirm(
       "Are you sure you want to cancel the command?"
     );
     if (confirm) {
+      navigate(-1)
     }
   };
 
@@ -368,37 +366,11 @@ function CreateBonSortie() {
                   MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
                   border: "none",
                 }}
-                value={today}
+                value={date}
               />
             </div>
             <div className="su330">
-              <p
-                htmlFor=""
-                style={{
-                  color: "#5B548E",
-                  marginLeft: "60px",
-                  marginTop: "10px",
-                }}
-              >
-                Expected returning Date
-              </p>
-              <input
-                type="date"
-                className="date30"
-                style={{
-                  width: "100%",
-                  height: "50px",
-                  marginLeft: "5%",
-                  backgroundColor: "white",
-                  borderRadius: "30px",
-                  boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
-                  WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
-                  MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
-                  border: "none",
-                }}
-                onChange={(e) => setDate(e.target.value)}
-                value={date}
-              />
+              
               {/* Remplir le champ avec la date de la commande sélectionnée */}
             </div>
           </div>
@@ -432,7 +404,6 @@ function CreateBonSortie() {
             >
               Designations :
             </div>
-
             {/* La liste des composants de commande */}
             {products.map((cmdData, index) => (
               <div
@@ -489,7 +460,6 @@ function CreateBonSortie() {
                     </div>
                   </div>
                 </div>
-
                 <div
                   style={{
                     width: "9%",
@@ -584,48 +554,6 @@ function CreateBonSortie() {
                     flexDirection: "column",
                   }}
                 >
-                  <div
-                    style={{
-                      color: "#5B548E",
-                      fontSize: "15px",
-                      marginLeft: "10px",
-                      marginTop: "20px",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    {" "}
-                    N° Inventaire:{" "}
-                  </div>
-                  <div
-                    style={{
-                      color: "#666666",
-                      borderRadius: "20px",
-                      height: "45px",
-                      width: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                      border: "none",
-                    }}
-                  >
-                    <input
-                      required
-                      onChange={(e) => handleInventaireChange(e, index)}
-                      type="number"
-                      value={inventaires[index]}
-                      style={{
-                        height: "45px",
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        borderRadius: "20px",
-                        justifyContent: "center",
-                        outline: "none",
-                        border: "none",
-                      }}
-                    />
-                  </div>
                 </div>
                 <div
                   style={{
@@ -686,7 +614,6 @@ function CreateBonSortie() {
               }}
             /> */}
           </div>
-
           <div
             style={{
               display: "flex",
@@ -716,7 +643,6 @@ function CreateBonSortie() {
             >
               Cancel
             </button>
-
             <button
               style={{
                 borderRadius: "20px",

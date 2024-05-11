@@ -29,10 +29,6 @@ const createReceiptNote = async (req, res) => {
     try {
         const {id}=req.params
         const { deliveryDate,comment,type } = req.body;
-        // const finishedCommand = await db.Command.findOne({ where: { type:'complete' } });
-        // if(finishedCommand){
-        //     return res.status(400).json({ message: `the full receipt has been established already!` });
-        // }
         const createdReceiptNote = await db.ReceiptNote.create({delivery_date:deliveryDate,comment:comment,order_id:id,type:type});
         return res.status(201).json({ createdReceiptNote });
     } catch (error) {

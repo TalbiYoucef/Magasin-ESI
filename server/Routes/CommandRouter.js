@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const{ getCommands,getPurchasingOrder,updateProductToCommand, getCommandById,createCommand,deleteCommand,assignProductToCommand,removeProductFromCommand, getAllCommandProducts, getInteranlOrder, getExternalCommands} = require('../Controllers/CommandController');
+const{ getCommands,getPurchasingOrder,updateProductToCommand, getCommandById,createCommand,deleteCommand,assignProductToCommand,removeProductFromCommand, getAllCommandProducts, getInteranlOrder, getExternalCommands, updateQuantities} = require('../Controllers/CommandController');
 
 router
 .get('/', getCommands)
@@ -12,6 +12,7 @@ router
 .delete('/:id/products', removeProductFromCommand)
 .get('/:id/products', getAllCommandProducts)
 .get('/:id/purchasing-order', getPurchasingOrder)
+.put('/:id/updateQuantities', updateQuantities)
 .get('/:id/internal-order', getInteranlOrder);
 
 module.exports = router;

@@ -164,8 +164,9 @@ function CreateCmdinterne() {
     }
   };
   const handleAddCmd = (cmdData) => {
+    setFilteredProducts(filteredProducts.filter(pro=> pro.name!==cmdData.selectedPro))
     setCmdDataList([...cmdDataList, cmdData]);
-    console.log([...cmdDataList, cmdData]);
+    console.log('selected',[...cmdDataList, cmdData]);
   };
 
   const handleConfirmCommand = async () => {
@@ -227,7 +228,10 @@ function CreateCmdinterne() {
               }
             );
           } catch (error) {}
-        } catch (error) {}
+        } catch (error) {
+          console.log(error)
+        }
+        navigate(-1)
       } catch (error) {
         navigate("/login");
         console.log(error);
@@ -253,10 +257,11 @@ function CreateCmdinterne() {
       "Are you sure you want to Leave this form ?"
     );
     if (confirm) {
+
+      navigate(-1)
       // window.location.href =  '/List des  demandes de fourniture  de ce user ';
     }
   };
-
   const today = new Date().toLocaleDateString("fr-FR");
   return (
     <div>

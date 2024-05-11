@@ -54,17 +54,34 @@ function App() {
         <div>
           <Routes>
             {/* <Route path="/edit-bon-sortie/:id" element={<EditBonSortie />} /> */}
-            <Route path="/cmdi/:id/create-bon-decharge" element={<CreateDecharge />} />
+            <Route
+              path="/cmdi/:id/create-bon-decharge"
+              element={<CreateDecharge />}
+            />
             <Route path="/edit-bon-decharge/:id" element={<EditDecharge />} />
             <Route path="/veiw-bon-decharge/:id" element={<Decharge />} />
             {/* //to do : */}
+            
             {/* // already done */}
-            <Route path="/:idcmd/bon-reception/:id" element={<BonDeReception />} />
-            <Route path="/veiw-bon-sortie/:id" element={<DemandeDeFourniture />} />
-            <Route path="/cmdi/:id/create-bon-sortie" element={<CreateBonSortie />} />
-            <Route path="/view-demande-fourniture/:id" element={<DemandeFourniture />} />
-            <Route path="/edit-cmdi/:id" element={<EditCmdinterne />}/>
-            <Route path="/mes-cmnd" element={<CommandInterneUser/>} />
+            <Route
+              path="/:idcmd/bon-reception/:id"
+              element={<BonDeReception />}
+            />
+            <Route
+              path="/veiw-bon-sortie/:id"
+              element={<DemandeDeFourniture />}
+            />
+            <Route
+              path="/cmdi/:id/create-bon-sortie"
+              element={<CreateBonSortie />}
+            />
+            <Route
+              path="/view-demande-fourniture/:id"
+              element={<DemandeFourniture />}
+            />
+            
+            <Route path="/edit-cmdi/:id" element={<EditCmdinterne />} />
+            <Route path="/mes-cmnd" element={<CommandInterneUser />} />
             <Route path="/bonsdereception/:id" element={<ListBonRecp />} />
             <Route path="/cmdis" element={<CommandInterne />} />
             <Route path="/cr-cmdi" element={<CreateCmdinterne />} />
@@ -72,7 +89,7 @@ function App() {
             <Route
               path="/order/:id/create-bon-reception"
               element={<CreateRec />}
-            />
+            />{" "}
             <Route path="/chapters" element={<ViewChapter />} />
             <Route path="/produits" element={<Produit />} />
             <Route path="/chapter/:id" element={<Articles />} />

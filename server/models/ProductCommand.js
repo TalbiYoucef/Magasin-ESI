@@ -43,10 +43,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       default: 0,
     },
-    num_inventaire : {
-      type: DataTypes.INTEGER,
-      allowNull : true,
-    },
     status_quantity: {
       type: DataTypes.ENUM("initialized", "validated", "accepted", "satisfied"),
       allowNull: false,

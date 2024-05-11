@@ -12,9 +12,7 @@ function CommandInterneUser() {
   const [user, setUser] = useState({});
   const [internals, setInternals] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [produits, setProduits] = useState(produit);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [commands, setCommands] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +31,7 @@ function CommandInterneUser() {
               withCredentials: true,
             }
           );
-          setInternals(resp.data);
+          setInternals(resp.data.reverse());
         } catch (error) {
           console.log(error);
         }
@@ -53,11 +51,6 @@ function CommandInterneUser() {
   const handleSortClick = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
-
-  const filteredRoles = produit.filter((article) =>
-    article.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const rolesList = internals.map((produit, index) => (
     <Per
       key={index}

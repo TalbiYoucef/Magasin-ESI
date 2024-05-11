@@ -61,7 +61,7 @@ app.delete("/", async (req, res) => {
 });
 app.get("/create-br", (req, res) => {
   const chapters = [
-    " Remboursement frais",
+    "Remboursement frais",
     "Matériel et mobilier",
     "Fournitures",
     "Documentation",
@@ -130,22 +130,20 @@ app.get("/create-br", (req, res) => {
     { id: 8, array: array21 },
     { id: 9, array: array22 },
     { id: 10, array: array23 },
-    { id:11, array: array27 },
+    { id: 11, array: array27 },
     { id: 12, array: array32 },
   ];
 
   try {
-    branches.map((element) => {
-      element.array.map(async (ele) => {
-        await db.Branch.create({ name: ele, chapter_id: element.id,VAT:19 });
+    array12.map(async (ele) => {
+        await db.Branch.create({ name: ele, chapter_id: 4,VAT:19 });
       });
-    });
+    
     res.end("done");
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
 });
-
 app.get("/create", async (req, res) => {
   const services = [
     "Direction Générale",
@@ -462,7 +460,7 @@ app.get("/create", async (req, res) => {
        name:pro,
        qt_physique:1000,
        qt_logique:1000,
-       branch_id:19
+       branch_id:2
       })
     })
    } catch (error) {

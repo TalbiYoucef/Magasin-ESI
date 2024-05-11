@@ -52,13 +52,15 @@ function Produit() {
     };
 
     fetchData();
-  }, [navigate]);
+  }, []);
   
-  const handleViewRole = (produitName) => {
+  const handleViewRole = (produitName,id) => {
     setShowProductModel(true)
-    const articleInfo = article.find((article) => article.name === produitName);
-    setSelectedRole(articleInfo); // Stocker les informations de l'article sélectionné
-    setShowEditRoleForm(true); // Afficher le formulaire d'édition
+    console.log(showProductModel)
+    console.log(produitName,id)
+    // const articleInfo = article.find((article) => article.name === produitName);
+    // setSelectedRole(articleInfo); // Stocker les informations de l'article sélectionné
+    // setShowEditRoleForm(true); // Afficher le formulaire d'édition
   };
 
   const handleSearchChange = (event) => {
@@ -77,7 +79,7 @@ function Produit() {
     <Per
       key={index}
       name={produit.name}
-      onView={() => handleViewRole(produit.name)}
+      onView={() => handleViewRole(produit.name,produit.product_id)}
     />
   ));
   const handleClose =() =>{
@@ -137,13 +139,11 @@ function Produit() {
               onCreateChapitre={handleCreateChapitre}
               onClose={() => setShowCreateChapitreForm(false)}
             />
-            {showProductModel && <ViewProductModal
-            onClose={handleClose}
-            id={'90'}
-            />}
+            
           </div>
         </div>
       )}
+      
     </div>
   );
 }

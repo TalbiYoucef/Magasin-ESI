@@ -74,7 +74,7 @@ const DemandeDeFourniture = () => {
       }
     };
     fetchData();
-  }, [navigate]);
+  }, []);
   const getProductName =(id)=>{
     const name = allProducts.find(pro => pro.product_id == id)
     if(name){

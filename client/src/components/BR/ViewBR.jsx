@@ -38,9 +38,11 @@ const BonDeReception = () => {
         } catch (error) {
           console.log(error);
         }
+        // get id de commande from id de purshsing order
+        // idcmd : id de bon de commande
         try {
-          const resp = await axios.get(
-            `http://localhost:3036/commands/${idcmd}/purchasing-order`,
+          const cmd = await axios.get(
+            `http://localhost:3036/purchaseorders/${idcmd}/command`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
@@ -48,12 +50,10 @@ const BonDeReception = () => {
               withCredentials: true,
             }
           );
-          setOrder(resp.data.order);
-          setDate(String(resp.data.order.updatedAt).split("T")[0]);
-          console.log(resp.data.order);
+          console.log(cmd.data);
           try {
-            const article = await axios.get(
-              `http://localhost:3036/commands/${idcmd}/`,
+            const resp = await axios.get(
+              `http://localhost:3036/commands/${cmd.data}/purchasing-order`,
               {
                 headers: {
                   Authorization: `Bearer ${res.data.accessToken}`,
@@ -61,62 +61,78 @@ const BonDeReception = () => {
                 withCredentials: true,
               }
             );
-            console.log(article.data);
-          } catch (error) {
-            console.log(error);
-          }
+            setOrder(resp.data.order);
+            setDate(String(resp.data.order.updatedAt).split("T")[0]);
+            console.log(resp.data.order);
+            try {
+              const article = await axios.get(
+                `http://localhost:3036/commands/${cmd.data}/`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
+                  withCredentials: true,
+                }
+              );
+              console.log(article.data);
+            } catch (error) {
+              console.log(error);
+            }
 
-          try {
-            const article = await axios.get(
-              `http://localhost:3036/commands/${idcmd}/products`,
-              {
-                headers: {
-                  Authorization: `Bearer ${res.data.accessToken}`,
-                },
-                withCredentials: true,
-              }
-            );
+            try {
+              const article = await axios.get(
+                `http://localhost:3036/commands/${cmd.data}/products`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
+                  withCredentials: true,
+                }
+              );
 
-            console.log(article.data);
-            setProducts(article.data);
-          } catch (error) {
-            console.log(error);
-          }
+              console.log(article.data);
+              setProducts(article.data);
+            } catch (error) {
+              console.log(error);
+            }
 
-          try {
-            const article = await axios.get(
-              `http://localhost:3036/branches/${resp.data.order.branch_id}/`,
-              {
-                headers: {
-                  Authorization: `Bearer ${res.data.accessToken}`,
-                },
-                withCredentials: true,
-              }
-            );
-            console.log(article.data);
-            setArticle(article.data);
-          } catch (error) {
-            console.log(error);
-          }
+            try {
+              const article = await axios.get(
+                `http://localhost:3036/branches/${resp.data.order.branch_id}/`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
+                  withCredentials: true,
+                }
+              );
+              console.log(article.data);
+              setArticle(article.data);
+            } catch (error) {
+              console.log(error);
+            }
 
-          try {
-            const supplier = await axios.get(
-              `http://localhost:3036/suppliers/${resp.data.order.supplier_id}/`,
-              {
-                headers: {
-                  Authorization: `Bearer ${res.data.accessToken}`,
-                },
-                withCredentials: true,
-              }
-            );
-            // setCmdDataList(resp.data);
-            console.log(supplier.data.supplier);
-            setSupplier(supplier.data.supplier);
+            try {
+              const supplier = await axios.get(
+                `http://localhost:3036/suppliers/${resp.data.order.supplier_id}/`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
+                  withCredentials: true,
+                }
+              );
+              // setCmdDataList(resp.data);
+              console.log(supplier.data.supplier);
+              setSupplier(supplier.data.supplier);
+            } catch (error) {
+              console.log(error);
+            }
           } catch (error) {
             console.log(error);
           }
         } catch (error) {
-          alert(error.response.data.message);
+          // alert(error.response.data.message);
           navigate("/commands");
           console.log(error);
         }
@@ -136,33 +152,6 @@ const BonDeReception = () => {
     }
     return "";
   };
-
-  const cmdData = [
-    {
-      id: "0",
-      numCmd: "1",
-      chapitre: "Chapitre1",
-      article: "Article1",
-      supplier: "Sarl PC STORE",
-      date: "04-03-2024",
-      state: "initialized",
-      products: [
-        { idp: 0, nommP: "Produit 1", quantite: 2 },
-        { idp: 1, nommP: "Produit 2", quantite: 1 },
-        { idp: 2, nommP: "Produit 3", quantite: 2 },
-      ],
-    },
-  ];
-
-  const brData = [
-    {
-      id: "2",
-      date: "09-03-2024",
-      cmdid: "1",
-      commnt: "",
-      type: "",
-    },
-  ];
   const frameRef = useRef(null);
 
   const handleDownload = async () => {
@@ -194,7 +183,7 @@ const BonDeReception = () => {
               <Side />
             </div>
             <div className="bnrcpt">
-              <h4 className="BR">BON DE RECEPTION N° : {brData[0].id}</h4>
+              <h4 className="BR">BON DE RECEPTION N° : {id}</h4>
               <div className="buttons-right-rs">
                 <Link to="/commands-list">
                   <button className="commands-ls" onClick={() => navigate(-2)}>
@@ -212,7 +201,10 @@ const BonDeReception = () => {
               </div>
             </div>
             <div className="frame1" ref={frameRef}>
-              <div className="cont-frame" style={{ maxWidth: "800px",border:'none' }}>
+              <div
+                className="cont-frame"
+                style={{ maxWidth: "800px", border: "none" }}
+              >
                 <div>
                   <img className="logoesi-img" src={logoesi} alt="My Image" />
                 </div>
@@ -226,11 +218,11 @@ const BonDeReception = () => {
                 <div className="info1">
                   <p>Fournisseur: {supplier.name}</p>
                   <div className="info-br2">
-                    <p>N° du Bon de commande : {idcmd} </p>{" "} 
+                    <p>N° du Bon de commande : {idcmd} </p>{" "}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <p>
                       Date du Bon de Commande :
-                      {String(products[0]?.updatedAt).split("T")[0] }
+                      {String(products[0]?.updatedAt).split("T")[0]}
                     </p>
                   </div>
                 </div>
@@ -249,7 +241,9 @@ const BonDeReception = () => {
                         <td className="info-product info-designation">
                           {getproduct(product.product_id)}
                         </td>
-                        <td className="info-product">{product.delivered_amount}</td>
+                        <td className="info-product">
+                          {product.delivered_amount}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

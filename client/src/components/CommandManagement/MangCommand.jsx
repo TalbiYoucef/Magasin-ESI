@@ -5,18 +5,18 @@ import Nav from "../nav/nav.jsx";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import Per from "./commandLign.jsx";
-import { useNavigate , Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 // get comands
-import axios from 'axios'
+import axios from "axios";
 
 function Cmds() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [cmds, setcmds] = useState([]); // État local pour stocker la liste des command
   const [isChecked, setIsChecked] = useState(false); // État local pour le bouton de case à cocher
   const [sortOrder, setSortOrder] = useState("asc"); // État local pour l'ordre de tri (ascendant ou descendant)
   const [selectedState, setSelectedState] = useState("State");
   const [selectedCommand, setSelectedCommand] = useState(null);
- // createdAt updatedAt
+  // createdAt updatedAt
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,8 +31,8 @@ function Cmds() {
             },
             withCredentials: true,
           });
-          setcmds(resp.data)
-          console.log(resp.data)
+          setcmds(resp.data.reverse());
+          console.log(resp.data);
         } catch (error) {
           console.log(error);
         }
@@ -42,18 +42,15 @@ function Cmds() {
         console.log(error);
       }
     };
-  
     fetchData();
   }, []);
-  
-
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
-  const handleClick = () =>{
-    navigate('/create-cmd')
-  }
+  const handleClick = () => {
+    navigate("/create-cmd");
+  };
   // Gérer les changements de la valeur de recherche
   const [searchTerm, setSearchTerm] = useState(""); // État local pour stocker la valeur de recherche
   const handleSearchChange = (event) => {
@@ -61,7 +58,7 @@ function Cmds() {
   };
 
   // Filtrer les cmd en fonction de la valeur de recherche
-  const filteredCmd = cmds
+  const filteredCmd = cmds;
   const handleSortClick = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newOrder);
@@ -75,8 +72,6 @@ function Cmds() {
       })
     );
   };
-  //filtre les states
-  // Fonction pour filtrer les commandes par état sélectionné
   const handleStateFilter = (state) => {
     setSelectedState(state);
     const filteredCommands = cmds.filter((cmd) => {
@@ -133,7 +128,6 @@ function Cmds() {
                   className="selctstat28"
                   value={selectedState}
                   onChange={(event) => setSelectedState(event.target.value)}
-                  
                   onClick={() => handleStateFilter(selectedState)}
                 >
                   <option value="State">State</option>
@@ -151,9 +145,9 @@ function Cmds() {
               {filteredCmd.map((cmd, index) => (
                 <Per
                   key={index}
-                  id= {cmd.command_id}
+                  id={cmd.command_id}
                   type={cmd.type}
-                  user ={cmd.user_id}
+                  user={cmd.user_id}
                   numCmd={cmd.command_id}
                   date={cmd.createdAt}
                 />

@@ -164,13 +164,14 @@ function CreateCmd() {
   };
   const handleAddCmd = (cmdData) => {
     setPrixTotal((prev) => (prev += cmdData.price * cmdData.quantity));
-    console.log(prixTotal);
     setCmdDataList([...cmdDataList, cmdData]);
-    setFilteredProducts(
-      filteredProducts.filter((product) => product.nom !== cmdData.selectedPro)
+    // console.log(cmdData)
+    console.log(getProduct(cmdData.product_id))
+    console.log(filteredProducts)
+
+    setProducts(
+      products.filter((pro) => pro.name !== getProduct(cmdData.product_id))
     );
-    console.log(prixTotal);
-    // Mettre à jour le prix unitaire lors de l'ajout d'une commande
   };
   const getSuppId = (name) => {
     return suppliers.find((sup) => sup.name == name).supplier_id;
@@ -187,6 +188,7 @@ function CreateCmd() {
     );
 
     if (confirm) {
+      console.log(getSuppId(selectedSupplier));
       try {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
@@ -230,12 +232,11 @@ function CreateCmd() {
                       .post(
                         `http://localhost:3036/purchaseorders`,
                         {
-                          supplier_id: getSuppId(selectedSupplier),
-                          command_id: resp.data.command_id,
                           expected_delivery_date: expectedDate,
                           total_price: prixTotal,
                           notes: "",
-                          payment_method: modePayment,
+                          command_id: resp.data.command_id,
+                          supplier_id: getSuppId(selectedSupplier),
                           chapter_id: getChapId(selectedChapter),
                           branch_id: getBranchId(selectedArticle),
                         },
@@ -265,7 +266,15 @@ function CreateCmd() {
       }
     }
   };
-
+  const getProduct=(id)=>{
+  const pro = products.find(pro=> pro.product_id == id)
+   if(pro){
+    return pro.name
+   }
+   else{
+    return ""
+   }
+  }
   const handleCancel = () => {
     const confirm = window.confirm(
       "Are you sure you want to cancel the command?"

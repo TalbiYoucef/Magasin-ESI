@@ -24,13 +24,6 @@ function CreateRoleForm({ onCreateChapitre, onClose }) {
   const [message, setMessage] = useState('');
 
 
-  const handleAddProduits = (produits) => {
-    setSelectedProduits(produits);
-    console.log('Chdata ///produit',Chdata)
-
-    console.log('create ///produit',produits)
-    setShowArticlesModal(false); // Fermer le modal des permissions une fois les permissions sélectionnées
-  };
   
 
 //--------------------

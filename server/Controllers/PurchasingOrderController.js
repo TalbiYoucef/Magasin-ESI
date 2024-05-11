@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const db = require("../models/");
 const getAllPurchasingOrders = async (req, res) => {
   try {
@@ -45,6 +46,35 @@ const getreceipts = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
+const getCommand= async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await db.PurchasingOrder.findOne({where:{
+      order_id : id
+    }})
+    res.status(200).json(order.command_id)
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ error: error.message });
+  }
+};
+const getreceiptById = async (req, res) => {
+  try {
+    const { id,rid } = req.params;
+    const receipt = await db.ReceiptNote.findAll({
+      where: { order_id: id , receipt_id:rid },
+    });
+    if (!receipt) {
+      return res.status(404).json({
+        message: `no receipts found with id ${req.params.id}!`,
+      });
+    }
+    return res.status(201).json(receipt);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ error: error.message });
+  }
+};
 const createPurchasingOrder = async (req, res) => {
   try {
     const {
@@ -52,7 +82,6 @@ const createPurchasingOrder = async (req, res) => {
       command_id,
       expected_delivery_date,
       total_price,
-      payment_method,
       notes,
       chapter_id,
       branch_id,
@@ -61,7 +90,6 @@ const createPurchasingOrder = async (req, res) => {
       command_id: command_id,
       supplier_id: supplier_id,
       expected_delivery_date: expected_delivery_date,
-      payment_method: payment_method,
       notes: notes,
       total_price: total_price,
       branch_id: branch_id,
@@ -117,5 +145,7 @@ module.exports = {
   createPurchasingOrder,
   deletePurchasingOrder,
   getreceipts,
+  getCommand,
+  getreceiptById,
   updatePurchasingOrderStatus,
 };
