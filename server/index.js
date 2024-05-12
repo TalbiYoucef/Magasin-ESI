@@ -37,7 +37,6 @@ app.use("/internalorders", require("./Routes/InternalOrderRouter")); //newest ad
 app.use("/exitnotes", require("./Routes/ExitNoteRouter")); //newest additions
 app.use("/returnnotes", require("./Routes/ReturningNoteRouter")); //newest additions
 
-
 app.post("/finduser", async (req, res) => {
   const { token } = req.body;
   const foundUser = await db.User.findOne({ where: { token: token } });
@@ -136,12 +135,44 @@ app.get("/create-br", (req, res) => {
 
   try {
     array12.map(async (ele) => {
-        await db.Branch.create({ name: ele, chapter_id: 4,VAT:19 });
-      });
-    
+      await db.Branch.create({ name: ele, chapter_id: 4, VAT: 19 });
+    });
+
     res.end("done");
   } catch (err) {
     res.status(500).send({ error: err.message });
+  }
+});
+app.get("/cr-perms", async (req, res) => {
+  array = [
+    "manage users",
+    "manage roles",
+    "manage permissions",
+    "manage account",
+    "manage chapters",
+    "manage branches",
+    "manage products",
+    "manage suppliers",
+    "consult statistics",
+    "consult BCE",
+    "consult FMP",
+    "manage BC",
+    "manage inventory",
+    "consult BCI",
+    "manage BS",
+    "manage BD",
+    "validate BCI",
+    "consult store",
+    "consult inventory",
+    "statistics",
+  ];
+  try {
+    array.map(async (ele, index) => {
+      await db.Permission.create({ permission_id: index + 1, name: ele });
+    });
+    res.status(200).send('done')
+  } catch (error) {
+    res.status(500).send('not able to create')
   }
 });
 app.get("/create", async (req, res) => {
@@ -454,18 +485,16 @@ app.get("/create", async (req, res) => {
     "Verrou G/M",
     "Vis parker boite 4*25",
   ];
-   try {
-    products.map(async pro=>{
+  try {
+    products.map(async (pro) => {
       await db.Product.create({
-       name:pro,
-       qt_physique:1000,
-       qt_logique:1000,
-       branch_id:2
-      })
-    })
-   } catch (error) {
-    
-   }
+        name: pro,
+        qt_physique: 1000,
+        qt_logique: 1000,
+        branch_id: 2,
+      });
+    });
+  } catch (error) {}
   // try {
   //   fourni.map(async (ele) => {
   //     await db.Supplier.create({

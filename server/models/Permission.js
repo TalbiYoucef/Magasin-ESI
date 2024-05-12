@@ -2,8 +2,7 @@ module.exports = (sequelize, DataTypes)=> {
   const Permission = sequelize.define('Permission', {
     permission_id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true
     },
     name: DataTypes.STRING
   });
