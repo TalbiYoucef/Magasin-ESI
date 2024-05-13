@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 function Rollig(props) {
@@ -8,8 +7,9 @@ function Rollig(props) {
     setIsChecked(!isChecked);
   };
   const navigate = useNavigate();
-  const handleDelete = async () => {
-    try {
+
+ const handleDelete = async () => {
+     try {
       const res = await axios.get("http://localhost:3036/refresh", {
         withCredentials: true,
       });
