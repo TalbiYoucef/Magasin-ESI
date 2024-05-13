@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-
-
-function ViewProductModal({onClose}) {
+import { MdOutlineQueryStats } from "react-icons/md";
+import ViewProductStats from './ViewProductStats';
+function ViewProductModal({  onClose}) {
   const [ProduitData, setProduitData] = useState({
     id: 1,
   name: 'PC de bureau',
@@ -11,8 +11,10 @@ function ViewProductModal({onClose}) {
   });
    
   const [Produit, setProduit] = useState(ProduitData);
+  const [showProductStats, setshowProductStats] = useState(false);
 
-  
+ 
+
   const handleConfirm = () => {
      if(Produit.quantity!=ProduitData.quantity)
     {const confirm = window.confirm(" Do you want  to  change product  quantity   ?");
@@ -55,7 +57,7 @@ else{
                 style={{
                     display: 'flex' ,
                     alignItems: 'center' ,
-                    width: '340px' ,
+                    width: '300px' ,
                     height: '40px' ,
                     borderRadius: '17px' ,
                     boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
@@ -77,7 +79,7 @@ else{
                 style={{
                     display: 'flex' ,
                     alignItems: 'center' ,
-                    width: '130px' ,
+                    width: '100px' ,
                     height: '40px' ,
                     borderRadius: '17px' ,
                     boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
@@ -92,9 +94,26 @@ else{
                     type= 'number'
                     placeholder={Produit.quantity}
                     onChange={(e) =>  setProduit({ ...Produit, quantity: e.target.value })}
-                    style={{border :'none',height: '30px' }}
+                    style={{border :'none',height: '30px', width :'60px' }}
                   />
                 </div>
+                </div>
+                <div style={{display:'flex' , flexDirection :'column'  ,  marginTop  :'27px',     marginLeft: '20px' , }}>
+                <div
+                style={{
+                    alignItems: 'center' ,
+                    width: '40px' ,
+                    height: '40px' ,
+                    borderRadius: '17px' ,
+                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
+                    padding: ' 7px ' 
+
+                }}
+                >
+                 <MdOutlineQueryStats   onClick={ () => setshowProductStats(true)} style={ { width: '25px' , height: '25px' ,color:'#5B548E'  }} />
+                 
+                </div>
+               
                 </div>
                 </div>
 
@@ -121,7 +140,10 @@ else{
           <button type="button" onClick={handleConfirm} className='create btn' style={{backgroundColor:'#fa9e00' , }}>Ok</button>  
         
         </div>
-    
+        {showProductStats && (
+  <ViewProductStats
+  onClose={() => setshowProductStats(false)}
+  /> )}
     </div>
   </div>
 

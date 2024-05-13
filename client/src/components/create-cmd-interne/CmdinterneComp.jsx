@@ -3,37 +3,32 @@
 import React, { useState } from 'react';
 
 function CmdCompInterne({ filteredProducts, onAddCmd }) {
-  const [selectedPro, setSelectedPro] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [name, setname] = useState(filteredProducts.name);
+
   const [Prix, setPrix] = useState('');
 
  
-  const productOnChange = (e) => {
-    setSelectedPro(e.target.value);
-  };
 
   const quantityOnChange = (e) => {
     setQuantity(e.target.value);
   };
-  const PrixOnChange = (e) => {
-    setPrix(e.target.value);
-  };
+
 
   const handleAddCmd = () => {
-    if (selectedPro && quantity) {
+    if ( quantity) {
       // Créer un objet de données de commande
       if (quantity> 0) {
         
-      const cmdData = { // Générer un identifiant unique pour la commande
-        selectedPro: selectedPro,
-        quantity: quantity
+      const cmdData = {
+        id: filteredProducts.id, // Utilisez une clé unique du produit filtré
+        quantity: quantity ,
+        name :filteredProducts.name 
       };
 
       // Passer les données de la commande à la fonction de gestion de l'ajout
       onAddCmd(cmdData);
-
       // Réinitialiser les champs
-      setSelectedPro('');
       setQuantity('');
       setPrix('') ;
     
@@ -48,17 +43,24 @@ function CmdCompInterne({ filteredProducts, onAddCmd }) {
   ;}
 
   return (
-    <div  style={{display :'flex' ,  gap :'60px', marginTop :'40px',marginLeft :'30px'}}>
+    <div  style={{display :'flex' ,  gap :'60px', marginTop :'40px',marginLeft :'60px'}}>
         <div  style={{display :'flex' ,  gap:'40px'}}>  
-             <select onChange={productOnChange} value={selectedPro}
-                style={{ color: '#5B548E',boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)'  , height :'35px' , marginBottom :'30px' ,padding :'0px' , paddingLeft :'20px' }}>
-        <option value="">Products</option>
-        {filteredProducts.map((produit, index) => (
-          <option key={index} value={produit.name}>
-            {produit.name}
-          </option>
-        ))}
-      </select>
+          <div
+       style={{
+                    color: '#666666',
+                    borderRadius: '20px',
+                    height: '35px',
+                    width: '350px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
+                    border :'none',
+                    paddingLeft :'40px'
+                  }} >
+        {filteredProducts.name}
+      
+      
+      </div>
       <input onChange={quantityOnChange} value={quantity} type="number" placeholder="Quantité" 
        style={{
         color: '#5B548E',
