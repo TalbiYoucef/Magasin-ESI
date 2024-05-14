@@ -1,7 +1,7 @@
 import React, { useRef }from "react";
 import { Link, useNavigate } from 'react-router-dom'; 
-import Nav from "../nav/nav";
-import Side from "../side/side";
+import Nav from "../../nav/nav";
+import Side from "../../side/side";
 import logoesi from "../../assets/image.png";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf'
