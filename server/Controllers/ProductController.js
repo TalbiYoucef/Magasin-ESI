@@ -2,15 +2,14 @@
 const db = require("../models");
 const createProduct = async (req, res) => {
   try {
-    const { name, qt_logique, qt_physique, branch_id } = req.body;
+    const { name, quantity, branch_id } = req.body;
     const productExists = await db.Product.findOne({ where: { name: name } });
     if (productExists) {
       return res.status(400).json({ error: "Product already exists" });
     }
     const product = await db.Product.create({
       name: name,
-      qt_logique: qt_logique,
-      qt_physique: qt_physique,
+      quantity:quantity,
       branch_id: branch_id,
     });
     return res.status(201).json(product);
@@ -60,12 +59,11 @@ const deleteProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, qt_logique, qt_physique } = req.body;
+    const { name, quantity } = req.body;
     const product = await db.Product.findOne({ where: { product_id: id } });
     if (product) {
       product.name = name;
-      product.qt_logique = qt_logique;
-      product.qt_physique = qt_physique;
+      product.quantity = quantity;
       await product.save();
       return res.status(200).json(product);
     } else {

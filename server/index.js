@@ -4,8 +4,6 @@ const verifyJWT = require("./Middlewares/VerifyJwt");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const db = require("./models");
-const verifyAdmin = require("./Middlewares/VerifyAdmin");
-const { register } = require("module");
 const app = express();
 const port = process.env.PORT || 3036;
 app.use(express.json());
@@ -36,7 +34,6 @@ app.use("/receipts", require("./Routes/ReceiptRouter")); //newest additions
 app.use("/internalorders", require("./Routes/InternalOrderRouter")); //newest additions
 app.use("/exitnotes", require("./Routes/ExitNoteRouter")); //newest additions
 app.use("/returnnotes", require("./Routes/ReturningNoteRouter")); //newest additions
-
 app.post("/finduser", async (req, res) => {
   const { token } = req.body;
   const foundUser = await db.User.findOne({ where: { token: token } });
@@ -153,7 +150,7 @@ app.get("/cr-perms", async (req, res) => {
     "manage branches",
     "manage products",
     "manage suppliers",
-    "consult statistics",
+    "manage BCE",
     "consult BCE",
     "consult FMP",
     "manage BC",
@@ -165,10 +162,11 @@ app.get("/cr-perms", async (req, res) => {
     "consult store",
     "consult inventory",
     "statistics",
+    "manage BCI"
   ];
   try {
     array.map(async (ele, index) => {
-      await db.Permission.create({ permission_id: index + 1, name: ele });
+      await db.Permission.create({ permission_id: index+1, name: ele });
     });
     res.status(200).send('done')
   } catch (error) {
@@ -489,9 +487,7 @@ app.get("/create", async (req, res) => {
     products.map(async (pro) => {
       await db.Product.create({
         name: pro,
-        qt_physique: 1000,
-        qt_logique: 1000,
-        branch_id: 2,
+        quantity:1000,
       });
     });
   } catch (error) {}

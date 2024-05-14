@@ -3,9 +3,6 @@ import Side from "../side/side.jsx";
 import Nav from "../nav/nav.jsx";
 import PerLine from "./ProLine.jsx";
 import Baarr from "./Bar.jsx";
-import ProductsModal from "./ProductsModal.jsx";
-import ProductsData from "../data/Produits.jsx";
-import ViewProductModal from "../ViewProduct/ViewProductModal.jsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -45,28 +42,13 @@ function ViewArticles() {
   const [showProductModal, setShowProductModal] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(Article.Products);
 
-  const handleViewProduct = () => {
-    setShowProductModal(true);
-  };
-
-  const ProductsList = Article.map((element, index) => (
+   const ProductsList = Article.map((element, index) => (
     <PerLine
       key={index}
       id={element.branch_id}
       rolenam={element.name}
     />
   ));
-
-  const handleAddProducts = (Products) => {
-    setSelectedProducts(Products);
-    setShowProductsModal(false); // Fermer le modal des permissions une fois les permissions sélectionnées
-  };
-
-  const handleConfirm = () => {
-    const confirm = window.confirm(
-      "Are you sure you want to Confirm the Article ?"
-    );
-  };
 
   return (
     <div>

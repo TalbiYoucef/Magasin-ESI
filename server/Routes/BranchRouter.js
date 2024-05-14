@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { getBranches,getBranchById,createBranch,updateBranch,deleteBranch,assignBranchToChapter,removeBranchFromChapter,getBranchProducts } = require('../Controllers/BranchController')
+const { getBranches,getBranchById,createBranch,updateBranch,deleteBranch,assignBranchToChapter,removeBranchFromChapter,getBranchProducts, assignProductsToBranch } = require('../Controllers/BranchController')
 
 router
 .get('/', getBranches)
@@ -10,5 +10,6 @@ router
 .put('/:id/chapter/', assignBranchToChapter)
 .delete('/:id/chapter/', removeBranchFromChapter)
 .get('/:id/products', getBranchProducts)
+.post('/:id/products', assignProductsToBranch)
 
 module.exports= router

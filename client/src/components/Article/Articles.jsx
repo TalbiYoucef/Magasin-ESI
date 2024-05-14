@@ -4,14 +4,73 @@ import Nav from "../nav/nav.jsx";
 import PerLine from "./ProLine.jsx";
 import Baarr from "./Bar.jsx";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import CreateRoleForm from "./createArt.jsx";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 function Articles() {
   const { id } = useParams();
+  const [branchName, setBranchName] = useState("");
   const [user, setUser] = useState({});
   const navigate = useNavigate();
   const [allArticles, setAllArticles] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [showCreateChapitreForm, setShowCreateChapitreForm] = useState(false);
+  const handleCreateChapitre = async (newChapitre) => {
+    console.log(newChapitre);
+    const getProductsIds = products
+      .filter((pro) => newChapitre.produits.includes(pro.name))
+      .map((pro) => pro.product_id);
+    console.log(getProductsIds);
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+        withCredentials: true,
+      });
+
+      try {
+        const resp = await axios.post(
+          `http://localhost:3036/branches`,
+          {
+            name: newChapitre.article,
+            VAT: newChapitre.vat,
+            chapter_id: id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+        try {
+          await axios.post(
+            `http://localhost:3036/branches/${resp.data.branch.branch_id}/products`,
+            [...getProductsIds],
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
+          console.log(resp.data);
+        } catch (error) {
+          console.log(error);
+        }
+      } catch (error) {
+        alert("Failed to create article");
+        console.log(error, "error");
+      }
+    } catch (error) {
+      navigate("/login");
+    }
+    setShowCreateChapitreForm(false); // Masquer le formulaire de création de chapitre après création réussie
+  };
+
+  const toggleCreateChapitreForm = () => {
+    setShowCreateChapitreForm(!showCreateChapitreForm);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,6 +94,17 @@ function Articles() {
           console.log(error, "smth wrong");
         }
         try {
+          const resp = await axios.get(`http://localhost:3036/chapters/${id}`, {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+          setBranchName(resp.data.name);
+        } catch (error) {
+          console.log(error, "smth wrong");
+        }
+        try {
           const resp = await axios.get(`http://localhost:3036/branches`, {
             headers: {
               Authorization: `Bearer ${res.data.accessToken}`,
@@ -42,6 +112,17 @@ function Articles() {
             withCredentials: true,
           });
           setAllArticles(resp.data);
+        } catch (error) {
+          console.log(error, "error");
+        }
+        try {
+          const resp = await axios.get(`http://localhost:3036/products`, {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+          setProducts(resp.data);
         } catch (error) {
           console.log(error, "error");
         }
@@ -53,7 +134,7 @@ function Articles() {
     };
 
     fetchData();
-  }, [navigate]);
+  }, [navigate, showCreateChapitreForm]);
 
   const [showProductsModal, setShowProductsModal] = useState(false);
   const [showProductModal, setShowProductModal] = useState(false);
@@ -119,7 +200,7 @@ function Articles() {
                   }}
                 >
                   {" "}
-                  Article name{" "}
+                  Branch name{" "}
                 </div>
                 <div
                   style={{
@@ -133,7 +214,9 @@ function Articles() {
                     color: "#616262",
                     marginLeft: "40px",
                   }}
-                ></div>
+                >
+                  {branchName}
+                </div>
               </div>
               <div
                 style={{
@@ -142,6 +225,12 @@ function Articles() {
                   marginRight: "40px",
                 }}
               >
+                <Link
+                  onClick={toggleCreateChapitreForm}
+                  className="btn-create-usr"
+                >
+                  Create Article
+                </Link>
                 <button
                   style={{
                     textDecoration: "none",
@@ -183,6 +272,20 @@ function Articles() {
           </div>
         </div>
       </div>
+      {showCreateChapitreForm && (
+        <div className="modal-overlay-create-role">
+          <div
+            className="modal-content"
+            style={{ height: "500px", width: "700px", marginTop: "200px" }}
+          >
+            <CreateRoleForm
+              produit={products}
+              onCreateChapitre={handleCreateChapitre}
+              onClose={() => setShowCreateChapitreForm(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

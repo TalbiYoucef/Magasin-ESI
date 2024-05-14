@@ -22,18 +22,12 @@ function CreateCmd() {
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [priU, setPriU] = useState("");
+  const [allProducts,setAllProducts] = useState([])
   const getPrixUnitaire = (selectedPro) => {
     const product = Products.find((prod) => prod.nom === selectedPro);
     return product ? product.prixUnitaire : "";
   };
-  const payments = [
-    "Virement bancaire",
-    "Carte de crédit ou de débit",
-    "Chèque",
-    "Paiement à la livraison",
-    "Paiement par mandat",
-    "Paiement par bon de commande",
-  ];
+
   const dateOnchange = (e) => {
     setExpectedDate(e.target.value);
   };
@@ -95,6 +89,7 @@ function CreateCmd() {
             withCredentials: true,
           }
         );
+        setAllProducts(resp.data)
         setProducts(resp.data);
         // console.log(resp.data)
       } catch (error) {
@@ -151,15 +146,13 @@ function CreateCmd() {
   }, []);
 
   const handleRemoveCmd = (id) => {
-    // Filtrer la liste des commandes pour supprimer celle avec l'ID spécifié
     setCmdDataList(cmdDataList.filter((cmdData) => cmdData.id !== id));
-    // Ajouter le produit supprimé à nouveau à la liste des produits filtrés
-    const removedCmd = cmdDataList.find((cmdData) => cmdData.id === id);
-    if (removedCmd) {
-      setFilteredProducts([
-        ...filteredProducts,
-        { nom: removedCmd.selectedPro },
-      ]);
+    const removedProduct = allProducts.find(product => product.product_id === id);
+    if (removedProduct) {
+      setProducts([...products, removedProduct].sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      }));
+      
     }
   };
   const handleAddCmd = (cmdData) => {
@@ -174,7 +167,13 @@ function CreateCmd() {
     );
   };
   const getSuppId = (name) => {
-    return suppliers.find((sup) => sup.name == name).supplier_id;
+    const supp= suppliers.find((sup) => sup.name == name)
+    if(supp) {
+      return supp.supplier_id
+    }
+    else{
+      return null;
+    }
   };
   const getChapId = (name) => {
     return chapters.find((element) => element.name == name).chapter_id;
@@ -186,9 +185,12 @@ function CreateCmd() {
     const confirm = window.confirm(
       "Are you sure you want to Confirm the command?"
     );
-
     if (confirm) {
       console.log(getSuppId(selectedSupplier));
+      if(!(getSuppId(selectedSupplier) && expectedDate)){
+        alert("all field are obligatory")
+        return
+      }
       try {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
@@ -267,7 +269,7 @@ function CreateCmd() {
     }
   };
   const getProduct=(id)=>{
-  const pro = products.find(pro=> pro.product_id == id)
+  const pro = products.find(pro=> pro.product_id === id)
    if(pro){
     return pro.name
    }
@@ -435,24 +437,6 @@ function CreateCmd() {
                 </option>
               ))}
             </select>
-            <select
-              value={modePayment}
-              onChange={handleModePaymentChange}
-              style={{
-                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                width: " 260px",
-                fontSize: "15px",
-                height: "40px",
-                marginBottom: "30px",
-              }}
-            >
-              <option value="">Choisissez un mode de payment</option>
-              {payments.map((payment, index) => (
-                <option key={index} value={payment}>
-                  {payment}
-                </option>
-              ))}
-            </select>
             <input
               type="date"
               value={expectedDate}
@@ -466,6 +450,8 @@ function CreateCmd() {
                 marginLeft: "30px",
                 marginBottom: "30px",
                 border: "none",
+                padding:"0px 10px",
+                color:"#B71C1C"
               }}
             />
           </div>
@@ -535,7 +521,7 @@ function CreateCmd() {
                         paddingLeft: "20px",
                       }}
                     >
-                      {cmdData.selectedPro}{" "}
+                      {getProduct(cmdData.product_id)}{" "}
                     </div>
                   </div>
                 </div>

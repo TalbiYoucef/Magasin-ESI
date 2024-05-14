@@ -63,7 +63,7 @@ function Produits() {
       }
     };
     fetchData();
-  }, [navigate]);
+  }, [navigate,produits]);
   const handleViewRole = (produitName) => {
     setShowProductModel(true);
     const articleInfo = article.find((article) => article.name === produitName);
@@ -78,7 +78,6 @@ function Produits() {
   const filteredRoles = produits.filter((article) =>
     article.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   //---------------------------------------------
 
   // Ajoutez ceci pour afficher les nouveaux articles créés
@@ -102,14 +101,10 @@ function Produits() {
       const res = await axios.get("http://localhost:3036/refresh", {
         withCredentials: true,
       });
-      getProductsIds.map(async (element) => {
-        console.log(element);
         try {
           const resp = await axios.post(
-            `http://localhost:3036/products/${element}/branch`,
-            {
-              branch_id: id,
-            },
+            `http://localhost:3036/branches/${id}/products`,   
+            [...getProductsIds],
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
@@ -126,7 +121,6 @@ function Produits() {
         } catch (error) {
           console.log(error);
         }
-      });
     } catch (error) {
       // If an error occurs, redirect to the login page
       navigate("/login");

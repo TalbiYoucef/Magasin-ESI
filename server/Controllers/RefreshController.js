@@ -7,7 +7,6 @@ const refresh = async (req, res) => {
   if (!cookies?.token) {
     return res.sendStatus(401);
   }
-
   try {
     const foundUser = await db.User.findOne({
       where: { token: cookies.token },

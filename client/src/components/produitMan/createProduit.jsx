@@ -22,11 +22,6 @@ function CreateRoleForm({ onCreateChapitre, onClose }) {
     quantity: '',
   });
   const [message, setMessage] = useState('');
-
-
-  
-
-//--------------------
 const handleQuantityChange = (e) => {
   setChdata({ ...Chdata, quantity: e.target.value })
   const quantity = parseInt(e.target.value); // Convertir la valeur en nombre entier
@@ -56,15 +51,6 @@ const handleCreateArticle = (newprod) => {
 
   //---------------
   // Fonction pour basculer l'affichage du formulaire de création de chapitre
-  const toggleCreateRoleForm = () => {
-    setShowCreateChapitreForm(!showCreateChapitreForm);
-  };
-  //-------------------
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setChdata({ ...Chdata, [name]: value });
-  };
-  //-----------------------------
   const handleSubmit = (event) => {
     event.preventDefault();
     

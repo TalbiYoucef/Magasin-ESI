@@ -8,8 +8,6 @@ import jsPDF from "jspdf";
 import { GrNext } from "react-icons/gr";
 import axios from "axios";
 const DemandeDeFourniture = () => {
-  //utilisateur
-
   const navigate = useNavigate();
   const { id } = useParams();
   const [allProducts, setAllProducts] = useState([]);
@@ -278,65 +276,7 @@ const DemandeDeFourniture = () => {
     },
   };
 
-  const sortieData = [
-    {
-      id: "0",
-      numSortie: "1",
-      demandeur: "prof",
-      service: "service",
-      date: "23/04/2024",
-      products: [
-        {
-          idp: 9,
-          nommP: "Produit 1",
-          quantiteDemandee: 2,
-          quantiteServie: 2,
-          numInventaire: 1,
-          observation: "observation produit",
-        },
-        {
-          idp: 1,
-          nommP: "Produit 1",
-          quantiteDemandee: 5,
-          quantiteServie: 2,
-          numInventaire: 11,
-          observation: "observation produit",
-        },
-        {
-          idp: 2,
-          nommP: "Produit 2",
-          quantiteDemandee: 1,
-          quantiteServie: 1,
-          numInventaire: 4,
-          observation: "observation produit",
-        },
-        {
-          idp: 3,
-          nommP: "Produit 1",
-          quantiteDemandee: 10,
-          quantiteServie: 10,
-          numInventaire: 8,
-          observation: "observation produit",
-        },
-        {
-          idp: 4,
-          nommP: "Produit 2",
-          quantiteDemandee: 7,
-          quantiteServie: 4,
-          numInventaire: 19,
-          observation: "observation produit",
-        },
-        {
-          idp: 5,
-          nommP: "Produit 3",
-          quantiteDemandee: 2,
-          quantiteServie: 2,
-          numInventaire: 13,
-          observation: "observation produit",
-        },
-      ],
-    },
-  ];
+
   const frameRef = useRef(null);
   const handleDelete = () => {
     const confirmDelete = window.confirm(
@@ -350,6 +290,35 @@ const DemandeDeFourniture = () => {
     }
   };
   const handleDownload = async () => {
+
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+      try {
+        const internalOrderResponse = await axios.get(
+          `http://localhost:3036/commands/${id}/internal-order`,
+          {
+            headers: { Authorization: `Bearer ${res.data.accessToken}` },
+            withCredentials: true,
+          }
+        );
+        const response = await axios.put(
+          `http://localhost:3036/internalorders/${internalOrderResponse.data.internal_order_id}/status`,
+          { status: "satisfied" },
+          {
+            headers: { Authorization: `Bearer ${res.data.accessToken}` },
+            withCredentials: true,
+          }
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.log(error)
+        alert('something went wrong !!')
+      }
+    } catch (error) {
+      navigate('/login')
+    }
     // Wait for the content to render
     await new Promise((resolve) => setTimeout(resolve, 500)); // Adjust the delay as needed
 
@@ -371,7 +340,7 @@ const DemandeDeFourniture = () => {
         <section>
           <nav>
             {" "}
-            <Nav />{" "}
+            <Nav username={user.username}/>
           </nav>
           <div>
             <div>
@@ -483,7 +452,7 @@ const DemandeDeFourniture = () => {
               {userData[0].roleuser === "magasinier" && (
                 <button
                   style={styles.editbs}
-                  onClick={() => (window.location.href = "/edit-page")}
+                  onClick={() => navigate(`/edit-bon-sortie/${id}`)}
                 >
                   Edit
                 </button>

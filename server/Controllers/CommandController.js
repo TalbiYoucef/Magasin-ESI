@@ -178,15 +178,22 @@ const updateQuantities = async (req, res) => {
   const { id } = req.params;
   const quantities = req.body;
   console.log(quantities)
+  // gerer les deux cas separement
   try {
     const result = quantities.map(async (quantity) => {
       const productCommand = await db.Product_Command.findOne({
         where: { command_id: id, product_id: quantity.product },
       });
+      const command = await db.Command.findOne({
+        where:{ command_id : id}
+      })
+
       if (productCommand) {
         productCommand.delivered_amount = quantity.quantity;
-        productCommand.amount_left =
+        if(command.type === "external"){
+          productCommand.amount_left =
           productCommand.amount_left - quantity.quantity;
+        }
         await productCommand.save();
         return productCommand;
       } else {

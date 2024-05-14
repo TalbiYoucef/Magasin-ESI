@@ -1,425 +1,540 @@
-// CreateCmd.js
-import React, { useState ,useEffect } from 'react';
-import Side from '../side/side';
-import Nav from '../nav/nav';
-import { Link } from 'react-router-dom';
-import DechargeComp from './DechargeComp';
-
+import React, { useState, useEffect } from "react";
+import Side from "../side/side";
+import Nav from "../nav/nav";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { MdNavigateNext } from "react-icons/md";
+import axios from "axios";
 function EditDecharge() {
-    const [selectedArticle, setSelectedArticle] = useState(null);
-    const [Products, setProducts] = useState([]);
-    const [UserService, setUserService] = useState('comité des oeuvres sociales ');
-    const [Dichargedate, setDichargedate] = useState(' 15/02/2024 ');
-
-
-    const [Decharge, setDecharge] = useState({
-      products: [
-        { id: 0, selectedPro: 'Vidéo projecteur EPSON', NumSerie: 'WS-C2924M-XL-EN',quantiteDemande :'60'  ,quantityServie :'15' , NumInventaire: 'MAV-01-2023', Observations: 'observation' },
-        { id: 1, selectedPro: '123  ', NumSerie: '123', quantiteDemande :'123'  ,quantityServie :'123' ,NumInventaire: '123', Observations: '123' },
-        { id: 2, selectedPro: 'Impr imante HP LaserJet', NumSerie: 'DEF789012',quantiteDemande :'80'  ,quantityServie :'1566' , NumInventaire: 'INV9012', Observations: 'observations' },
-      ]
-    });
-    const [NumInventaire, setNumInventaire] = useState(Decharge.products.map(product => product.NumInventaire));
-    const [Observations, setObservations] = useState(Decharge.products.map(product => product.Observations));
-    const [quantityServie, setQuantityServie] = useState(Decharge.products.map(product => product.quantityServie));// Quantite Servie
-    const [numSerie, setNumSerie] =  useState(Decharge.products.map(product => product.NumSerie));
-
-    const quantityservOnChange = (index, e) => {
-      const updatedQuantityServie = [...quantityServie];
-      updatedQuantityServie[index] = e.target.value;
-      setQuantityServie(updatedQuantityServie);
-    };
-
-    const ObservationsOnChange = (index, e) => {
-      const updatedObservations = [...Observations];
-      updatedObservations[index] = e.target.value;
-      setObservations(updatedObservations);
-    };
-    
-    const NumSerieOnChange = (index, e) => {
-      const updatedNumSerie = [...numSerie];
-      updatedNumSerie[index] = e.target.value;
-      setNumSerie(updatedNumSerie);
-    };
-
-
-    const handleSave = (id, value, value2, value3 , value4) => {
-      // Vérifier si les valeurs sont présentes et correctes
-      if (value && value2 && value3 && value4) {
-          // Vérifier si la quantité est strictement positive
-          if (value > 0) {
-              // Afficher une boîte de dialogue de confirmation
-              const confirmSave = window.confirm("Are you sure you want to save the changes?");
-              
-              // Vérifier si l'utilisateur a confirmé l'enregistrement
-              if (confirmSave) {
-                  // Mettre à jour la liste des données de commande
-                  setCmdDataList(cmdDataList.map(cmdData => {
-                      if (cmdData.id === id) {
-                          alert('infos  updated successfully');
-                          return { ...cmdData, quantityServie: value, NumInventaire: value2, Observations: value3 ,NumSerie :  value4   };
-                      }
-                      return cmdData;
-                  }));
-              }
-          } else {
-              alert('Quantity must be strictly positive');
-          }
-      } else {
-          alert('Please fill in all the fields');
-      }
-      console.log('handleSave: cmdDataList', cmdDataList);
-
-  };
-  
-    const [cmdDataList, setCmdDataList] = useState(Decharge.products);
-   const [Sortie, setSortie] = useState({//les infos retournées du  bon  de sortie 
-      products: [
-        { id: 3, selectedPro: 'Scanner Epson Perfection V600', NumSerie: 'GHI345678',quantiteDemande :'10'  ,quantityServie :'1115' , NumInventaire: 'INV3456', Observations: 'observations' },
-        { id: 4, selectedPro: 'Casque audio Bose QuietComfort 35 II',  quantiteDemande :'20'  , NumInventaire: 'INV7890', Observations: 'observations' },
-        { id: 5, selectedPro: 'Souris Logitech MX Master 3',  quantiteDemande :'30'  ,  NumInventaire: 'INV1234', Observations: 'observations' },
-        { id: 6, selectedPro: 'Produit 1', quantiteDemande :'40'  ,  NumInventaire: 'INV1234', Observations: 'observations' }
-   ]
-  });
-  const [filteredProducts, setFilteredProducts] = useState(Sortie.products.filter(product => product.selectedPro !== Decharge.selectedPro));
-    
-    const handleAddCmd = (cmdData ) => {
-      setCmdDataList([...cmdDataList,cmdData]);
-      setFilteredProducts(filteredProducts.filter(product => product.selectedPro !== cmdData.selectedPro));
-    };
-
-    const handleRemoveCmd = (id) => {
-      setCmdDataList(cmdDataList.filter(cmdData => cmdData.id !== id)); 
-      const removedCmd = cmdDataList.find(cmdData => cmdData.id === id);
-      if (removedCmd) {
-        setFilteredProducts([...filteredProducts,removedCmd  ]);
-      }
-    };
-
-
-
-    const handleConfirmCommand = () => {
-        const confirm = window.confirm("Are you sure you want to Confirm the Discharge note?");
-        if (confirm) {
-          if (cmdDataList.length>0)
-       {  
-        const commandeInfo = {
-            Service: UserService,
-            date: Dichargedate,
-            products: cmdDataList.map(cmd => ({
-                idp: cmd.id,
-                nommP: cmd.selectedPro,
-                NumSerie:cmd.NumSerie,
-                NumInventaire:cmd.NumInventaire,
-                Observations:cmd.Observations    
-                      }))
-        };
-        console.log('commandeInfo:', commandeInfo);
-      //  window.location.href =  '/List des  demandes de fourniture  de ce user '; 
-
-    } else{
-        alert('please fill in all  the fileds Correctly ')
-    }  }  };
-
-    const handleCancel = () => {
-        const confirm = window.confirm("Are you sure you want to cancel the Form?");
-        if (confirm) {
-         setCmdDataList([]);
-        setFilteredProducts([]);
-        setProducts([]);
-             //   window.location.href =  '/List des  demandes de fourniture  de ce user '; 
-
-
-    };}
-
-    const handleCmdList= () => {
-        const confirm = window.confirm("Are you sure you want to Leave this form ?");
-        if (confirm) {
-          setCmdDataList([]);
-        setFilteredProducts([]);
-        setProducts([]);
-     
-           // window.location.href =  '/List des  demandes de fourniture  de ce user '; 
+  const { id } = useParams();
+  const [date, setDate] = useState("");
+  const [quantities, setQuantitie] = useState([]);
+  const [initialQuantities, setInitialQuantitie] = useState([]);
+  const [user, setUser] = useState({});
+  const navigate = useNavigate();
+  const [cmdDataList, setCmdDataList] = useState([]); //cmdDataList contient table de produit ajoute
+  const [service, setServive] = useState("");
+  const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        setUser(res.data.user);
+        try {
+          const resp = await axios.get(
+            `http://localhost:3036/commands/${id}/products`,
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
+          setDate(String(resp.data[0].updatedAt).split("T")[0]);
+          setProducts(resp.data);
+          setCmdDataList(resp.data);
+          let initial = resp.data.map((ele) => ele.quantity);
+          setInitialQuantitie(initial);
+          setQuantitie(initial);
+          console.log(resp.data);
+        } catch (error) {
+          console.log(error);
         }
-        };
+        try {
+          const resp = await axios.get(`http://localhost:3036/products`, {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+          setAllProducts(resp.data);
+          console.log(resp.data);
+        } catch (error) {
+          console.log(error);
+        }
+      } catch (error) {
+        // If an error occurs, redirect to the login page
+        navigate("/login");
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
 
+  const getProductName = (id) => {
+    const pro = allProducts.find((pro) => pro.product_id == id);
+    if (pro) {
+      return pro.name;
+    } else {
+      return "";
+    }
+  };
+  const handleQuantityChange = (e, index) => {
+    console.log(e.target.value);
+    if (initialQuantities[index] >= e.target.value) {
+      const newQuantities = [...quantities];
+      newQuantities[index] = Number(e.target.value); // Update the quantity at the specified index
+      setQuantitie(newQuantities);
+    }
+  };
 
+  const handleConfirmCommand = async () => {
+    const confirm = window.confirm(
+      "Are you sure you want to create this exit note?"
+    );
+    if (confirm) {
+      console.log(quantities);
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        try {
+          const internalOrderResponse = await axios.get(
+            `http://localhost:3036/commands/${id}/internal-order`,
+            {
+              headers: { Authorization: `Bearer ${res.data.accessToken}` },
+              withCredentials: true,
+            }
+          );
+          const respp = await axios.get(
+            `http://localhost:3036/internalorders/${internalOrderResponse.data.internal_order_id}`,
+            {
+              headers: { Authorization: `Bearer ${res.data.accessToken}` },
+              withCredentials: true,
+            }
+          );
+          console.log(respp.data);
+          if (respp.data.status == "satisfied") {
+            alert("you can not modify this exit note ");
+            return;
+          } else {
+            const result = products.map((product, index) => {
+              return {
+                product: product.product_id,
+                quantity: quantities[index],
+              };
+            });
+            console.log(result);
+            try {
+              const resp = await axios.put(
+                `http://localhost:3036/commands/${id}/updateQuantities`,
+                [...result],
+                {
+                  headers: { Authorization: `Bearer ${res.data.accessToken}` },
+                  withCredentials: true,
+                }
+              );
+              console.log(resp.data);
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        navigate(-1);
+      } catch (error) {
+        // Redirect to login if there's an error
+        navigate("/login");
+      }
+    }
+  };
+  const handleCancel = () => {
+    const confirm = window.confirm(
+      "Are you sure you want to cancel the command?"
+    );
+    if (confirm) {
+      navigate(-1);
+    }
+  };
 
-        useEffect(() => {
-          // Obtenez les valeurs initiales des produits existants dans la liste
-          const initialQuantity = cmdDataList.map(cmdData => cmdData.quantityServie);
-          const initialNumSerie = cmdDataList.map(cmdData => cmdData.NumSerie);
-          const initialObservations = cmdDataList.map(cmdData => cmdData.Observations);
-          
-          // Mettez à jour les états initiaux
-          setQuantityServie(initialQuantity);
-          setNumSerie(initialNumSerie);
-          setObservations(initialObservations);
-      }, [cmdDataList]);
-      
-  
-  
-  
-    const today = new Date().toLocaleDateString('fr-FR');
-return (
-    <div> 
-      <Nav />
-      <div className='dwnusers'>
-        <Side    link='commands'/>    
-        <div   style={{ marginTop :"8vh" , marginLeft :' 7%' , width :'90%', height :'92vh' , padding :'60px'}}   >
-                <div className='crcmd1' style={{display :'flex ' , alignItems: 'center', justifyContent:  'space-between'  , gap : '200px' , marginBottom :'30px' }}>
-                   <div style={{ display :'flex ' , gap : '20px'}}>
-                    <div className='titre11' style={{ color :'#5B548E' , fontSize :'20px'}}> Edit Discharge  Note </div>
-                   
-                          <div className='num-cmd-1' style={{
-                          borderRadius: '20px',
-                          height: '30px',
-                          width: '120px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center', 
-                          boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
-                          color :'#616262',
-                          marginLeft :'30px'
-                        }}> 
-                          {Dichargedate}
-                          </div>
-                          </div>
-                     <Link  onClick={handleCmdList}  style={{
-                          borderRadius: '20px',
-                          height: '30px',
-                          width: '200px' ,
-                          padding :'10px' , 
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center', 
-                          boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
-                          textDecoration :"none",
-                          backgroundColor :'#100B39',
-                          color :'white'
-                        }}>   View Order  </Link>
-                 </div>
-      
+  const handleCmdList = () => {
+    const confirm = window.confirm(
+      "Are you sure you want to Leave this form ?"
+    );
+    if (confirm) {
+      navigate(-1);
+    }
+  };
+  const today = new Date().toLocaleDateString("fr-FR");
 
-
-          <div style={{height :' auto'  , borderRadius : '20px' ,   boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' , padding :'30px' }}>
-          
-          <div style={{ color :'#5B548E' , fontSize :'20px' , marginBottom :'30px', marginLeft :'40%'}}>Designations :</div> 
- 
-          {cmdDataList.map((cmdData, index) => (    
-         <div key={cmdData.id}   style={{display :'flex' , gap :'10px' , alignItems: 'center' ,  width :'100%', marginLeft :'1%'}} >
-         <div style={{display :'flex' ,flexDirection :'column'}}>
-           <div  style={{fontSize:'15px' , color :'#5B548E' , marginLeft:"50px"}}>   Product:   </div>
-           <div  style={{display :'flex', alignItems: 'center' }}>
-           <button onClick={() => handleRemoveCmd(cmdData.id)}
-         style={{fontSize:'30px', color:"red"  , border :'none' , backgroundColor :'white', marginRight :"10px" }}
-         >-</button> 
-            
-                       <div
-                       style={{
-                         color: '#666666',
-                         borderRadius: '20px',
-                         height: '35px',
-                         width: '250px',
-                         display: 'flex',
-                         alignItems: 'center',
-                         boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
-                         border :'none',
-                         paddingLeft :'20px'
-                       }} >
-                       {cmdData.selectedPro}  
-                     </div>
-                  
-                    </div>
-                
-              </div>
-
-
-
-              
-            <div style={{display :'flex' ,flexDirection :'column'}}>
-                <div
-                style={{fontSize:'13px' , color :'#5B548E', marginLeft:"15px"}}
-                >   N° Inventaire:   </div>
-                <div
-                 style={{
-                    color: '#666666',
-                    borderRadius: '20px',
-                    height: '35px',
-                    width: '150px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center', 
-                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
-                    border :'none',
-                  }}
-                >  {cmdData.NumInventaire} </div>
-              </div>
-
-
-             <div style={{display :'flex' ,flexDirection :'column'}}>
-                <div
-                style={{fontSize:'13px' , color :'#5B548E', marginLeft:"10px"}}
-                >   Qt.Demandé:   </div>
-                <div
-                 style={{
-                    color: '#666666',
-                    borderRadius: '20px',
-                    height: '35px',
-                    width: '90px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center', 
-                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
-                    border :'none',
-                  }}
-                >   {cmdData.quantiteDemande } </div>
-              </div>
-
-
-              <div style={{display :'flex' ,flexDirection :'column'}}>
-                <div
-                style={{fontSize:'13px' , color :'#5B548E', marginLeft:"20px"}}
-                >   Qt.Servie:    </div>
-                <input type='number'
-                 style={{
-                    
-                    color: '#666666',
-                    borderRadius: '20px',
-                    height: '35px',
-                    width: '90px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center', 
-                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
-                    border :'none',
-                    textAlign:'center'
-                  }}
-                  value={quantityServie[index]}
-                  onChange={(e) => quantityservOnChange(index, e)}
-                /> 
-              </div>
-           
-
-
-
-           
-              <div style={{display :'flex' ,flexDirection :'column'}}>
-                <div
-                style={{fontSize:'13px' , color :'#5B548E', marginLeft:"20px"}}
-                >  N° Serie:    </div>
-                <input   
-               style={{
-                    color: '#666666',
-                    borderRadius: '20px',
-                    height: '35px',
-                    width: '160px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center', 
-                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
-                    border :'none',
-                    textAlign:'center'
-                  }}
-                  value={numSerie[index]}
-                  onChange={(e) => NumSerieOnChange(index, e)}
-                /> 
-              </div>
-
-              <div style={{display :'flex' ,flexDirection :'column'}}>
-                <div
-                style={{fontSize:'13px' , color :'#5B548E', marginLeft:"20px"}}
-                > Observations :    </div>
-                <input
-                 style={{
-                    color: '#666666',
-                    borderRadius: '20px',
-                    height: '35px', 
-                    overflowY: 'auto', 
-                    width:'160px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center', 
-                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
-                    border :'none',
-                    textAlign:'center'
-                   }}
-                  value={Observations[index]}
-                  onChange={(e) => ObservationsOnChange(index, e)}
-                /> 
-              </div>
-              
-             
-              <button 
-  style={{
-    borderRadius: '20px',
-    height: '35px',
-    width: '80px' ,
-    paddingRight :'10px', 
-    display: 'flex',
-    alignItems: 'center',
-    textDecoration :"none",
-    backgroundColor :'#17BF6B',
-    justifyContent: 'center', 
-    color :'white',
-    border :'none',
-    marginTop:'20px'
-   }}              onClick={() => handleSave(cmdData.id, quantityServie[index], NumInventaire[index], Observations[index], numSerie[index])}>save</button>
-
-              
-            </div>
-          ))}
-          <DechargeComp
-           filteredProducts={filteredProducts}
-           onAddCmd={(cmdData) => {
-           handleAddCmd(cmdData);
+  return (
+    <div>
+      <Nav username={user.username} />
+      <div className="dwnusers">
+        <Side link="commands" />
+        <div
+          style={{
+            marginTop: "8vh",
+            marginLeft: " 60px",
+            width: "100%",
+            height: "92vh",
+            padding: "60px",
           }}
-          />
+        >
+          <div
+            className="crcmd1"
+            style={{
+              display: "flex ",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "100px",
+              marginBottom: "40px",
+            }}
+          >
+            <div style={{ display: "flex ", gap: "20px" }}>
+              <div
+                className="titre11"
+                style={{
+                  color: "#5B548E",
+                  marginLeft: "10px",
+                  marginRight: "60px",
+                  fontSize: "20px",
+                }}
+              >
+                {" "}
+                Edit Discharge Note{" "}
+              </div>
+              <div
+                className="num-cmd-1"
+                style={{
+                  borderRadius: "20px",
+                  height: "30px",
+                  width: "120px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
+                  color: "#616262",
+                }}
+              >
+                {today}
+              </div>
+            </div>
+            <Link
+              onClick={handleCmdList}
+              style={{
+                borderRadius: "20px",
+                height: "45px",
+                width: "200px",
+                marginRight: "70px",
+                padding: "10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
+                textDecoration: "none",
+                backgroundColor: "#100B39",
+                color: "white",
+              }}
+            >
+              View Fourniteur <MdNavigateNext />
+            </Link>
           </div>
-    
+          <div
+            style={{
+              display: "flex",
+              marginTop: "3%",
+              marginBottom: "3%",
+              gap: "8%",
+              width: "95%",
+              height: "140px",
+              backgroundColor: "white",
+              borderRadius: "30px",
+              boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              border: "none",
+            }}
+          >
+            <div className="su130" style={{ marginLeft: "7%", width: "45%" }}>
+              <p
+                htmlFor=""
+                style={{
+                  color: "#5B548E",
+                  marginLeft: "60px",
+                  marginTop: "10px",
+                }}
+              >
+                Service
+              </p>
+              <input
+                type="text"
+                name=""
+                id=""
+                className="suppname30"
+                style={{
+                  width: "100%",
+                  height: "50px",
+                  marginLeft: "5%",
+                  backgroundColor: "white",
+                  borderRadius: "30px",
+                  boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  border: "none",
+                }}
+                value={service}
+              />
+              {/* Remplir le champ avec le nom du fournisseur de la commande sélectionnée */}
+            </div>
 
-     <div style={{display:'flex' , gap :'20px' , alignItems :'center' , justifyContent :'center' , marginTop  :'40px', marginBottom :'40px', height:'100px'}}>
-    <button
-    style={{
-        borderRadius: '20px',
-        height: '35px',
-        width: '120px' ,
-        paddingRight :'10px', 
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration :"none",
-        backgroundColor :'white',
-        justifyContent: 'center', 
-        color :'#17BF6B',
-        border :'1.5px solid #17BF6B'
+            <div className="su330">
+              <p
+                htmlFor=""
+                style={{
+                  color: "#5B548E",
+                  marginLeft: "60px",
+                  marginTop: "10px",
+                }}
+              >
+                Date
+              </p>
+              <input
+                type="text"
+                className="date30"
+                style={{
+                  width: "100%",
+                  height: "50px",
+                  marginLeft: "5%",
+                  backgroundColor: "white",
+                  borderRadius: "30px",
+                  boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+                  border: "none",
+                }}
+                value={date}
+              />
+              {/* Remplir le champ avec la date de la commande sélectionnée */}
+            </div>
+          </div>
 
-      }}
-    onClick={handleCancel}>Cancel</button> 
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginTop: "3%",
+              gap: "5%",
+              width: "95%",
+              overflowY: "100% auto",
+              backgroundColor: "white",
+              borderRadius: "30px",
+              boxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              WebkitBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              MozBoxShadow: "0px 1px 18px -12px rgba(0,0,0,0.52)",
+              border: "none",
+              paddingBottom: "40px",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                marginBottom: "0px",
+                color: "#5B548E",
+                fontSize: "20px",
+                marginLeft: "60px",
+                marginTop: "20px",
+              }}
+            >
+              Designations :
+            </div>
 
+            {cmdDataList.map((cmdData, index) => (
+              <div
+                key={cmdData.id}
+                style={{
+                  width: "1400px",
+                  display: "flex",
+                  gap: "15px",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    width: "26%",
+                    marginLeft: "1.75%",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div
+                    style={{
+                      color: "#5B548E",
+                      fontSize: "15px",
+                      marginLeft: "40px",
+                      marginBottom: "5px",
+                      marginTop: "20px",
+                    }}
+                  >
+                    {" "}
+                    Product:{" "}
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      width: "100%",
+                      alignItems: "center",
+                      margin: "0px",
+                    }}
+                  >
+                    <button
+                      style={{
+                        fontSize: "30px",
+                        color: "red",
+                        border: "none",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      -
+                    </button>
+                    <input
+                      style={{
+                        color: "#666666",
+                        borderRadius: "20px",
+                        height: "45px",
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
+                        border: "none",
+                        paddingLeft: "20px",
+                        textAlign: "center",
+                      }}
+                      value={getProductName(cmdData.product_id)}
+                    />
+                  </div>
+                </div>
 
-<button
-    style={{
-        borderRadius: '20px',
-        height: '35px',
-        width: '120px' ,
-        paddingRight :'10px', 
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration :"none",
-        backgroundColor :'#17BF6B',
-        justifyContent: 'center', 
-        color :'white',
-        border :'none'
+                <div
+                  style={{
+                    width: "9%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div
+                    style={{
+                      color: "#5B548E",
+                      fontSize: "15px",
+                      marginLeft: "10px",
+                      marginTop: "20px",
+                      marginBottom: "5px",
+                    }}
+                  >
+                    {" "}
+                    Qt Demande:{" "}
+                  </div>
+                  <div
+                    style={{
+                      color: "#666666",
+                      borderRadius: "20px",
+                      height: "45px",
 
-      }}
-    onClick={handleConfirmCommand}>Confirm</button> 
-    </div>
-   
-    </div>
-
-    
-
-       
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
+                      border: "none",
+                      textAlign: "center",
+                    }}
+                  >
+                    {" "}
+                    {cmdData.quantity}{" "}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    width: "9%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div
+                    style={{
+                      color: "#5B548E",
+                      fontSize: "15px",
+                      marginLeft: "10px",
+                      marginTop: "20px",
+                      marginBottom: "5px",
+                    }}
+                  >
+                    {" "}
+                    Quant Servie:{" "}
+                  </div>
+                  <input
+                    type="number"
+                    style={{
+                      color: "#666666",
+                      borderRadius: "20px",
+                      height: "45px",
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
+                      border: "none",
+                      textAlign: "center",
+                    }}
+                    value={quantities[index]}
+                    onChange={(e) => handleQuantityChange(e, index)}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: "20px",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: "40px",
+              marginBottom: "40px",
+              height: "100px",
+            }}
+          >
+            <button
+              style={{
+                borderRadius: "20px",
+                height: "35px",
+                width: "120px",
+                paddingRight: "10px",
+                display: "flex",
+                alignItems: "center",
+                textDecoration: "none",
+                backgroundColor: "white",
+                justifyContent: "center",
+                color: "#17BF6B",
+                border: "1.5px solid #17BF6B",
+              }}
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+            <button
+              style={{
+                borderRadius: "20px",
+                height: "35px",
+                width: "120px",
+                paddingRight: "10px",
+                display: "flex",
+                alignItems: "center",
+                textDecoration: "none",
+                backgroundColor: "#17BF6B",
+                justifyContent: "center",
+                color: "white",
+                border: "none",
+              }}
+              onClick={handleConfirmCommand}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

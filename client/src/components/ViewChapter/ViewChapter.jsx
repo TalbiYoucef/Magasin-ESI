@@ -4,12 +4,59 @@ import Nav from "../nav/nav.jsx";
 import PerLine from "./PerLine.jsx";
 import Baarr from "./Bar.jsx";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { MdNavigateNext } from "react-icons/md";
+import { BsSearch } from "react-icons/bs";
+import { useNavigate, Link } from "react-router-dom";
+import CreateRoleForm from "./createChap.jsx";
 
 function ViewChapter() {
   const navigate = useNavigate();
-  const [chapters,setChapters]=useState([])
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showCreateChapitreForm, setShowCreateChapitreForm] = useState(false);
+  const [chapters, setChapters] = useState([]);
+  const [chapitres, setChapitres] = useState([]);
+
   const [user, setUser] = useState({});
+  const toggleCreateChapitreForm = () => {
+    setShowCreateChapitreForm(!showCreateChapitreForm);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleCreateChapitre = async (newChapitre) => {
+    console.log(
+      newChapitre
+    )
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+        withCredentials: true,
+      });
+      try {
+        await axios.post(
+          "http://localhost:3036/chapters",
+          {
+            name: newChapitre.chapitre,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          }
+        );
+        alert("Chapter created successfully");
+      } catch (error) {
+        console.log(error);
+        alert("failed to create chapter");
+      }
+    } catch (error) {
+      navigate("/login");
+    }
+    setShowCreateChapitreForm(false)
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,8 +85,7 @@ function ViewChapter() {
     };
 
     fetchData();
-  }, [navigate]);
-
+  }, [navigate,showCreateChapitreForm]);
 
   const [showArticlessModal, setShowArticlesModal] = useState(false);
   const [selectedArticles, setSelectedArticles] = useState([]);
@@ -47,20 +93,17 @@ function ViewChapter() {
     ///window.location.href ('/viewArticle')
     window.confirm("Are you sure you want to Confirm the Role?");
   };
-
-  const ArticlesList = chapters.map((article, index) => (
-    <PerLine
-     id={article.chapter_id}
-      key={index}
-      rolenam={article.name}
-    /> // Passer la fonction handleViewRole comme prop
+  const filteredRoles = chapters.filter((chapitre) =>
+    chapitre.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const ArticlesList = filteredRoles.map((article, index) => (
+    <PerLine id={article.chapter_id} key={index} rolenam={article.name} /> // Passer la fonction handleViewRole comme prop
   ));
 
   const handleAddArticles = (Articles) => {
     setSelectedArticles(Articles);
     setShowArticlesModal(false); // Fermer le modal des permissions une fois les permissions sélectionnées
   };
-
 
   return (
     <div>
@@ -95,15 +138,46 @@ function ViewChapter() {
                   flexDirection: "column",
                   marginTop: "20px",
                 }}
-              >
-              </div>
+              ></div>
               <div
                 style={{
                   display: "flex",
                   gap: "20px",
                   marginRight: "40px",
                 }}
-              >
+              ></div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "20px",
+                marginRight: "40px",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div className="Search">
+                <BsSearch className="search-icon" />
+                <input
+                  type="search"
+                  placeholder="search Chapitre"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="search-input"
+                  style={{ border: "none", height: "30px", width: "120px" }}
+                />
+              </div>
+              <div className="create-list">
+                <Link
+                  onClick={toggleCreateChapitreForm}
+                  className="btn-create-usr"
+                >
+                  Create Chapitre
+                </Link>
+                <Link to="/articles" className="btn-create-usr1">
+                  {" "}
+                  Articles List <MdNavigateNext />
+                </Link>
               </div>
             </div>
             <Baarr />
@@ -120,6 +194,16 @@ function ViewChapter() {
           </div>
         </div>
       </div>
+      {showCreateChapitreForm && (
+        <div className="modal-overlay-create-role">
+          <div className="modal-content-create-role">
+            <CreateRoleForm
+              onCreateChapitre={handleCreateChapitre}
+              onClose={() => setShowCreateChapitreForm(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

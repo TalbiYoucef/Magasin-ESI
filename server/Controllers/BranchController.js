@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const db = require("../models");
 const getBranches = async (req, res) => {
   try {
@@ -69,14 +70,6 @@ const deleteBranch = async (req, res) => {
     if (!branch) {
       return res.status(404).json({ error: "Branch not found" });
     }
-    const branchProducts = await db.Product.findAll({
-      where: { branch_id: id },
-    });
-    if (branchProducts) {
-      branchProducts.map(async (product) => {
-        await product.destroy(); // deleting all products assigned to this branch
-      });
-    }
     await db.Branch.destroy({
       where: { branch_id: id },
     });
@@ -135,16 +128,32 @@ const getBranchProducts = async (req, res) => {
   try {
     const { id } = req.params;
     const branch = await db.Branch.findOne({ where: { branch_id: id } });
+
     if (!branch || branch.length === 0) {
       return res.status(404).json({ error: "Branch not found" });
     }
-    const products = await db.Product.findAll({ where: { branch_id: id } });
+    const products = await db.BranchProduct.findAll({ where: { branch_id: id } });
+    const allProducts = await db.Product.findAll({})
+    result = allProducts.filter(product => products.some(p => p.product_id === product.product_id)) 
     if (!products || products.length === 0) {
       return res
         .status(404)
         .json({ error: "No products found for this branch" });
     }
-    return res.status(200).json(products);
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to get branch products" });
+  }
+};
+
+const assignProductsToBranch = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const products = req.body;
+    products.map(async (product) => {
+      db.BranchProduct.create({branch_id : id , product_id : product})
+    });
+    return res.status(201).json("created successfully");
   } catch (error) {
     return res.status(500).json({ error: "Failed to get branch products" });
   }
@@ -158,4 +167,5 @@ module.exports = {
   assignBranchToChapter,
   removeBranchFromChapter,
   getBranchProducts,
+  assignProductsToBranch,
 };

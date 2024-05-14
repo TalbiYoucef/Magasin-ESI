@@ -2,15 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./manProduits.css";
 import Side from "../side/side.jsx";
 import Nav from "../nav/nav.jsx";
-import { MdNavigateNext } from "react-icons/md";
-import { BsSearch } from "react-icons/bs"; //chapitre data
-import article from "../data/Articles.jsx";//Produit data
+import { BsSearch } from "react-icons/bs";
 import Per from "./produitLig.jsx";
 import CreateRoleForm from "./createProduit.jsx";
 import Barr from "./barProduit.jsx";
-import { Link, useNavigate } from "react-router-dom";
-import ViewProductModal from "../ViewProduct/ViewProductModal.jsx";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";import axios from "axios";
 
 function Produit() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -58,10 +54,7 @@ function Produit() {
     setShowProductModel(true)
     console.log(showProductModel)
     console.log(produitName,id)
-    // const articleInfo = article.find((article) => article.name === produitName);
-    // setSelectedRole(articleInfo); // Stocker les informations de l'article sélectionné
-    // setShowEditRoleForm(true); // Afficher le formulaire d'édition
-  };
+    };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -71,10 +64,6 @@ function Produit() {
     article.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  //---------------------------------------------
-
-  // Ajoutez ceci pour afficher les nouveaux articles créés
-
   const produitList = filteredRoles.map((produit, index) => (
     <Per
       key={index}
@@ -82,13 +71,11 @@ function Produit() {
       onView={() => handleViewRole(produit.name,produit.product_id)}
     />
   ));
-  const handleClose =() =>{
-    setShowProductModel(false)
-  }
+
   const handleCreateChapitre = (newChapitre) => {
     const updatedChapitres = [...produits, newChapitre];
     setProduits(updatedChapitres);
-    setShowCreateChapitreForm(false); // Masquer le formulaire de création de chapitre après création réussie
+    setShowCreateChapitreForm(false);
   };
 
   const toggleCreateChapitreForm = () => {
@@ -120,8 +107,7 @@ function Produit() {
                   className="btn-create-usr"
                 >
                   Create Produit
-                </Link>
-                
+                </Link>                
               </div>
             </div>
             <Barr />

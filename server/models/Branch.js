@@ -9,9 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     VAT:DataTypes.INTEGER,
   });
   Branch.associate = (models) => {
-    const { Chapter, Product } = models;
+    const { Chapter } = models;
     Branch.belongsTo(Chapter, { foreignKey: 'chapter_id' });
-    Branch.hasMany(Product, { foreignKey: 'branch_id' });
   };
 
   return Branch;

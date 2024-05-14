@@ -6,12 +6,11 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
     },
     name: DataTypes.STRING,
-    qt_logique: DataTypes.INTEGER,
-    qt_physique: DataTypes.INTEGER,
+    quantity: DataTypes.INTEGER,
+
   });
   Product.associate = (models) => {
-    const { Branch, Product_Command } = models;
-    Product.belongsTo(Branch, { foreignKey: "branch_id" });
+    const { Product_Command } = models;
     Product.hasMany(Product_Command, { foreignKey: "product_id" });
   };
   return Product;

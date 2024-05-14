@@ -8,8 +8,6 @@ import axios from "axios";
 function CreateBonSortie() {
   const { id } = useParams();
   const [date, setDate] = useState("");
-  const [inventaires, setInventaire] = useState([]);
-  const [observation, setObservation] = useState([]);
   const [quantities, setQuantitie] = useState([]);
   const [initialQuantities, setInitialQuantitie] = useState([]);
   const [user, setUser] = useState({});
@@ -98,17 +96,8 @@ function CreateBonSortie() {
       setQuantitie(newQuantities);
     }
   };
-  const handleObservationChange = (e, index) => {
-    const newObservations = [...observation];
-    newObservations[index] = e.target.value;
-    setObservation(newObservations);
-  };
 
-  const handleInventaireChange = (e, index) => {
-    const inv = [...observation];
-    inv[index] = e.target.value;
-    setObservation(inv);
-  };
+
 
   const handleConfirmCommand = async () => {
     const confirm = window.confirm(
@@ -139,15 +128,6 @@ function CreateBonSortie() {
           if (respp.data.status == "satisfied") {
             alert("you can not recreate an exit note");
           } else {
-            const response = await axios.put(
-              `http://localhost:3036/internalorders/${internalOrderResponse.data.internal_order_id}/status`,
-              { status: "satisfied" },
-              {
-                headers: { Authorization: `Bearer ${res.data.accessToken}` },
-                withCredentials: true,
-              }
-            );
-            console.log(response.data);
             const result = products.map((product, index) => {
               return {
                 product: product.product_id,
@@ -173,7 +153,7 @@ function CreateBonSortie() {
                 `http://localhost:3036/exitnotes/`,
                 {
                   exit_date: today,
-                  type: "discharge",
+                  type: "exit",
                   comment: "",
                   internal_order_id:
                     internalOrderResponse.data.internal_order_id,
@@ -212,6 +192,7 @@ function CreateBonSortie() {
       "Are you sure you want to Leave this form ?"
     );
     if (confirm) {
+      navigate(-1)
     }
   };
   const today = new Date().toLocaleDateString("fr-FR");
@@ -318,7 +299,7 @@ function CreateBonSortie() {
                   marginTop: "10px",
                 }}
               >
-                Servie
+                Service
               </p>
               <input
                 type="text"
@@ -369,12 +350,8 @@ function CreateBonSortie() {
                 value={date}
               />
             </div>
-            <div className="su330">
-              
-              {/* Remplir le champ avec la date de la commande sélectionnée */}
-            </div>
+            <div className="su330"></div>
           </div>
-
           <div
             style={{
               display: "flex",
@@ -562,48 +539,7 @@ function CreateBonSortie() {
                     flexDirection: "column",
                   }}
                 >
-                  <div
-                    style={{
-                      color: "#5B548E",
-                      fontSize: "15px",
-                      marginLeft: "10px",
-                      marginTop: "20px",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    {" "}
-                    Observations:{" "}
-                  </div>
-                  <div
-                    style={{
-                      color: "#666666",
-                      borderRadius: "20px",
-                      height: "45px", // Hauteur fixe, ajustez selon vos besoins
-                      overflowY: "auto", // Utilisation de 'auto' pour activer le défilement vertical si nécessaire
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                      border: "none",
-                    }}
-                  >
-                    {" "}
-                    <input
-                      onChange={(e) => handleObservationChange(e, index)}
-                      type="text"
-                      value={observation[index]}
-                      style={{
-                        height: "45px",
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        borderRadius: "20px",
-                        justifyContent: "center",
-                        outline: "none",
-                        border: "none",
-                      }}
-                    />
-                  </div>
+                  
                 </div>
               </div>
             ))}

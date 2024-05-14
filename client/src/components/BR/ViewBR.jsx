@@ -9,8 +9,8 @@ import jsPDF from "jspdf";
 import axios from "axios";
 
 const BonDeReception = () => {
-  const { idcmd, id } = useParams();
-  console.log(idcmd, id);
+  const { idcmd, id,index } = useParams();
+  console.log(idcmd, id,index);
   const [date, setDate] = useState("");
   const [order, setOrder] = useState({});
   const [user, setUser] = useState({});

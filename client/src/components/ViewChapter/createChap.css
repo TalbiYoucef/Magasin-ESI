@@ -1,0 +1,76 @@
+.create-role-form{
+    width: 100%;
+    height:350px ;
+    border-radius: 30px;
+    margin-top: -15%;
+    margin-left: -20px;
+
+}
+
+  .form-group-create-role {
+     height: 40px;
+     width: 250px;
+  }
+  
+  .input {
+    display: block;
+    color: #5B548E;
+  }
+  
+  .input1{
+    width: 300px;
+    height: 40px ;
+    padding-left: 15px;
+    border-radius: 30px;
+    transition: border-color 0.3s ease;
+    color :#656e77; 
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500; /* meduim */
+    font-size: 15px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25); 
+    margin-bottom: 10px; 
+  }
+  .title1 {
+    color: #5B548E; 
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600; /* Semi-gras */
+    font-size: 25px;
+    margin-bottom: 20px;
+    text-align: center; 
+}
+
+.btn{
+
+    text-decoration: none  ;
+    width: 130px;
+    height: 40px ;
+    border-radius: 15px;
+    margin-top: 30px;
+    transition: border-color 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500; /* meduim */
+    font-size: 16px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center;
+    margin-right: 1rem;
+
+}
+.create{
+    background-color :#0047FF; 
+    color : white ;
+
+
+}
+.cancel{
+    color :#0047FF; 
+    background-color : white ;
+border-color:#0047FF ;
+
+}
+
+.btns{
+    display: flex;
+    justify-content: center; /* Center horizontally */
+}
