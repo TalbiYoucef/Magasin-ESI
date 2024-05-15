@@ -10,8 +10,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 function Users() {
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState(""); // État local pour stocker la valeur de recherche
+  const [users, setUsers] = useState([]); // État local pour stocker la liste des utilisateurs
+  const [showCreateUserForm, setShowCreateUserForm] = useState(false); // État local pour contrôler l'affichage du formulaire de création d'utilisateur
   const [user, setUser] = useState({});
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [roles, setRoles] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -19,7 +22,6 @@ function Users() {
           withCredentials: true,
         });
         setUser(res.data.user);
-        setIsAdmin(res.data.admin);
         try {
           const resp = await axios.get("http://localhost:3036/users", {
             headers: {
@@ -27,11 +29,20 @@ function Users() {
             },
             withCredentials: true,
           });
-          console.log(resp.data);
           setUsers(resp.data);
         } catch (error) {
           console.log(error);
-          navigate("/dashboard");
+        }
+        try {
+          const resp = await axios.get("http://localhost:3036/roles", {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+          setRoles(resp.data);
+        } catch (error) {
+          console.log(error);
         }
       } catch (error) {
         // If an error occurs, redirect to the login page
@@ -41,14 +52,21 @@ function Users() {
     };
 
     fetchData();
-  }, []);
-  const [searchTerm, setSearchTerm] = useState(""); // État local pour stocker la valeur de recherche
-  const [users, setUsers] = useState([]); // État local pour stocker la liste des utilisateurs
-  const [showCreateUserForm, setShowCreateUserForm] = useState(false); // État local pour contrôler l'affichage du formulaire de création d'utilisateur
+  }, [users]);
   // Fonction pour créer un nouvel utilisateur
+  const getRoleId = (name) => {
+    const found = roles.find((role) => role.name == name);
+    if (found) {
+      return found.role_id;
+    } else {
+      return "";
+    }
+  };
+  
   const handleCreateUser = async (newUser) => {
     // Ajouter le nouvel utilisateur à la liste des utilisateurs
-
+    
+    // getRole id needed
     try {
       const res = await axios.get("http://localhost:3036/refresh", {
         withCredentials: true,
@@ -74,6 +92,20 @@ function Users() {
             withCredentials: true,
           }
         );
+        try {
+          newUser.userData.selectedRoles.map(role=>{
+            axios.post(`http://localhost:3036/users/${resp.data.user.user_id}/roles`,{
+              role_id : getRoleId(role)
+            },{
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            })
+          })
+        } catch (error) {
+          console.log(error)
+        }
         setUsers([...users, resp.data.user]);
       } catch (err) {
         console.log(err);

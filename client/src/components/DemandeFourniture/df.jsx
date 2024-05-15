@@ -10,7 +10,7 @@ import axios from "axios";
 
 const DemandeFourniture = () => {
   //utilisateur
-  const [date,setDate] = useState('')
+  const [date, setDate] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
   const [allProducts, setAllProducts] = useState([]);
@@ -49,23 +49,19 @@ const DemandeFourniture = () => {
             }
           );
           setProducts(resp.data);
-          setDate(String((resp.data)[0].updatedAt).split('T')[0])
+          setDate(String(resp.data[0].updatedAt).split("T")[0]);
         } catch (error) {
           console.log(error);
         }
 
         try {
-          const resp = await axios.get(
-            `http://localhost:3036/products`,
-            {
-              headers: {
-                Authorization: `Bearer ${res.data.accessToken}`,
-              },
-              withCredentials: true,
-            }
-          );
+          const resp = await axios.get(`http://localhost:3036/products`, {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
           setAllProducts(resp.data);
-          
         } catch (error) {
           console.log(error);
         }
@@ -78,15 +74,14 @@ const DemandeFourniture = () => {
     fetchData();
   }, []);
 
-  const getProductName =(id)=>{
-    const name = allProducts.find(pro => pro.product_id == id)
-    if(name){
-      return name.name
-    }else{
-      return ''
+  const getProductName = (id) => {
+    const name = allProducts.find((pro) => pro.product_id == id);
+    if (name) {
+      return name.name;
+    } else {
+      return "";
     }
-
-  }
+  };
   const userData = [
     {
       id: 1,
@@ -281,7 +276,7 @@ const DemandeFourniture = () => {
       padding: "10px 20px",
     },
   };
-  
+
   const frameRef = useRef(null);
   const handleDelete = () => {
     const confirmDelete = window.confirm(
@@ -314,21 +309,17 @@ const DemandeFourniture = () => {
     <>
       <div>
         <section>
-          {" "}
           <nav>
-            {" "}
-            <Nav />{" "}
+            <Nav username={user.username} />
           </nav>
           <div>
             <div>
               <Side />
             </div>
             <div style={styles.bnfrnt}>
-              <h3 className="bonfrnt">
-                DEMANDE DE FOURNITURE 
-              </h3>
+              <h3 className="bonfrnt">DEMANDE DE FOURNITURE</h3>
               <div style={styles.buttonsRightFr}>
-                <Link to="/mes-dmnd" style={{ textDecoration: "none" }}>
+                <Link to="/MyOrders" style={{ textDecoration: "none" }}>
                   <button
                     style={styles.fournitureList}
                     onClick={() => navigate(-2)}
@@ -336,9 +327,11 @@ const DemandeFourniture = () => {
                     Fourniture List <GrNext />
                   </button>
                 </Link>
-
                 {userData[0].roleuser === "magasinier" && (
-                  <Link to={`/cmdi/${id}/create-bon-sortie`} className="create-bnsortie-link">
+                  <Link
+                    to={`/cmdi/${id}/create-bon-sortie`}
+                    className="create-bnsortie-link"
+                  >
                     <button
                       style={styles.createsortie}
                       onClick={() => console.log("Create sortie clicked")}
@@ -347,7 +340,10 @@ const DemandeFourniture = () => {
                     </button>
                   </Link>
                 )}
-                <Link to={`/veiw-bon-sortie/${id}`} className="viewbnsortie-link">
+                <Link
+                  to={`/veiw-bon-sortie/${id}`}
+                  className="viewbnsortie-link"
+                >
                   <button
                     style={styles.viewSortie}
                     onClick={() => console.log("View bn de sortie clicked")}
@@ -415,12 +411,8 @@ const DemandeFourniture = () => {
                         <td style={styles.infoprodDemender}>
                           {product.quantity}
                         </td>
-                        <td style={styles.infoprodDemender}>
-                          { }
-                        </td>
-                        <td style={styles.infoprodDemender}>
-                          { }
-                        </td>
+                        <td style={styles.infoprodDemender}>{}</td>
+                        <td style={styles.infoprodDemender}>{}</td>
                       </tr>
                     ))}
                   </tbody>

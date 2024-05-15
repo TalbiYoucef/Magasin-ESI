@@ -23,6 +23,7 @@ function CommandInterne() {
             withCredentials: true,
           });
           setUser(res.data.user);
+          
           try {
             const resp = await axios.get("http://localhost:3036/internalorders/status/accepted", {
               headers: {

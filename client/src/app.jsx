@@ -53,6 +53,7 @@ function App() {
         <div>
           <Routes>
             {/* // ajouter un seuil min a la creation de produit */}
+            <Route path="/InternalOrders" element={<CommandInterne />} />
             <Route path="/edit-cmdi/:id" element={<EditCmdinterne />} />
             {/* // already done */}
             <Route path="/veiw-bon-decharge/:id" element={<Decharge />} />
@@ -81,7 +82,6 @@ function App() {
             />
             <Route path="/MyOrders" element={<CommandInterneUser />} />
             <Route path="/bonsdereception/:id" element={<ListBonRecp />} />
-            <Route path="/cmdis" element={<CommandInterne />} />
             <Route path="/cr-cmdi" element={<CreateCmdint />} />
             <Route path="/bon-cmd/:id" element={<BonDeComande />} />
             <Route

@@ -19,44 +19,51 @@ const refresh = async (req, res) => {
         user_id: foundUser.user_id,
       },
     });
-    let id ;
-    try{
-      await db.Role.findOne({
-       where: { name: "admin"},
-      }).then((resp)=>{
-        id = resp.role_id;
-      })
-     }catch(err){
-       console.log('no admin role found')
-     }
-    jwt.verify(cookies.token, process.env.REFRESH_TOKEN_KEY, (err, decoded) => {
-      if (err || decoded.user !== foundUser.email) {
-        console.error(err);
-        return res.status(403).json({ error: err.message });
-      }
-
-      const accessToken = jwt.sign(
-        { user: foundUser.email },
-        process.env.ACCESS_TOKEN_KEY,
-        {
-          expiresIn: "2d",
+    jwt.verify(
+      cookies.token,
+      process.env.REFRESH_TOKEN_KEY,
+      async (err, decoded) => {
+        if (err || decoded.user !== foundUser.email) {
+          console.error(err);
+          return res.status(403).json({ error: err.message });
         }
-      );
-
-      
-      let admin = false;
-      if (roles) {
-        roles.map(role=>{
-          if(role.role_id==id){
-            admin = true
+        const accessToken = jwt.sign(
+          { user: foundUser.email },
+          process.env.ACCESS_TOKEN_KEY,
+          {
+            expiresIn: "2d",
           }
-        })
+        );
+
+        let perms = [];
+        try {
+          if (roles) {
+            for (const role of roles) {
+              const permissions = await db.Role_Permission.findAll({
+                where: {
+                  role_id: role.role_id,
+                },
+              });
+              permissions.forEach((permission) => {
+                perms.push(permission.permission_id);
+              });
+            }
+            perms = [...new Set(perms)]
+          } else {
+            console.log("no roles found");
+          }
+        } catch (error) {
+          console.log("no permissions found");
+        }
+
+        res.json({
+          id: foundUser.user_id,
+          accessToken,
+          perms,
+          user: foundUser,
+        });
       }
-      else{
-        console.log('no roles found')
-      }
-      res.json({ id: foundUser.user_id, accessToken , admin , user:foundUser });
-    });
+    );
   } catch (error) {
     console.error("Error occurred during refresh:", error);
     res.status(500).json({ error: "Internal server error" });

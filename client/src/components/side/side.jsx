@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./side.css";
+import { FiLogOut } from "react-icons/fi";
+import axios from "axios";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { TbUsers } from "react-icons/tb";
 import { TbHomeSignal } from "react-icons/tb";
@@ -11,9 +13,30 @@ import { MdFormatListBulletedAdd } from "react-icons/md";
 import { MdOutlineLocalGroceryStore } from "react-icons/md";
 import { PiStorefront } from "react-icons/pi";
 import { GrDeliver } from "react-icons/gr";
+import { Link, useNavigate } from "react-router-dom";
 function Side(props) {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
-  const [UserPerimssionsId, setUserPerimssionsId] = useState([22, 1, 3, 9]);
+  const [UserPerimssionsId, setUserPerimssionsId] = useState([]);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        setUserPerimssionsId(res.data.perms)
+      } catch (error) {
+        // If an error occurs, redirect to the login page
+        navigate("/login");
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
+  
   const Dashboard = {
     icon: <TbHomeSignal className="ic" style={{}} />,
     heading: "Dashboard",
@@ -102,16 +125,23 @@ function Side(props) {
       icon: <LuSettings className="ic" />,
       heading: "Settings",
     },
-    {
-      icon: <IoMdLogOut className="ic" />,
-      heading: "Logout",
-    },
   ];
   const sidebarHeight = 92; // en vh
   const itemHeight = 55; // en px
   const sidebarHeightPX = (window.innerHeight * sidebarHeight) / 100;
   const spaceHeight =
     sidebarHeightPX - (SidebarData.length + Data.length + 1) * itemHeight;
+  const handleLogOut = async () => {
+    try {
+      const res = await axios.get("http://localhost:3036/auth/logout", {
+        withCredentials: true,
+      });
+      console.log(res);
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <nav className="nav__cont">
@@ -198,6 +228,12 @@ function Side(props) {
                 {item.icon}
                 {item.heading}
               </a>
+            </li>
+            <li className="nav__items" style={{color:'red'}}>
+              <Link onClick={handleLogOut}>
+                log out
+                <FiLogOut className="ic" />
+              </Link>
             </li>
           </div>
         ))}

@@ -81,13 +81,14 @@ const loginUser = async (req, res) => {
       let roles = [];
       await db.User_Role.findAll({ where: { user_id: user.user_id } }).then(
         (resp) => {
+          console.log(resp)
           resp.map((element) => {
             roles.push(element.role_id);
             console.log("ele", element);
           });
         }
       );
-      res.json({ refreshToken, accessToken, roles: roles });
+      res.json({accessToken, roles: roles });
     } else {
       return res.status(400).json({ error: "Invalid credentials" });
     }

@@ -21,6 +21,7 @@ function CommandInterneUser() {
           withCredentials: true,
         });
         setUser(res.data.user);
+        console.log(res.data)
         try {
           const resp = await axios.get(
             `http://localhost:3036/users/${res.data.user.user_id}/commands`,
@@ -41,7 +42,6 @@ function CommandInterneUser() {
         console.log(error);
       }
     };
-
     fetchData();
   }, []);
   const handleSearchChange = (event) => {

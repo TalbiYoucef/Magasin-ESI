@@ -31,7 +31,7 @@ function Login() {
           .then((resp) => {
             console.log(resp.data);
             localStorage.setItem("accessToken", resp.data.accessToken);
-            navigate("/users");
+            navigate("/MyOrders");
             setErr('')
           })
           .catch((err) => {

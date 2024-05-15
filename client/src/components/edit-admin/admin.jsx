@@ -53,7 +53,6 @@ function Admin() {
               }
             );
             setRolesIds(response.data);
-
             const userRoleNames = resp.data
               .filter((role) => response.data.includes(role.role_id))
               .map((role) => role.name);
