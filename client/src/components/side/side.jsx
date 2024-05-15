@@ -35,8 +35,7 @@ function Side(props) {
 
     fetchData();
   }, []);
-  
-  
+
   const Dashboard = {
     icon: <TbHomeSignal className="ic" style={{}} />,
     heading: "Dashboard",
@@ -67,7 +66,7 @@ function Side(props) {
   };
   const ProductsManagement = {
     icon: <PiStorefront className="ic" />,
-    heading: "Products Management",
+    heading: "Chapters Management",
   };
   const SuppliersManagement = {
     icon: <GrDeliver className="ic" />,

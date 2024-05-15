@@ -101,7 +101,7 @@ const getUserCommands = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
     const userCommands = await db.Command.findAll({
-      where: { user_id: user.user_id ,type:'internal' },
+      where: { user_id: id ,type:'internal' },
     });
        return res.send(userCommands);
   } catch (error) {

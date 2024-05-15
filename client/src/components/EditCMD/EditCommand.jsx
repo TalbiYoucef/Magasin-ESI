@@ -44,7 +44,7 @@ function EditCmd() {
           console.log(resp.data);
         } catch (error) {
           alert(error.response.data.message);
-          navigate("/ExternalOrders");
+          navigate("/InternalOrders");
           console.log(error);
         }
       } catch (error) {

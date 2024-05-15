@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const{ getCommands,getPurchasingOrder,updateProductToCommand, getCommandById,createCommand,deleteCommand,assignProductToCommand,removeProductFromCommand, getAllCommandProducts, getInteranlOrder, getExternalCommands, updateQuantities} = require('../Controllers/CommandController');
+const{ getCommands,getPurchasingOrder,updateProductToCommand, getCommandById,createCommand,deleteCommand,assignProductToCommand,removeProductFromCommand, getAllCommandProducts, getInteranlOrder, getExternalCommands, updateQuantities, getServiceCommands} = require('../Controllers/CommandController');
 const { verifyAccess,checkAuthorization } = require("../Middlewares/verifyAccess");
 
 router
@@ -11,9 +11,10 @@ router
 .post('/:id/products',verifyAccess([9,12,15,16,17,20]),checkAuthorization, assignProductToCommand)
 .put('/:id/products',verifyAccess([9,12,15,16,17,20]),checkAuthorization, updateProductToCommand)
 .delete('/:id/products',verifyAccess([9,12,17,20]),checkAuthorization, removeProductFromCommand)
+.get('/service/:service_id',verifyAccess([17]),checkAuthorization, getServiceCommands)
 .get('/:id/products',verifyAccess([9,10,12,14,15,16,17,20]),checkAuthorization, getAllCommandProducts)
 .get('/:id/purchasing-order',verifyAccess([9,10,12,17,20]),checkAuthorization, getPurchasingOrder)
 .put('/:id/updateQuantities',verifyAccess([9,12,15,16,17,20]),checkAuthorization, updateQuantities)
-.get('/:id/internal-order',verifyAccess([14,15,16,17,20]),checkAuthorization, getInteranlOrder);
+.get('/:id/internal-order',verifyAccess([14,15,16,17,20]),checkAuthorization, getInteranlOrder)
 
 module.exports = router;

@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const db = require("../models");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -14,6 +15,18 @@ const refresh = async (req, res) => {
     if (!foundUser) {
       return res.json({ err: "user  not found" });
     }
+
+    let isHeadOfService = false;
+    let serviceId ;
+      const result = await db.ServiceHead.findOne({
+        where: {
+          user_id : foundUser.user_id
+        }
+      })
+      if(result){
+        isHeadOfService= true;
+        serviceId = result.service_id
+      }
     const roles = await db.User_Role.findAll({
       where: {
         user_id: foundUser.user_id,
@@ -48,7 +61,7 @@ const refresh = async (req, res) => {
                 perms.push(permission.permission_id);
               });
             }
-            perms = [...new Set(perms)]
+            perms = [...new Set(perms)];
           } else {
             console.log("no roles found");
           }
@@ -60,6 +73,8 @@ const refresh = async (req, res) => {
           id: foundUser.user_id,
           accessToken,
           perms,
+          isHeadOfService,
+          serviceId,
           user: foundUser,
         });
       }

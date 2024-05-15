@@ -21,7 +21,6 @@ function Produit() {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
         });
-        console.log("reres", res.data);
         setUser(res.data.user);
         try {
           const resp = await axios.get("http://localhost:3036/products", {
@@ -31,7 +30,6 @@ function Produit() {
             withCredentials: true,
           });
           setProduits(resp.data);
-          console.log(resp.data);
         } catch (error) {
           console.log(error);
         }
@@ -41,9 +39,8 @@ function Produit() {
         console.log(error);
       }
     };
-
     fetchData();
-  }, [produits]);
+  }, []);
 
   const handleViewRole = (produitName, id) => {
     setShowProductModel(true);
@@ -68,24 +65,33 @@ function Produit() {
   ));
 
   const handleCreateChapitre = async (newChapitre) => {
+    console.log(newChapitre); //name description quantity limit
     try {
       const res = await axios.get("http://localhost:3036/refresh", {
-          withCredentials: true,
-        });
-        try {
-          const resp = await axios.post("http://localhost:3036/products", {
+        withCredentials: true,
+      });
+      try {
+        const resp = await axios.post(
+          "http://localhost:3036/products",
+          {
+            name: newChapitre.name,
+            description: newChapitre.description,
+            quantity: 0,
+            limit: newChapitre.quantity,
+          },
+          {
             headers: {
               Authorization: `Bearer ${res.data.accessToken}`,
             },
             withCredentials: true,
-          });
-          console.log(resp)
-        } catch (error) {
-          console.log(error)
-        }
-
+          }
+        );
+        console.log(resp);
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
-      navigate('/')
+      navigate("/");
     }
     setShowCreateChapitreForm(false);
   };

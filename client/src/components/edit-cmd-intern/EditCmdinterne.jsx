@@ -5,9 +5,12 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import CmdComp from "./cmdComp";
 import axios from "axios";
 function EditCmdinterne() {
+  // verify if user is head of structur => validated
+  // if director => accepted
+  // if user => initialized
   const { id } = useParams();
   const [product, setProducts] = useState([]);
-  const [user,setUser] = useState({})
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
@@ -15,7 +18,7 @@ function EditCmdinterne() {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
         });
-        setUser(res.data.user)
+        setUser(res.data.user);
         try {
           const resp = await axios.get("http://localhost:3036/products", {
             headers: {
@@ -56,9 +59,7 @@ function EditCmdinterne() {
   }, []);
 
   // Format the date as "day month year"
-  const formattedDate = new Date().toLocaleDateString('fr-FR');
-
-  
+  const formattedDate = new Date().toLocaleDateString("fr-FR");
 
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [cmdDataList, setCmdDataList] = useState([]);
@@ -109,33 +110,36 @@ function EditCmdinterne() {
     const confirm = window.confirm(
       "Are you sure you want to Confirm the command?"
     );
-    cmdDataList.map(async Element =>{
+    cmdDataList.map(async (Element) => {
       try {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
         });
         try {
-          const resp = await axios.post(`http://localhost:3036/commands/${id}/products`,{
-            product_id : Element.product_id ,
-            quantity : Element.quantity,
-            unit_price : Element.price
-          }, {
-            headers: {
-              Authorization: `Bearer ${res.data.accessToken}`,
+          // a modifier : handle quantities[index] + modify the status of the cmnd
+          const resp = await axios.post(
+            `http://localhost:3036/commands/${id}/products`,
+            {
+              product_id: Element.product_id,
+              quantity: Element.quantity,
+              unit_price: Element.price,
             },
-            withCredentials: true,
-          });
-          navigate('/ExternalOrders')
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
+          navigate("/InternalOrders");
         } catch (error) {
           console.log(error);
         }
-   
       } catch (error) {
         navigate("/login");
         console.log(error);
       }
-
-    })
+    });
   };
 
   const handleCancel = () => {
@@ -143,7 +147,7 @@ function EditCmdinterne() {
       "Are you sure you want to cancel the command?"
     );
     if (confirm) {
-      navigate('/ExternalOrders')
+      navigate("/InternalOrders");
     }
   };
 

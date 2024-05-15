@@ -123,8 +123,7 @@ const assignProductToCommand = async (req, res) => {
 const updateProductToCommand = async (req, res) => {
   try {
     const { id } = req.params;
-    const { product_id, delivered_amount, amount_left } =
-      req.body;
+    const { product_id, delivered_amount, amount_left } = req.body;
     const productCommand = await db.Product_Command.findOne({
       where: { command_id: id, product_id: product_id },
     });
@@ -140,6 +139,37 @@ const updateProductToCommand = async (req, res) => {
     return res.status(500).json({ error: "an error has occured" });
   }
 };
+
+const getServiceCommands = async (req, res) => {
+  try {
+    const { service_id } = req.params;
+
+    // Fetching user IDs of the service
+    const users = await db.User.findAll({
+      where: {
+        service_id: service_id,
+      },
+      attributes: ["user_id"],
+    });
+
+    // Extracting user IDs from the fetched data
+    const userIds = users.map((user) => user.user_id);
+
+    // Fetching internal commands associated with the user IDs
+    const internalCommands = await db.Command.findAll({
+      where: {
+        user_id: userIds,
+        type: "internal", // Filter by internal type
+      },
+    });
+
+    res.json(internalCommands);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const removeProductFromCommand = async (req, res) => {
   try {
     const { id } = req.params;
@@ -177,7 +207,7 @@ const getPurchasingOrder = async (req, res) => {
 const updateQuantities = async (req, res) => {
   const { id } = req.params;
   const quantities = req.body;
-  console.log(quantities)
+  console.log(quantities);
   // gerer les deux cas separement
   try {
     const result = quantities.map(async (quantity) => {
@@ -185,27 +215,28 @@ const updateQuantities = async (req, res) => {
         where: { command_id: id, product_id: quantity.product },
       });
       const command = await db.Command.findOne({
-        where:{ command_id : id}
-      })
+        where: { command_id: id },
+      });
 
       if (productCommand) {
         productCommand.delivered_amount = quantity.quantity;
-        if(command.type === "external"){
+        if (command.type === "external") {
           productCommand.amount_left =
-          productCommand.amount_left - quantity.quantity;
+            productCommand.amount_left - quantity.quantity;
         }
         await productCommand.save();
         return productCommand;
       } else {
-        return ({ message: "Product not found" });
+        return { message: "Product not found" };
       }
     });
     res.status(200).json({ result });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({error});
+    console.log(error);
+    res.status(500).json({ error });
   }
 };
+
 const getInteranlOrder = async (req, res) => {
   const { id } = req.params;
   await db.InternalOrder.findOne({
@@ -234,5 +265,6 @@ module.exports = {
   updateProductToCommand,
   getInteranlOrder,
   updateQuantities,
+  getServiceCommands,
   getExternalCommands,
 };

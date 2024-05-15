@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
-import Roledata from "../CommandManagement/commandData.jsx";
 import axios from "axios";
 
 function Rollig(props) {
 
   const [isChecked, setIsChecked] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [selectedCommand, setSelectedCommand] = useState(null); // État local pour stocker les données de la commande sélectionnée
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
@@ -87,7 +85,7 @@ function Rollig(props) {
             </p>
           </div>
           <Link
-            to={`/veiw-cmdi/${props.id}`}
+            to={`/view-demande-fourniture/${props.id}`}
             style={{
               marginLeft: "50px",
               textDecoration: "none",

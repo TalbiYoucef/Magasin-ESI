@@ -2,19 +2,20 @@
 const db = require("../models");
 const createProduct = async (req, res) => {
   try {
-    const { name, quantity, branch_id } = req.body;
+    const { name, quantity,limit,description } = req.body;
     const productExists = await db.Product.findOne({ where: { name: name } });
     if (productExists) {
       return res.status(400).json({ error: "Product already exists" });
     }
     const product = await db.Product.create({
       name: name,
+      description:description,
       quantity:quantity,
-      branch_id: branch_id,
+      limit:limit,
     });
     return res.status(201).json(product);
   } catch (error) {
-    return res.status(500).json({ error: "Failed to create product" });
+    return res.status(500).json({ error: "Failed to create product" },error);
   }
 };
 

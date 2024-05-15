@@ -25,7 +25,7 @@ function Cmds() {
         });
         console.log("reres", res.data);
         try {
-          const resp = await axios.get("http://localhost:3036/commands", {
+          const resp = await axios.get("http://localhost:3036/commands/external-commands", {
             headers: {
               Authorization: `Bearer ${res.data.accessToken}`,
             },
@@ -92,7 +92,7 @@ function Cmds() {
       </div>
       <div className="row">
         <section className="col-md-12 bordureBleue">
-          <div className="col-md-5 bordureBleue section-28">
+          <div className="col-md-5 bordureBleue section-28" style={{width:'100%'}}>
             <div className="fot28">
               <div className="search28">
                 <IoSearchOutline />{" "}

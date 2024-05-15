@@ -52,10 +52,9 @@ function App() {
       <Router>
         <div>
           <Routes>
-            {/* // ajouter un seuil min a la creation de produit */}
-            <Route path="/InternalOrders" element={<CommandInterne />} />
             <Route path="/edit-cmdi/:id" element={<EditCmdinterne />} />
             {/* // already done */}
+            <Route path="/InternalOrders" element={<CommandInterne />} />
             <Route path="/veiw-bon-decharge/:id" element={<Decharge />} />
             <Route path="/edit-bon-sortie/:id" element={<EditBonSortie />} />
             <Route path="/edit-bon-decharge/:id" element={<EditDecharge />} />
@@ -88,12 +87,12 @@ function App() {
               path="/order/:id/create-bon-reception"
               element={<CreateRec />}
             />
-            <Route path="/chapters" element={<ViewChapter />} />
+            <Route path="/ChaptersManagement" element={<ViewChapter />} />
             <Route path="/produits" element={<Produit />} />
             <Route path="/chapter/:id" element={<Articles />} />
             <Route path="/article/:id/produits" element={<Produits />} />
             <Route path="/create-cmd" element={<CreateCmd />} />
-            <Route path="supp" element={<Fornisseur />} />
+            <Route path="SuppliersManagement" element={<Fornisseur />} />
             <Route path="viewRole/:id" element={<ViewRole />} />
             <Route path="/ExternalOrders" element={<Cmds />} />
             <Route path="/edit-cmd/:id" element={<EditCmd />} />
