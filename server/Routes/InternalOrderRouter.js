@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const internalOrderController = require("../Controllers/InternalOrderController");
+const { verifyAccess,checkAuthorization } = require("../Middlewares/verifyAccess");
+
 
 router
-  .post("/", internalOrderController.createInternalOrder)
-  .get("/", internalOrderController.getAllInternalOrders)
-  .get("/:id", internalOrderController.getInternalOrderById)
-  .put("/:id", internalOrderController.updateInternalOrder)
-  .get("/status/:status", internalOrderController.getOrdersByStatus)
-  .put("/:id/status", internalOrderController.updateOrderStatus)
-  .delete("/:id", internalOrderController.deleteInternalOrder);
+  .post("/",verifyAccess([20]),checkAuthorization, internalOrderController.createInternalOrder)
+  .get("/",verifyAccess([14,20]),checkAuthorization, internalOrderController.getAllInternalOrders)
+  .get("/:id",verifyAccess([14]),checkAuthorization, internalOrderController.getInternalOrderById)
+  .put("/:id",verifyAccess([20]),checkAuthorization, internalOrderController.updateInternalOrder)
+  .get("/status/:status",verifyAccess([14,20]),checkAuthorization, internalOrderController.getOrdersByStatus)
+  .put("/:id/status",verifyAccess([20]),checkAuthorization, internalOrderController.updateOrderStatus)
+  .delete("/:id",verifyAccess([20]),checkAuthorization, internalOrderController.deleteInternalOrder);
 
 module.exports = router;

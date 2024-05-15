@@ -133,7 +133,7 @@ function CreateRec() {
           }
         } catch (error) {
           alert(error.response.data.message);
-          navigate("/commands");
+          navigate("/ExternalOrders");
           console.log(error);
         }
       } catch (error) {

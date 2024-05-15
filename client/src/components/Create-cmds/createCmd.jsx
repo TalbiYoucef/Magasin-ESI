@@ -254,7 +254,7 @@ function CreateCmd() {
                     console.log("failed to create bone de commande", error);
                   }
                 });
-              navigate("/commands");
+              navigate("/ExternalOrders");
             } catch (error) {
               console.log(error);
             }
@@ -296,7 +296,7 @@ function CreateCmd() {
       setCmdDataList([]);
       setFilteredProducts([]);
       setProducts([]);
-      navigate("/commands");
+      navigate("/ExternalOrders");
     }
   };
 
@@ -305,7 +305,7 @@ function CreateCmd() {
     <div>
       <Nav username={user.username} />
       <div className="dwnusers">
-        <Side link="commands" />
+        <Side link="/ExternalOrders" />
         <div
           style={{
             marginTop: "8vh",
@@ -350,7 +350,7 @@ function CreateCmd() {
               </div>
             </div>
             <Link
-              to={"/commands"}
+              to={"/ExternalOrders"}
               onClick={handleCmdList}
               style={{
                 borderRadius: "20px",

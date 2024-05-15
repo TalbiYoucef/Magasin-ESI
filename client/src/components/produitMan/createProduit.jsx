@@ -1,8 +1,4 @@
 import React, { useState  , useEffect} from 'react';
-
-
-import ArticlesData from '../data/Articles.jsx';
-import produitData from '../data/chapitreData.jsx'; // data of chapitres
 import produit from '../data/Produits.jsx'; // data of produits
 
 
@@ -10,11 +6,7 @@ import produit from '../data/Produits.jsx'; // data of produits
 
 
 function CreateRoleForm({ onCreateChapitre, onClose }) {
-  const [chapitreName, setChapitreName] = useState(''); // Déclarer chapitreName et setChapitreName
-  const [articles, setArticles] = useState(produit);
-  const [selectedArticles, setSelectedArticles] = useState([]);
-  const [selectedProduits, setSelectedProduits] = useState([]);
-  const [showArticlesModal, setShowArticlesModal] = useState(false);
+   const [articles, setArticles] = useState(produit);
   const [showCreateChapitreForm, setShowCreateChapitreForm] = useState(false);
   const [Chdata, setChdata] = useState({
     name: '',

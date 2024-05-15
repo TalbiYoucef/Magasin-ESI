@@ -44,7 +44,7 @@ function EditCmd() {
           console.log(resp.data);
         } catch (error) {
           alert(error.response.data.message);
-          navigate("/commands");
+          navigate("/ExternalOrders");
           console.log(error);
         }
       } catch (error) {
@@ -127,7 +127,7 @@ function EditCmd() {
             },
             withCredentials: true,
           });
-          navigate('/commands')
+          navigate('/ExternalOrders')
         } catch (error) {
           console.log(error);
         }
@@ -145,7 +145,7 @@ function EditCmd() {
       "Are you sure you want to cancel the command?"
     );
     if (confirm) {
-      navigate('/commands')
+      navigate('/ExternalOrders')
     }
   };
 
@@ -213,7 +213,7 @@ function EditCmd() {
               </div>
             </div>
             <Link
-              to="/commands"
+              to="/ExternalOrders"
               style={{
                 borderRadius: "20px",
                 height: "30px",

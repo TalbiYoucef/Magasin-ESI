@@ -184,7 +184,7 @@ function CreateCmdint() {
       "Are you sure you want to Leave this form ?"
     );
     if (confirm) {
-      navigate('/mes-cmnd')
+      navigate('/MyOrders')
       // window.location.href =  '/List des  demandes de fourniture  de ce user ';
     }
   };

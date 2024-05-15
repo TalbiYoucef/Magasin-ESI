@@ -349,7 +349,7 @@ const Decharge = () => {
           <div style={styles.bndecharge}>
             <h3 className="bndechrg">BON DE DECHARGE N° {id} </h3>
             <div style={styles.buttonsRightdc}>
-              <Link to="/mes-cmnd" style={{ textDecoration: "none" }}>
+              <Link to="/MyOrders" style={{ textDecoration: "none" }}>
                 <button style={styles.fourntList} onClick={() => navigate(-2)}>
                   Fourniture List <GrNext />
                 </button>

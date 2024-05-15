@@ -38,7 +38,7 @@ const BonDeComande = () => {
           setProducts(resp.data);
         } catch (error) {
           alert(error.response.data.message);
-          navigate("/commands");
+          navigate("/ExternalOrders");
           console.log(error);
         }
         try {
@@ -101,7 +101,7 @@ const BonDeComande = () => {
           }
         } catch (error) {
           alert(error.response.data.message);
-          navigate("/commands");
+          navigate("/ExternalOrders");
           console.log(error);
         }
       } catch (error) {
@@ -345,7 +345,7 @@ const BonDeComande = () => {
               <div className="top-Epc">
                 <h3 className="num-command">Command N°: {order.order_id}</h3>
                 <div className="right-buttons">
-                  <Link to="/commands-list" className="commands-list-link">
+                  <Link to="/ExternalOrders" className="commands-list-link">
                     <button
                       className="commands-list"
                       onClick={() => navigate(-1)}

@@ -75,20 +75,20 @@ function Side(props) {
       case 8:
         addSidebarData(SuppliersManagement);
         break;
-      case 9: //stats
       case 18: //consult sotre
-      case 20:
         // addSidebarData(Dashboard);
         break;
+      case 9: //manage BCE
       case 10: //consulte bce
-      case 12: //manage bce
+      case 12: //manage BR
         addSidebarData(ExternalOrders);
         break;
       case 13: //maange invetory
       case 19: //consult invetory
         addSidebarData(Inventory);
         break;
-      case 14: //manage  bci
+      case 14: //consult  bci
+      case 20: // manage bci
       case 17: //validate bci
         addSidebarData(InternalOrders);
         break;
@@ -119,7 +119,7 @@ function Side(props) {
         className={selected === 0 ? "menuItem active" : "menuItem"}
         onClick={() => setSelected(0)}
       >
-        {UserPerimssionsId.includes(22) ? (
+        {UserPerimssionsId.includes(21) ? (
           <li className="nav__items" style={{ marginTop: "20px" }}>
             <a
               href={`/storekeeperStat`}
@@ -132,7 +132,7 @@ function Side(props) {
             </a>
           </li>
         ) : null}
-        {UserPerimssionsId.includes(23) ? (
+        {UserPerimssionsId.includes(22) ? (
           <li className="nav__items" style={{ marginTop: "20px" }}>
             <a
               href={`/DirectorStat`}
@@ -145,7 +145,7 @@ function Side(props) {
             </a>
           </li>
         ) : null}
-        {UserPerimssionsId.includes(24) ? (
+        {UserPerimssionsId.includes(23) ? (
           <li className="nav__items" style={{ marginTop: "20px" }}>
             <a
               href={`/HeadOfServiceStat`}

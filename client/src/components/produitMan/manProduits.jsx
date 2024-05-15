@@ -6,20 +6,15 @@ import { BsSearch } from "react-icons/bs";
 import Per from "./produitLig.jsx";
 import CreateRoleForm from "./createProduit.jsx";
 import Barr from "./barProduit.jsx";
-import { Link, useNavigate } from "react-router-dom";import axios from "axios";
-
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 function Produit() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRole, setSelectedRole] = useState(null);
-  const [showEditRoleForm, setShowEditRoleForm] = useState(false);
   const [user, setUser] = useState({});
   const [produits, setProduits] = useState([]);
   const [showCreateChapitreForm, setShowCreateChapitreForm] = useState(false);
-  const [showProductModel,setShowProductModel] = useState(false)
-  
+  const [showProductModel, setShowProductModel] = useState(false);
   const navigate = useNavigate();
-  
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,8 +30,8 @@ function Produit() {
             },
             withCredentials: true,
           });
-          setProduits(resp.data)
-          console.log(resp.data)
+          setProduits(resp.data);
+          console.log(resp.data);
         } catch (error) {
           console.log(error);
         }
@@ -48,13 +43,13 @@ function Produit() {
     };
 
     fetchData();
-  }, []);
-  
-  const handleViewRole = (produitName,id) => {
-    setShowProductModel(true)
-    console.log(showProductModel)
-    console.log(produitName,id)
-    };
+  }, [produits]);
+
+  const handleViewRole = (produitName, id) => {
+    setShowProductModel(true);
+    console.log(showProductModel);
+    console.log(produitName, id);
+  };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -68,13 +63,30 @@ function Produit() {
     <Per
       key={index}
       name={produit.name}
-      onView={() => handleViewRole(produit.name,produit.product_id)}
+      onView={() => handleViewRole(produit.name, produit.product_id)}
     />
   ));
 
-  const handleCreateChapitre = (newChapitre) => {
-    const updatedChapitres = [...produits, newChapitre];
-    setProduits(updatedChapitres);
+  const handleCreateChapitre = async (newChapitre) => {
+    try {
+      const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        try {
+          const resp = await axios.post("http://localhost:3036/products", {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+          console.log(resp)
+        } catch (error) {
+          console.log(error)
+        }
+
+    } catch (error) {
+      navigate('/')
+    }
     setShowCreateChapitreForm(false);
   };
 
@@ -107,7 +119,7 @@ function Produit() {
                   className="btn-create-usr"
                 >
                   Create Produit
-                </Link>                
+                </Link>
               </div>
             </div>
             <Barr />
@@ -125,11 +137,9 @@ function Produit() {
               onCreateChapitre={handleCreateChapitre}
               onClose={() => setShowCreateChapitreForm(false)}
             />
-            
           </div>
         </div>
       )}
-      
     </div>
   );
 }

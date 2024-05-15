@@ -208,7 +208,7 @@ function CreateDecharge() {
     <div>
       <Nav username={user.username} />
       <div className="dwnusers">
-        <Side link="commands" />
+        <Side link="ExternalOrders" />
         <div
           style={{
             marginTop: "8vh",

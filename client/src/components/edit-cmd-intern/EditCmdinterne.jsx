@@ -42,7 +42,7 @@ function EditCmdinterne() {
           console.log(resp.data);
         } catch (error) {
           alert(error.response.data.message);
-          navigate("/commands");
+          navigate("/ExternalOrders");
           console.log(error);
         }
       } catch (error) {
@@ -125,7 +125,7 @@ function EditCmdinterne() {
             },
             withCredentials: true,
           });
-          navigate('/commands')
+          navigate('/ExternalOrders')
         } catch (error) {
           console.log(error);
         }
@@ -143,7 +143,7 @@ function EditCmdinterne() {
       "Are you sure you want to cancel the command?"
     );
     if (confirm) {
-      navigate('/commands')
+      navigate('/ExternalOrders')
     }
   };
 
@@ -151,7 +151,7 @@ function EditCmdinterne() {
     <div>
       <Nav username={user.username} />
       <div className="dwnusers">
-        <Side link="mes-cmnd" />
+        <Side link="/MyOrders" />
         <div
           style={{
             marginTop: "8vh",
@@ -211,7 +211,7 @@ function EditCmdinterne() {
               </div>
             </div>
             <Link
-              to="/mes-cmnd"
+              to="/MyOrders"
               style={{
                 borderRadius: "20px",
                 height: "30px",

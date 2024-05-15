@@ -133,7 +133,7 @@ const BonDeReception = () => {
           }
         } catch (error) {
           // alert(error.response.data.message);
-          navigate("/commands");
+          navigate("/ExternalOrders");
           console.log(error);
         }
       } catch (error) {
@@ -185,7 +185,7 @@ const BonDeReception = () => {
             <div className="bnrcpt">
               <h4 className="BR">BON DE RECEPTION N° : {id}</h4>
               <div className="buttons-right-rs">
-                <Link to="/commands-list">
+                <Link to="/ExternalOrders">
                   <button className="commands-ls" onClick={() => navigate(-2)}>
                     Commands List
                   </button>

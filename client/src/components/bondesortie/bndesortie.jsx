@@ -351,7 +351,7 @@ const DemandeDeFourniture = () => {
                 BON DE SORTIE 
               </h3>
               <div style={styles.buttonsRightsortie}>
-                <Link to="/mes-cmnd" style={{ textDecoration: "none" }}>
+                <Link to="/MyOrders" style={{ textDecoration: "none" }}>
                   <button
                     style={styles.fourntList}
                     onClick={() => navigate(-2)}

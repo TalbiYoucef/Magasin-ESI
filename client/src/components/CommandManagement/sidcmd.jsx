@@ -50,7 +50,7 @@ function Side( props) {
          {CommandsManagement && (
            <>
         <li className="nav__items ">
-        <a href='commands' className={`link ${props.link === 'commands' ? 'active' : ''}`}   >
+        <a href='/ExternalOrders' className={`link ${props.link === 'commands' ? 'active' : ''}`}   >
         <LuCommand className='ic' />
         CommandsManagement
         </a>

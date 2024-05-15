@@ -267,7 +267,7 @@ function CreateCmdinterne() {
     <div>
       <Nav username={user.username} />
       <div className="dwnusers">
-        <Side link="commands" />
+        <Side link="/ExternalOrders" />
         <div
           style={{
             marginTop: "8vh",
@@ -314,7 +314,7 @@ function CreateCmdinterne() {
               </div>
             </div>
             <Link
-              to="/mes-cmnd"
+              to="/MyOrders"
               onClick={handleCmdList}
               style={{
                 borderRadius: "20px",

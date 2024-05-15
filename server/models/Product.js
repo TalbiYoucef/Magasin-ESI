@@ -1,3 +1,5 @@
+const { type } = require("os");
+
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define("Product", {
     product_id: {
@@ -7,7 +9,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     quantity: DataTypes.INTEGER,
-
+    limit: DataTypes.INTEGER,
+    description:{
+     type:DataTypes.STRING,
+     default:'',
+     allowNull: false,
+    }
   });
   Product.associate = (models) => {
     const { Product_Command } = models;

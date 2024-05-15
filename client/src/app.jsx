@@ -79,7 +79,7 @@ function App() {
               path="/view-demande-fourniture/:id"
               element={<DemandeFourniture />}
             />
-            <Route path="/mes-cmnd" element={<CommandInterneUser />} />
+            <Route path="/MyOrders" element={<CommandInterneUser />} />
             <Route path="/bonsdereception/:id" element={<ListBonRecp />} />
             <Route path="/cmdis" element={<CommandInterne />} />
             <Route path="/cr-cmdi" element={<CreateCmdint />} />
@@ -95,7 +95,7 @@ function App() {
             <Route path="/create-cmd" element={<CreateCmd />} />
             <Route path="supp" element={<Fornisseur />} />
             <Route path="viewRole/:id" element={<ViewRole />} />
-            <Route path="/commands" element={<Cmds />} />
+            <Route path="/ExternalOrders" element={<Cmds />} />
             <Route path="/edit-cmd/:id" element={<EditCmd />} />
             <Route path="/login" element={<Login />} />
             <Route path="/edit-cmd" element={<EditCmdEx />} />
@@ -103,9 +103,9 @@ function App() {
             <Route path="/EditPassword" element={<EditPassword />} />
             <Route path="/EditProfile" element={<EditProfile />} />
             <Route path="/EditUserProfile/:id" element={<EditUser />} />
-            <Route path="/roles" element={<Role />} />
+            <Route path="/RolesManagement" element={<Role />} />
             <Route path="/permissions-management" element={<Permissions />} />
-            <Route path="/users" element={<Users />} />
+            <Route path="/UsersManagement" element={<Users />} />
             <Route path="/setting" element={<Profils />} />
             <Route path="/CreateUser" element={<CreateUser />} />
             <Route path="/reset1" element={<Card />} />
