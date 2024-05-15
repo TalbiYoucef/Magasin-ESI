@@ -496,6 +496,92 @@ app.get("/create-product", async (req, res) => {
   }
 });
 
+app.post('/map-service-head', async (req,res)=>{
+  const array = [
+    {
+      user_id: 15,
+      service_id: 1 // Direction Générale
+    },
+    {
+      user_id: 16,
+      service_id: 2 // Secrétariat Général
+    },
+    {
+      user_id: 17,
+      service_id: 3 // Département du cycle préparatoire
+    },
+    {
+      user_id: 18,
+      service_id: 4 // Département du second Cycle
+    },
+    {
+      user_id: 19,
+      service_id: 6 // Direction des Enseignements et des Diplômes
+    },
+    {
+      user_id: 20,
+      service_id: 5 // Direction des Relations Extérieures
+    },
+    {
+      user_id: 21,
+      service_id: 7 // Direction de la Formation Doctorale
+    }
+  ];
+  
+  try {
+    array.map(async elem =>{
+      db.ServiceHead.create({user_id: elem.user_id,service_id:elem.service_id})
+    })
+  } catch (error) {
+    res.status(500).send('some thing went wrong ')
+  }
+})
+
+app.post('/add-directors', async (req, res) => {
+  const generatePhoneNumber = () => {
+    const prefix = "+213";
+    const number = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+    return `${prefix}${number}`;
+  };
+  
+  // Directors data
+  const directors = [
+    { fullName: "Benslimane Sidi Mohamed", email: "sm.benslimane@esi-sba.dz" },
+    { fullName: "Naceri Amina", email: "a.naceri@esi-sba.dz" },
+    { fullName: "Aced Mohamed Réda", email: "mr.aced@esi-sba.dz" },
+    { fullName: "Amrane Abdelkader", email: "a.amrane@esi-sba.dz" },
+    { fullName: "Amar Bensaber Djamel", email: "bd.amar@esi-sba.dz" },
+    { fullName: "Bedjaoui Mohamed", email: "m.bedjaoui@esi-sba.dz" },
+    { fullName: "Malki Mimoun", email: "m.malki@esi-sba.dz" },
+  ];
+  
+  try {
+    const directorsData = directors.map(director => {
+      const [familyName, ...restName] = director.fullName.split(' ').reverse();
+      const firstName = restName.reverse().join(' ');
+      const username = `${firstName}${familyName}`.toLowerCase().replace(/ /g, '');
+      return {
+        username,
+        firstname: firstName,
+        lastname: familyName,
+        email: director.email,
+        password: 'adminadmin',
+        address: 'SBA Algeria',
+        phone_num: generatePhoneNumber(),
+        status: 'active',
+      };
+    });
+
+    const createdDirectors = await db.User.bulkCreate(directorsData);
+    res.status(201).json({ message: 'Directors added successfully', data: createdDirectors });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred', error });
+  }
+});
+
+
+
 app.get("/create", async (req, res) => {
   // const services = [
   //   "Direction Générale",
