@@ -8,7 +8,7 @@ function Rollig(props) {
   const [username, setUsername] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-   const handleCheckboxChange = () => {
+  const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
   useEffect(() => {
@@ -66,14 +66,13 @@ function Rollig(props) {
         })
         .then((resp) => console.log(resp))
         .catch((err) => console.log(err));
-        setIsVisible(false);
-        console.log("deleted");
+      setIsVisible(false);
+      console.log("deleted");
     } catch (error) {
-      console.log(error)
-      navigate('/login')
+      console.log(error);
+      navigate("/login");
     }
   };
-
 
   return (
     <div>
@@ -91,20 +90,15 @@ function Rollig(props) {
           <p className="dat29">{props.date}</p>
           <p className="sta29">{"pending"}</p>
 
-          <Link
-            to={`/bon-cmd/${id}`}
-            className="edi29" 
-          >
+          <Link to={`/bon-cmd/${id}`} className="edi29">
             View
           </Link>
 
-          <Link
-            to={`/edit-cmd/${id}`}
-            className="edi29"
-            
-          >
-            Edit
-          </Link>
+          {props.permitEdit && (
+            <Link to={`/edit-cmd/${id}`} className="edi29">
+              Edit
+            </Link>
+          )}
           <button className="del29" onClick={handleDelete}>
             Delete
           </button>

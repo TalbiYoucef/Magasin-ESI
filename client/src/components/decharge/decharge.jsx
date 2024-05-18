@@ -38,7 +38,7 @@ const Decharge = () => {
         }
         try {
           const resp = await axios.get(
-            `http://localhost:3036/commands/${id}/products`,
+            `http://localhost:3036/commands/${id}/products/satisfied`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,

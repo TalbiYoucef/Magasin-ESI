@@ -18,7 +18,6 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AppProvider } from "./components/reset/AppContext";
 import CreateCmd from "./components/Create-cmds/createCmd";
-import EditCmd from "./components/EditCMD/EditCommand";
 import BonDeComande from "./components/EPC/viewEPC";
 import Cmds from "./components/CommandManagement/MangCommand";
 import BonDeReception from "./components/BR/ViewBR";
@@ -45,6 +44,14 @@ import EditCmdinterne from "./components/edit-cmd-intern/EditCmdinterne";
 import DemandeFourniture from "./components/DemandeFourniture/df";
 import AllArticles from "./components/articleMan/manArticle";
 import CreateCmdint from "./components/createCmdInt/CreateCmdinterne";
+import EditCmdinterneDir from "./components/edit-cmd-intern/EditCmdinterneDir";
+import CommandInterneDir from "./components/CommandINMan/manCommandINDir";
+import FicheInventaire from "./components/ViewFicheInventaire/ficheInventaire";
+import EditInventaire from "./components/EditInventaire/EditInventaire";
+import CommandIntern from "./components/CmdChefService/manCmdInCS";
+import DashMagasinier from "./components/DashMagasinier/DashMagasin";
+import DashDirector from "./components/DashDirector/DashDirector";
+import DashChefService from "./components/DashChafService/DashChefService";
 
 function App() {
   return (
@@ -52,9 +59,35 @@ function App() {
       <Router>
         <div>
           <Routes>
+            {/* new routes */}
+            // view fiche inventaire 
+            <Route path="fiche-inventaire" element={<FicheInventaire />} />
+            // edit inventaire
+            <Route path="edit-inventaire" element={<EditInventaire />} />
+            // dash magasigner
+            <Route path="dash-magasigner" element={<DashMagasinier />} />
+            // dash director
+            <Route path="dash-dir" element={<DashDirector />} />
+            // dash chef service 
+            <Route path="dash-chef-service" element={<DashChefService />} />
+            // cmd Chef service 
+            <Route path="cmd-chef-service" element={<CommandIntern />} />
+
+
+
+            {/* to do */}
+            // service achat is not allowed to create receipt
+            // delete product function in each of the create/edit commands
+            // statistics
+            // inventory 
+            // create receipt 
+            // attach pdf
+             {/* // already done */}
+            <Route path="/edit-cmd/:id" element={<EditCmdEx />} />
+            <Route path="/edit-cmdi-dir/:id" element={<EditCmdinterneDir />} />
             <Route path="/edit-cmdi/:id" element={<EditCmdinterne />} />
-            {/* // already done */}
             <Route path="/InternalOrders" element={<CommandInterne />} />
+            <Route path="/InternalOrdersDirector" element={<CommandInterneDir />} />
             <Route path="/veiw-bon-decharge/:id" element={<Decharge />} />
             <Route path="/edit-bon-sortie/:id" element={<EditBonSortie />} />
             <Route path="/edit-bon-decharge/:id" element={<EditDecharge />} />
@@ -83,7 +116,7 @@ function App() {
             <Route path="/bonsdereception/:id" element={<ListBonRecp />} />
             <Route path="/cr-cmdi" element={<CreateCmdint />} />
             <Route path="/bon-cmd/:id" element={<BonDeComande />} />
-            <Route
+             <Route
               path="/order/:id/create-bon-reception"
               element={<CreateRec />}
             />
@@ -95,9 +128,7 @@ function App() {
             <Route path="SuppliersManagement" element={<Fornisseur />} />
             <Route path="viewRole/:id" element={<ViewRole />} />
             <Route path="/ExternalOrders" element={<Cmds />} />
-            <Route path="/edit-cmd/:id" element={<EditCmd />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/edit-cmd" element={<EditCmdEx />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/EditPassword" element={<EditPassword />} />
             <Route path="/EditProfile" element={<EditProfile />} />

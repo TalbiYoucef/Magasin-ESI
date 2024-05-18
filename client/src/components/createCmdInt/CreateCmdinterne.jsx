@@ -14,8 +14,6 @@ function CreateCmdint() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [accessToken, setAccessToken] = useState("");
-  const [chapters, setChapters] = useState([]);
-  const [articles, setArticles] = useState([]);
   const [Products, setProducts] = useState([]);
   const [user, setUser] = useState({});
   const navigate = useNavigate();
@@ -47,10 +45,7 @@ function CreateCmdint() {
   
     fetchData();
   }, []);
-  const [selectedChapter, setSelectedChapter] = useState(null);
-  const [selectedArticle, setSelectedArticle] = useState(null);
-
-  const handleRemoveCmd = (id) => {
+    const handleRemoveCmd = (id) => {
     // Supprimer la commande avec l'ID spécifié de cmdDataList
     
   };
@@ -102,6 +97,7 @@ function CreateCmdint() {
                   product_id: pro.id,
                   quantity: pro.quantity,
                   unit_price: 0,
+                  status_quanitity : 'initialized'
                 },
                 {
                   headers: {

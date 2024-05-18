@@ -1,55 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Side from "../side/side.jsx";
 import Nav from "../nav/nav.jsx";
-import { BsSearch } from "react-icons/bs"; //command interne data
-import Per from "./CommandInLig.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import { MdNavigateNext } from "react-icons/md";
+import { BsSearch } from "react-icons/bs";
+import Cmd from "../data/CommandInterne.jsx"; //command interne data
+import Per from "./CmdinCSLig.jsx";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import axios from "axios";
 import { PiNotebookLight } from "react-icons/pi";
 
-function CommandInterne() {
-  const [user, setUser] = useState({});
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [internals, setInternals] = useState([]);
+const username = "chahi";
 
-  const navigate = useNavigate();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("http://localhost:3036/refresh", {
-          withCredentials: true,
-        });
-        console.log(res.data);
-        setUser(res.data.user);
-        try {
-          const respo = await axios.get(
-            res.data.perms.includes(15)
-              ? "http://localhost:3036/internalorders/status/accepted"
-              : `http://localhost:3036/commands/service/${res.data.serviceId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${res.data.accessToken}`,
-              },
-              withCredentials: true,
-            }
-          );
-          console.log(respo.data);
-          setInternals([...respo.data].reverse());
-        } catch (error) {
-          console.log(error);
-          alert("something went wrong");
-          return;
-        }
-      } catch (error) {
-        // If an error occurs, redirect to the login page
-        navigate("/login");
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+function CommandIntern() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [Cmds, setCmds] = useState(Cmd);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [TotalOrders, setTotalOrders] = useState("135");
+  const [EmployéPlusFournitureds, setEmployéPlusFournitureds] =
+    useState("bounoua chahianz");
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -58,18 +25,25 @@ function CommandInterne() {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  const rolesList = internals.map((produit, index) => (
-    <Per
-      key={index}
-      link={"edit-cmdi"}
-      id={produit.command_id}
-      date={String(produit.updatedAt).split("T")[0]}
-    />
-  ));
+  const filteredRoles = Cmd.filter((article) =>
+    article.id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const rolesList = filteredRoles
+    .sort((a, b) => {
+      if (sortOrder === "asc") {
+        return new Date(a.date) - new Date(b.date);
+      } else {
+        return new Date(b.date) - new Date(a.date);
+      }
+    })
+    .map((Cmd, index) => (
+      <Per key={index} id={Cmd.id} Employé={Cmd.Employé} date={Cmd.date} />
+    ));
 
   return (
     <div>
-      <Nav username={user.username} />
+      <Nav username={username} />
       <div className="dwnrole">
         <Side className="siddd" link="roles" />
         <div
@@ -82,7 +56,7 @@ function CommandInterne() {
           }}
         >
           <div>
-          <div style={{ display: "flex", gap: "450px" }}>
+            <div style={{ display: "flex", gap: "450px" }}>
               <div
                 style={{
                   display: "flex",
@@ -135,7 +109,7 @@ function CommandInterne() {
                         color: "#555555",
                       }}
                     >
-                      {134}
+                      {TotalOrders}
                     </b>
                     <p style={{ fontSize: "18px", color: "#444444" }}>
                       Total Orders
@@ -202,7 +176,7 @@ function CommandInterne() {
                         color: "#444444",
                       }}
                     >
-                      {"EmployéPlusFournitureds"}
+                      {EmployéPlusFournitureds}
                     </p>
                     <p
                       style={{
@@ -217,7 +191,6 @@ function CommandInterne() {
                 </div>
               </div>
             </div>
-           
             <div
               style={{
                 display: "flex",
@@ -246,7 +219,7 @@ function CommandInterne() {
                     fontSize: "15px",
                     width: "20%",
                     color: "rgba(58, 53, 65, 0.87)",
-                    marginTop: "10px",
+                    marginTop: "0px",
                     textAlign: "center",
                   }}
                 >
@@ -254,7 +227,18 @@ function CommandInterne() {
                 </div>
                 <div
                   style={{
-                    width: "30%",
+                    fontSize: "15px",
+                    width: "54%",
+                    color: "rgba(58, 53, 65, 0.87)",
+                    marginTop: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  Employé{" "}
+                </div>
+                <div
+                  style={{
+                    width: "26%",
                     fontSize: "15px",
                     width: "200px",
                     color: "rgba(58, 53, 65, 0.87)",
@@ -263,7 +247,7 @@ function CommandInterne() {
                   }}
                 >
                   Date
-                  <button onClick={handleSortClick} className="btndate28">
+                  <button onClick={handleSortClick}>
                     <MdOutlineKeyboardArrowDown />
                   </button>
                 </div>
@@ -286,4 +270,4 @@ function CommandInterne() {
   );
 }
 
-export default CommandInterne;
+export default CommandIntern;

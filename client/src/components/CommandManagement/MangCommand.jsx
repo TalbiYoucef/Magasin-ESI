@@ -10,12 +10,15 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 function Cmds() {
+  const [user,setUser]= useState({})
   const navigate = useNavigate();
   const [cmds, setcmds] = useState([]); // État local pour stocker la liste des command
   const [isChecked, setIsChecked] = useState(false); // État local pour le bouton de case à cocher
   const [sortOrder, setSortOrder] = useState("asc"); // État local pour l'ordre de tri (ascendant ou descendant)
   const [selectedState, setSelectedState] = useState("State");
   const [selectedCommand, setSelectedCommand] = useState(null);
+  const [onlyConsult, setOnlyConsult] = useState(true);
+
   // createdAt updatedAt
   useEffect(() => {
     const fetchData = async () => {
@@ -23,14 +26,18 @@ function Cmds() {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
         });
-        console.log("reres", res.data);
+        setUser(res.data.user)
+        setOnlyConsult(!res.data.perms.includes(9));
         try {
-          const resp = await axios.get("http://localhost:3036/commands/external-commands", {
-            headers: {
-              Authorization: `Bearer ${res.data.accessToken}`,
-            },
-            withCredentials: true,
-          });
+          const resp = await axios.get(
+            "http://localhost:3036/commands/external-commands",
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
           setcmds(resp.data.reverse());
           console.log(resp.data);
         } catch (error) {
@@ -87,12 +94,15 @@ function Cmds() {
   return (
     <div className="container" style={{ marginLeft: 0, paddingLeft: 0 }}>
       <div className="row">
-        <Nav />
+        <Nav username={user.username}/>
         <Side />
       </div>
       <div className="row">
         <section className="col-md-12 bordureBleue">
-          <div className="col-md-5 bordureBleue section-28" style={{width:'100%'}}>
+          <div
+            className="col-md-5 bordureBleue section-28"
+            style={{ width: "100%" }}
+          >
             <div className="fot28">
               <div className="search28">
                 <IoSearchOutline />{" "}
@@ -103,9 +113,11 @@ function Cmds() {
                   onChange={handleSearchChange}
                 />
               </div>
-              <div className="cre28">
-                <button onClick={handleClick}>create command</button>
-              </div>
+              {!onlyConsult && (
+                <div className="cre28">
+                  <button onClick={handleClick}>create command</button>
+                </div>
+              )}
             </div>
             <div className="permi28">
               <input
@@ -145,6 +157,7 @@ function Cmds() {
               {filteredCmd.map((cmd, index) => (
                 <Per
                   key={index}
+                  permitEdit={!onlyConsult}
                   id={cmd.command_id}
                   type={cmd.type}
                   user={cmd.user_id}

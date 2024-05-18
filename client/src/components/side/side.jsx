@@ -56,6 +56,10 @@ function Side(props) {
     icon: <LuClipboardList className="ic" />,
     heading: "Internal Orders",
   };
+  const InternalOrdersDir = {
+    icon: <LuClipboardList className="ic" />,
+    heading: "Internal Orders Director",
+  };
   const MyOrders = {
     icon: <MdFormatListBulletedAdd className="ic" />,
     heading: "My Orders",
@@ -114,6 +118,9 @@ function Side(props) {
       case 17: //validate bci
         addSidebarData(InternalOrders);
         break;
+      case 22 : 
+      addSidebarData(InternalOrdersDir);
+      break;
       default:
         break;
     }

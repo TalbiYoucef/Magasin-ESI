@@ -78,10 +78,9 @@ function CreateRec() {
           } catch (error) {
             console.log(error);
           }
-
           try {
             const article = await axios.get(
-              `http://localhost:3036/commands/${resp.data.purchasingOrder.command_id}/products`,
+              `http://localhost:3036/commands/${resp.data.purchasingOrder.command_id}/products/initialized`,
               {
                 headers: {
                   Authorization: `Bearer ${res.data.accessToken}`,
@@ -152,13 +151,7 @@ function CreateRec() {
     }
     return "";
   };
-
-  const [selectedChapter, setSelectedChapter] = useState(null);
-  const [selectedArticle, setSelectedArticle] = useState(null);
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
-  const [cmdDataList, setCmdDataList] = useState([]); //cmdDataList contient table de produit ajoute
   console.log(quantities);
-
   const handleConfirmCommand = async () => {
     //delevery_date // type // comments
     const confirm = window.confirm(
@@ -173,7 +166,7 @@ function CreateRec() {
           const respo = await axios.post(
             `http://localhost:3036/receipts/${id}/`,
             {
-              deliveryDate: today,
+              deliveryDate: new Date().toISOString(),
               type: type,
             },
             {
@@ -187,13 +180,14 @@ function CreateRec() {
             return {
               product: product.product_id,
               quantity: quantities[index],
+              status:'initialized'
             };
           });
           console.log(result);
           try {
             const resp = await axios.put(
               `http://localhost:3036/commands/${commandId}/updateQuantities`,
-              [...result],
+              {quantities:[...result], status :''},
               {
                 headers: { Authorization: `Bearer ${res.data.accessToken}` },
                 withCredentials: true,
@@ -203,27 +197,6 @@ function CreateRec() {
           } catch (error) {
             console.log(error);
           }
-          // products.map(async (pro, index) => {
-            // try {
-            //   const respo = await axios.put(
-            //     `http://localhost:3036/commands/${commandId}/products`,
-            //     {
-            //       product_id: pro.product_id,
-            //       delivered_amount: quantities[index],
-            //       amount_left: initialQuantities[index] - quantities[index],
-            //     },
-            //     {
-            //       headers: {
-            //         Authorization: `Bearer ${res.data.accessToken}`,
-            //       },
-            //       withCredentials: true,
-            //     }
-            //   );
-            //   console.log(respo.data);
-            // } catch (error) {
-            //   console.log("product amount have not changed");
-            // }
-          // });
         } catch (error) {
           console.log(error);
         }
@@ -239,6 +212,9 @@ function CreateRec() {
     const confirm = window.confirm(
       "Are you sure you want to cancel the command?"
     );
+    if(confirm){
+      return
+    }
   };
 
   const handleCmdList = () => {

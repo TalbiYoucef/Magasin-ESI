@@ -15,7 +15,10 @@ const DemandeFourniture = () => {
   const { id } = useParams();
   const [allProducts, setAllProducts] = useState([]);
   const [user, setUser] = useState({});
+  const [demander, setDemander] = useState("");
   const [products, setProducts] = useState([]);
+  const [accorded,setAccorded] = useState([]);
+  const [validated,setvalidated] = useState([])
   const [service, setService] = useState("");
   useEffect(() => {
     const fetchData = async () => {
@@ -38,9 +41,34 @@ const DemandeFourniture = () => {
         } catch (error) {
           console.log(error);
         }
+
+        try {
+          const respo = await axios.get(`http://localhost:3036/commands/${id}`, {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
+
+          try {
+            const resp = await axios.get(`http://localhost:3036/users/${respo.data.user_id}`, {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            });
+            setDemander(`${resp.data.firstname} ${resp.data.lastname}`)
+          } catch (error) {
+            console.log(error);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
+
         try {
           const resp = await axios.get(
-            `http://localhost:3036/commands/${id}/products`,
+            `http://localhost:3036/commands/${id}/products/initialized`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
@@ -50,10 +78,50 @@ const DemandeFourniture = () => {
           );
           setProducts(resp.data);
           setDate(String(resp.data[0].updatedAt).split("T")[0]);
+          
         } catch (error) {
           console.log(error);
         }
 
+        try {
+          
+          const respV = await axios.get(
+            `http://localhost:3036/commands/${id}/products/accepted`,
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
+          console.log(respV.data)
+
+          const extractedQuantitiesV = respV.data.map(
+            (product) => product.quantity
+          );
+          setvalidated(extractedQuantitiesV)
+        } catch (error) {
+          console.log(error)
+        }
+
+        try {
+          const respA = await axios.get(
+            `http://localhost:3036/commands/${id}/products/validated`,
+            {
+              headers: {
+                Authorization: `Bearer ${res.data.accessToken}`,
+              },
+              withCredentials: true,
+            }
+          );
+          console.log(respA.data)
+          const extractedQuantitiesA = respA.data.map(
+            (product) => product.quantity
+          );
+          setAccorded(extractedQuantitiesA)
+        } catch (error) {
+          console.log(error)
+        }
         try {
           const resp = await axios.get(`http://localhost:3036/products`, {
             headers: {
@@ -381,7 +449,7 @@ const DemandeFourniture = () => {
                       {" "}
                       Le Demandeur:{" "}
                     </i>
-                    {`${user.firstname} ${user.lastname}`}{" "}
+                    {demander}{" "}
                   </h4>{" "}
                 </div>
                 <table style={styles.tabledeDemande}>
@@ -411,8 +479,8 @@ const DemandeFourniture = () => {
                         <td style={styles.infoprodDemender}>
                           {product.quantity}
                         </td>
-                        <td style={styles.infoprodDemender}>{}</td>
-                        <td style={styles.infoprodDemender}>{}</td>
+                        <td style={styles.infoprodDemender}>{accorded.length != 0 ? accorded[index] : ''}</td>
+                        <td style={styles.infoprodDemender}>{validated.length != 0 ? validated[index] : ''}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -76,9 +76,9 @@ const deleteCommand = async (req, res) => {
 const getAllCommandProducts = async (req, res) => {
   try {
     let products = [];
-    const { id } = req.params;
+    const { id,status } = req.params;
     const commandProducts = await db.Product_Command.findAll({
-      where: { command_id: id },
+      where: { command_id: id ,status_quantity:status},
     });
     if (!commandProducts || commandProducts.length === 0) {
       return res.status(404).json({ message: "Command or products not found" });
@@ -98,13 +98,7 @@ const getAllCommandProducts = async (req, res) => {
 const assignProductToCommand = async (req, res) => {
   try {
     const { id } = req.params;
-    const { product_id, quantity, unit_price, num_inventaire } = req.body;
-    const productCommand = await db.Product_Command.findOne({
-      where: { command_id: id, product_id: product_id },
-    });
-    if (productCommand) {
-      return res.status(400).json({ message: "Product already in command" });
-    }
+    const { product_id, quantity,status_quantity, unit_price, num_inventaire } = req.body;
     const createdProductCommand = await db.Product_Command.create({
       command_id: id,
       product_id: product_id,
@@ -113,6 +107,7 @@ const assignProductToCommand = async (req, res) => {
       delivered_amount: 0,
       amount_left: quantity,
       num_inventaire: num_inventaire,
+      status_quantity: status_quantity
     });
     return res.status(201).json(createdProductCommand);
   } catch (error) {
@@ -155,11 +150,17 @@ const getServiceCommands = async (req, res) => {
     // Extracting user IDs from the fetched data
     const userIds = users.map((user) => user.user_id);
 
-    // Fetching internal commands associated with the user IDs
+    // Fetching internal commands associated with the user IDs and their associated internal orders
     const internalCommands = await db.Command.findAll({
       where: {
         user_id: userIds,
         type: "internal", // Filter by internal type
+      },
+      include: {
+        model: db.InternalOrder,
+        where: {
+          status: "initialized", // Filter by the status of the associated InternalOrder
+        },
       },
     });
 
@@ -206,23 +207,27 @@ const getPurchasingOrder = async (req, res) => {
 };
 const updateQuantities = async (req, res) => {
   const { id } = req.params;
-  const quantities = req.body;
-  console.log(quantities);
+  const {quantities,status} = req.body;
+  console.log(quantities,status);
+
   // gerer les deux cas separement
   try {
     const result = quantities.map(async (quantity) => {
       const productCommand = await db.Product_Command.findOne({
-        where: { command_id: id, product_id: quantity.product },
+        where: { command_id: id, product_id: quantity.product , status_quantity:quantity.status},
       });
       const command = await db.Command.findOne({
         where: { command_id: id },
       });
 
       if (productCommand) {
+        if (command.type === "external" && status !== "edit") {
         productCommand.delivered_amount = quantity.quantity;
-        if (command.type === "external") {
-          productCommand.amount_left =
+        productCommand.amount_left =
             productCommand.amount_left - quantity.quantity;
+        }
+        else{
+          productCommand.quantity = quantity.quantity
         }
         await productCommand.save();
         return productCommand;

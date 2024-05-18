@@ -26,7 +26,7 @@ const BonDeComande = () => {
         setUser(res.data.user);
         try {
           const resp = await axios.get(
-            `http://localhost:3036/commands/${id}/products`,
+            `http://localhost:3036/commands/${id}/products/initialized`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
