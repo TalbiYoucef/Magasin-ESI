@@ -82,7 +82,6 @@ const BonDeComande = () => {
           } catch (error) {
             console.log(error);
           }
-
           try {
             const supplier = await axios.get(
               `http://localhost:3036/suppliers/${resp.data.order.supplier_id}/`,

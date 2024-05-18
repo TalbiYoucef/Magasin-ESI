@@ -210,6 +210,30 @@ function CreateCmd() {
             }
           );
           console.log(resp.data);
+          try {
+            await axios
+              .post(
+                `http://localhost:3036/purchaseorders`,
+                {
+                  expected_delivery_date: expectedDate,
+                  total_price: prixTotal,
+                  notes: "",
+                  command_id: resp.data.command_id,
+                  supplier_id: getSuppId(selectedSupplier),
+                  chapter_id: getChapId(selectedChapter),
+                  branch_id: getBranchId(selectedArticle),
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
+                  withCredentials: true,
+                }
+              )
+              .then((res) => console.log(res.data));
+          } catch (error) {
+            console.log("failed to create bone de commande", error);
+          }
           cmdDataList.map(async (Element) => {
             // creer cmnd
             try {
@@ -228,32 +252,7 @@ function CreateCmd() {
                     withCredentials: true,
                   }
                 )
-                .then(async (resp) => {
-                  try {
-                    await axios
-                      .post(
-                        `http://localhost:3036/purchaseorders`,
-                        {
-                          expected_delivery_date: expectedDate,
-                          total_price: prixTotal,
-                          notes: "",
-                          command_id: resp.data.command_id,
-                          supplier_id: getSuppId(selectedSupplier),
-                          chapter_id: getChapId(selectedChapter),
-                          branch_id: getBranchId(selectedArticle),
-                        },
-                        {
-                          headers: {
-                            Authorization: `Bearer ${res.data.accessToken}`,
-                          },
-                          withCredentials: true,
-                        }
-                      )
-                      .then((res) => console.log(res.data));
-                  } catch (error) {
-                    console.log("failed to create bone de commande", error);
-                  }
-                });
+                
               navigate("/ExternalOrders");
             } catch (error) {
               console.log(error);

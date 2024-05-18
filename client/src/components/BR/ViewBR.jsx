@@ -78,10 +78,9 @@ const BonDeReception = () => {
             } catch (error) {
               console.log(error);
             }
-
             try {
               const article = await axios.get(
-                `http://localhost:3036/commands/${cmd.data}/products/initialized`,
+                `http://localhost:3036/commands/${idcmd}/receipt-products/${index}`,
                 {
                   headers: {
                     Authorization: `Bearer ${res.data.accessToken}`,

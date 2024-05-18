@@ -153,7 +153,6 @@ function CreateRec() {
   };
   console.log(quantities);
   const handleConfirmCommand = async () => {
-    //delevery_date // type // comments
     const confirm = window.confirm(
       "Are you sure you want to Confirm the Receipt?"
     );
@@ -176,27 +175,23 @@ function CreateRec() {
               withCredentials: true,
             }
           );
-          const result = products.map((product, index) => {
-            return {
-              product: product.product_id,
-              quantity: quantities[index],
-              status:'initialized'
-            };
+          const result = products.map(async(product, index) => {
+            try {
+              const resp = await axios.post(
+                `http://localhost:3036/commands/${commandId}/create-receipt-products`,
+                { product_id: product.product_id, quantity:product.quantity, unit_price:product.unit_price, delivered_amount:quantities[index] } ,
+                {
+                  headers: { Authorization: `Bearer ${res.data.accessToken}` },
+                  withCredentials: true,
+                }
+              );
+              console.log(resp.data);
+            } catch (error) {
+              console.log(error);
+            }
           });
           console.log(result);
-          try {
-            const resp = await axios.put(
-              `http://localhost:3036/commands/${commandId}/updateQuantities`,
-              {quantities:[...result], status :''},
-              {
-                headers: { Authorization: `Bearer ${res.data.accessToken}` },
-                withCredentials: true,
-              }
-            );
-            console.log(resp.data);
-          } catch (error) {
-            console.log(error);
-          }
+          
         } catch (error) {
           console.log(error);
         }

@@ -122,14 +122,6 @@ function EditCmdinterneDir() {
 
   console.log("cmdDataList", cmdDataList);
 
-  const handleAddCmd = (cmdData) => {
-    setCmdDataList([...cmdDataList, cmdData]);
-    setFilteredProducts(
-      filteredProducts.filter((product) => product.nom !== cmdData.selectedPro)
-    );
-    quantities.push(Number(cmdData.quantity));
-  };
-
   const handleConfirmCommand = async () => {
     const confirm = window.confirm(
       "Are you sure you want to Confirm the command?"

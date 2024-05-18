@@ -88,7 +88,7 @@ function App() {
             <Route path="/edit-cmdi/:id" element={<EditCmdinterne />} />
             <Route path="/InternalOrders" element={<CommandInterne />} />
             <Route path="/InternalOrdersDirector" element={<CommandInterneDir />} />
-            <Route path="/veiw-bon-decharge/:id" element={<Decharge />} />
+            <Route path="/view-bon-decharge/:id" element={<Decharge />} />
             <Route path="/edit-bon-sortie/:id" element={<EditBonSortie />} />
             <Route path="/edit-bon-decharge/:id" element={<EditDecharge />} />
             <Route
@@ -101,7 +101,7 @@ function App() {
               element={<BonDeReception />}
             />
             <Route
-              path="/veiw-bon-sortie/:id"
+              path="/view-bon-sortie/:id"
               element={<DemandeDeFourniture />}
             />
             <Route

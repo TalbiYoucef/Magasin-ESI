@@ -5,7 +5,7 @@ import Nav from "../nav/nav.jsx";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import Per from "./commandLign.jsx";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 // get comands
 import axios from "axios";
 
@@ -162,7 +162,7 @@ function Cmds() {
                   type={cmd.type}
                   user={cmd.user_id}
                   numCmd={cmd.command_id}
-                  date={cmd.createdAt}
+                  date={String(cmd.createdAt).split('T')[0]}
                 />
               ))}
             </div>

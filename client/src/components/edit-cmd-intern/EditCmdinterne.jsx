@@ -19,35 +19,35 @@ function EditCmdinterne() {
         });
         setUser(res.data.user);
         try {
-            try {
-              const resp = await axios.get(
-                res.data.perms.includes(15)
-                  ? `http://localhost:3036/commands/${id}/products/accepted`
-                  : `http://localhost:3036/commands/${id}/products/initialized`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${res.data.accessToken}`,
-                  },
-                  withCredentials: true,
-                }
-              );
-              const extractedQuantities = resp.data.map(
-                (product) => product.quantity
-              );
-              setCmdDataLenght(extractedQuantities.length);
-              setQuantities(extractedQuantities);
-              setCmdDataList(resp.data);
-              console.log(resp.data);
-            } catch (error) {
-              alert(error.response.data.message);
-              navigate("/InternalOrders");
-              console.log(error);
-            }
+          try {
+            const resp = await axios.get(
+              res.data.perms.includes(15)
+                ? `http://localhost:3036/commands/${id}/products/accepted`
+                : `http://localhost:3036/commands/${id}/products/initialized`,
+              {
+                headers: {
+                  Authorization: `Bearer ${res.data.accessToken}`,
+                },
+                withCredentials: true,
+              }
+            );
+            const extractedQuantities = resp.data.map(
+              (product) => product.quantity
+            );
+            setCmdDataLenght(extractedQuantities.length);
+            setQuantities(extractedQuantities);
+            setCmdDataList(resp.data);
+            console.log(resp.data);
           } catch (error) {
+            alert(error.response.data.message);
+            navigate("/InternalOrders");
             console.log(error);
-            alert("something went wrong");
-            return;
           }
+        } catch (error) {
+          console.log(error);
+          alert("something went wrong");
+          return;
+        }
 
         try {
           const resp = await axios.get("http://localhost:3036/products", {
@@ -123,11 +123,11 @@ function EditCmdinterne() {
     );
     if (confirm) {
       console.log(cmdDataLength);
-      if (status === "") {
-        try {
-          const res = await axios.get("http://localhost:3036/refresh", {
-            withCredentials: true,
-          });
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        if (!res.data.isHeadOfService) {
           const result = cmdDataList.map((product, index) => {
             return {
               product: product.product_id,
@@ -138,7 +138,7 @@ function EditCmdinterne() {
           try {
             const resp = await axios.put(
               `http://localhost:3036/commands/${id}/updateQuantities`,
-              [...result],
+              { quantities: [...result], status: "" },
               {
                 headers: { Authorization: `Bearer ${res.data.accessToken}` },
                 withCredentials: true,
@@ -175,17 +175,10 @@ function EditCmdinterne() {
 
           console.log(cmdDataList, quantities);
           return;
-        } catch (error) {
-          navigate("/login");
-        }
-      } else {
-        try {
-          const res = await axios.get("http://localhost:3036/refresh", {
-            withCredentials: true,
-          });
-          console.log(cmdDataList);
+        } else {
           cmdDataList.map(async (pro, index) => {
             //create the cmnd products
+            console.log(pro)
             try {
               const response = await axios.post(
                 `http://localhost:3036/commands/${id}/products`,
@@ -193,7 +186,7 @@ function EditCmdinterne() {
                   product_id: pro.product_id,
                   quantity: quantities[index],
                   unit_price: 0,
-                  status_quantity: status,
+                  status_quantity: "validated",
                 },
                 {
                   headers: {
@@ -202,8 +195,28 @@ function EditCmdinterne() {
                   withCredentials: true,
                 }
               );
-              console.log(response);
-
+              console.log(response.data);
+              try {
+                const response = await axios.post(
+                  `http://localhost:3036/commands/${id}/products`,
+                  {
+                    product_id: pro.product_id,
+                    quantity: quantities[index],
+                    unit_price: 0,
+                    status_quantity: "initialized",
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${res.data.accessToken}`,
+                    },
+                    withCredentials: true,
+                  }
+                );
+                console.log(response.data);
+  
+              } catch (error) {
+                console.log(error)
+              }
               // change the command status
               try {
                 const response = await axios.get(
@@ -220,7 +233,7 @@ function EditCmdinterne() {
                 try {
                   const resp = await axios.put(
                     `http://localhost:3036/internalorders/${response.data.internal_order_id}/status`,
-                    { status: status },
+                    { status: "validated" },
                     {
                       headers: {
                         Authorization: `Bearer ${res.data.accessToken}`,
@@ -239,10 +252,9 @@ function EditCmdinterne() {
               console.log(error);
             }
           });
-        } catch (error) {
-          navigate("/login");
-          console.log(error);
         }
+      } catch (error) {
+        navigate("/login");
       }
     }
   };
@@ -459,7 +471,6 @@ function EditCmdinterne() {
                 </div>
 
                 <div style={{ display: "flex", gap: "20px" }}>
-                  
                   <button
                     style={{
                       marginTop: "19px",

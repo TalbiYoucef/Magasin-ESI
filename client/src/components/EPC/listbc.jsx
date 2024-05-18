@@ -23,14 +23,13 @@ const ListBonRecp = ({ onClose }) => {
               withCredentials: true,
             }
           );
-          console.log(resp.data.receipts)
+          console.log('smth',resp.data.receipts)
           setReceipts(resp.data.receipts)
 
         } catch (error) {
           alert(error.response.data.message);
           console.log(error);
         }
-       
       } catch (error) {
         // If an error occurs, redirect to the login page
         navigate("/login");
@@ -64,7 +63,6 @@ const ListBonRecp = ({ onClose }) => {
   const handleDelete = (index, event) => {
     event.preventDefault(); // Prevent default behavior
     event.stopPropagation(); // Stop event propagation
-
     const confirmDelete = window.confirm('Are you sure you want to delete this bon de reception?');
     if (confirmDelete) {
       const newData = [...brData];
@@ -195,7 +193,7 @@ const ListBonRecp = ({ onClose }) => {
             <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
             <div className='champ'>{recept.receipt_id}</div>
             <div className='champdate'>{String(recept.delivery_date).split('T')[0]}</div>
-            <Link to={`/${id}/bon-reception/${recept.receipt_id}/${index}`} className='v'>View </Link>
+            <Link to={`/${id}/bon-reception/${recept.order_id}/${recept.receipt_id}`} className='v'>View </Link>
             <button onClick={(event) => handleDelete(index, event)} className='d'>Delete</button>
           </div>
         ))}
