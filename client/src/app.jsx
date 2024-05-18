@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import {
   Card,
   Card2,
@@ -59,6 +59,7 @@ function App() {
       <Router>
         <div>
           <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
             {/* new routes */}
             // view fiche inventaire 
             <Route path="fiche-inventaire" element={<FicheInventaire />} />
