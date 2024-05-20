@@ -1,5 +1,7 @@
 // const Product = require('../Models/Product');
+const { Op } = require("sequelize");
 const db = require("../models");
+const internal = require("stream");
 const createProduct = async (req, res) => {
   try {
     const { name, quantity, limit, description } = req.body;
@@ -191,8 +193,8 @@ const deleteProductFromPurchaseOrder = async (req, res) => {
 };
 const rankArticleProductUsage = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { period } = req.body;
+    //id : branch_id
+    const { id, period } = req.params;
     const products = await db.BranchProduct.findAll({
       where: { branch_id: id },
     });
@@ -201,17 +203,27 @@ const rankArticleProductUsage = async (req, res) => {
         .status(404)
         .json({ error: "No Products found for the branch" });
     }
-    // console.log(product);
     let totalUsage = 0;
     if (period === "week") {
       for (let product of products) {
-        totalUsage += await getProductUsageWeek(parseInt(product.product_id))
-          .usage;
+        totalUsage += await getProductUsageWeek(parseInt(product.product_id));
         console.log(totalUsage);
       }
     } else if (period === "month") {
-      for (let i = 0; i < product.length; i++) {
-        totalUsage += getProductUsageMonth(product[i].product_id).usage;
+      for (let i = 0; i < products.length; i++) {
+        totalUsage += (await getProductUsageMonth(products[i].product_id)).usage;
+      }
+    } else if (period === "six") {
+      for (let i = 0; i < products.length; i++) {
+        totalUsage += (await getProductUsageSixMonth(products[i].product_id)).usage;
+      }
+    } else if (period === "nine") {
+      for (let i = 0; i < products.length; i++) {
+        totalUsage += (await getProductUsageNineMonth(products[i].product_id)).usage;
+      }
+    } else if (period === "year") {
+      for (let i = 0; i < products.length; i++) {
+        totalUsage += (await getProductUsageYear(products[i].product_id)).usage;
       }
     } else {
       return res.status(400).json({ error: "Invalid period" });
@@ -238,10 +250,9 @@ async function getProductUsageWeek(id) {
         },
       },
     });
-
     let usageTotal = 0;
     for (let command of internalCommands) {
-      const product = await db.Product_Command.findOne({
+      const products = await db.Product_Command.findAll({
         where: {
           product_id: id,
           command_id: command.command_id,
@@ -249,12 +260,16 @@ async function getProductUsageWeek(id) {
             [Op.gte]: sevenDaysAgo,
           },
         },
-        order: [["createdAt", "DESC"]],
       });
-      if (product) {
-        usageTotal += product.delivered_amount;
+      if (products) {
+        for (let product of products) {
+          usageTotal += product.delivered_amount;
+        }
+      } else {
+        console.log("no products found");
       }
     }
+    console.log(usageTotal);
     return usageTotal;
   } catch (error) {
     return { error: error.message };
@@ -278,7 +293,7 @@ async function getProductUsageMonth(id) {
 
     let usageTotal = 0;
     for (let command of internalCommands) {
-      const product = await db.Product_Command.findOne({
+      const products = await db.Product_Command.findAll({
         where: {
           product_id: id,
           command_id: command.command_id,
@@ -286,10 +301,12 @@ async function getProductUsageMonth(id) {
             [Op.gte]: oneMonthAgo,
           },
         },
-        order: [["createdAt", "DESC"]],
       });
-      if (product) {
-        usageTotal += product.delivered_amount;
+      if (products) {
+        for (let product of products) {
+          usageTotal += product.delivered_amount;
+          console.log(usageTotal)
+        }
       }
     }
     return { productid: id, usage: usageTotal };
@@ -297,82 +314,128 @@ async function getProductUsageMonth(id) {
     return { error: error.message };
   }
 }
-const returnProductUsageMonth = async (req, res) => {
+async function getProductUsageSixMonth(id) {
   try {
-    const { id } = req.params;
     const product = await db.Product.findOne({ where: { product_id: id } });
     if (!product) {
-      return res.status(404).json({ error: "Product not found" });
+      return { error: "Product not found" };
     }
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const sixMonthAgo = new Date();
+    sixMonthAgo.setMonth(sixMonthAgo.getMonth() - 6);
     const internalCommands = await db.InternalOrder.findAll({
       where: {
         createdAt: {
-          [Op.gte]: oneMonthAgo,
+          [Op.gte]: sixMonthAgo,
+        },
+      },
+    });
+    let usageTotal = 0;
+    for (let command of internalCommands) {
+      const products = await db.Product_Command.findAll({
+        where: {
+          product_id: id,
+          command_id: command.command_id,
+          createdAt: {
+            [Op.gte]: sixMonthAgo,
+          },
+        },
+      });
+      if (products) {
+        for (let product of products) {
+          usageTotal += product.delivered_amount;
+          console.log(usageTotal)
+        }
+      }
+    }
+    return { productid: id, usage: usageTotal };
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+async function getProductUsageNineMonth(id) {
+  try {
+    const product = await db.Product.findOne({ where: { product_id: id } });
+    if (!product) {
+      return { error: "Product not found" };
+    }
+    const nineMonthAgo = new Date();
+    nineMonthAgo.setMonth(nineMonthAgo.getMonth() - 9);
+    const internalCommands = await db.InternalOrder.findAll({
+      where: {
+        createdAt: {
+          [Op.gte]: nineMonthAgo,
         },
       },
     });
 
     let usageTotal = 0;
     for (let command of internalCommands) {
-      const product = await db.Product_Command.findOne({
+      const products = await db.Product_Command.findAll({
         where: {
           product_id: id,
           command_id: command.command_id,
           createdAt: {
-            [Op.gte]: oneMonthAgo,
+            [Op.gte]: nineMonthAgo,
           },
         },
-        order: [["createdAt", "DESC"]],
       });
-      if (product) {
-        usageTotal += product.delivered_amount;
+      if (products) {
+        for (let product of products) {
+          usageTotal += product.delivered_amount;
+          console.log(usageTotal)
+        }
       }
     }
-    return res.status(200).json({ productid: id, usage: usageTotal });
+    return { productid: id, usage: usageTotal };
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return { error: error.message };
   }
-};
-const returnProductUsageWeek = async (req, res) => {
+}
+
+async function getProductUsageYear(id) {
   try {
-    const { id } = req.params;
     const product = await db.Product.findOne({ where: { product_id: id } });
     if (!product) {
-      return res.status(404).json({ error: "Product not found" });
+      return { error: "Product not found" };
     }
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const yearAgo = new Date();
+    yearAgo.setMonth(yearAgo.getMonth() - 12);
+    console.log(yearAgo);
     const internalCommands = await db.InternalOrder.findAll({
       where: {
         createdAt: {
-          [Op.gte]: oneMonthAgo,
+          [Op.gte]: yearAgo,
         },
       },
     });
-
+   
     let usageTotal = 0;
     for (let command of internalCommands) {
-      const product = await db.Product_Command.findOne({
+     
+      const products = await db.Product_Command.findAll({
         where: {
           product_id: id,
           command_id: command.command_id,
           createdAt: {
-            [Op.gte]: oneMonthAgo,
+            [Op.gte]: yearAgo,
           },
         },
-        order: [["createdAt", "DESC"]],
       });
-      if (product) {
-        usageTotal += product.delivered_amount;
+      if (products) {
+        for (let product of products) {
+          usageTotal += product.delivered_amount;
+          console.log(usageTotal)
+        }
       }
     }
-    return res.status(200).json({ productid: id, usage: usageTotal });
+    console.log(usageTotal)
+
+    return { productid: id, usage: usageTotal };
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return { error: error.message };
   }
-};
+}
 
 module.exports = {
   createProduct,
@@ -385,7 +448,6 @@ module.exports = {
   updateProductQuantityInCommand,
   deleteProductFromPurchaseOrder,
   rankArticleProductUsage,
-  returnProductUsageMonth,
   getProductUsageWeek,
   createProduct,
   getAllProducts,

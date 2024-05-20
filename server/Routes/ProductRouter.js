@@ -13,15 +13,15 @@ router
 .post('/:id/branch',verifyAccess([7]),checkAuthorization, assignProductToBranch )//done
 .put('/:id/command', updateProductQuantityInCommand)//done
 .delete('/:id/command',deleteProductFromPurchaseOrder)//done
-.get('/:id/usage/week',(req,res)=>{
+.get('/:id/usage-week',async (req,res)=>{
     const {id} = req.params
     try{
-        res.status(200).json(getProductUsageWeek(id)) ;
+        res.status(200).json({result: await getProductUsageWeek(id)}) ;
     }catch(err){
         res.status(500).send('something went wrong',err)
     }
 })
-.get('/:id/usage/',rankArticleProductUsage)
+.get('/:id/usage/:period',rankArticleProductUsage)
 
 
 module.exports=router
