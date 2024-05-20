@@ -32,7 +32,6 @@ app.use("/suppliers", require("./Routes/SupplierRouter")); //newest additions
 app.use("/receipts", require("./Routes/ReceiptRouter")); //newest additions
 app.use("/internalorders", require("./Routes/InternalOrderRouter")); //newest additions
 app.use("/exitnotes", require("./Routes/ExitNoteRouter")); //newest additions
-app.use("/returnnotes", require("./Routes/ReturningNoteRouter")); //newest additions
 
 app.post("/finduser", async (req, res) => {
   const { token } = req.body;

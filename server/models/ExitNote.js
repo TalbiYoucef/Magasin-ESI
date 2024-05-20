@@ -19,12 +19,16 @@ module.exports = (sequelize, DataTypes) => {
       expected_returning_date :{
         type: DataTypes.DATE,
         allowNull: true,
+      },
+      returned :{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       }
+
     });
     ExitNote.associate = (models) => {
-        const { ReturnNote,InternalOrder } = models;
-        ExitNote.hasOne(ReturnNote, { foreignKey: {allowNull:true} });
-        ReturnNote.belongsTo(ExitNote, { foreignKey: 'exit_note_id' });
+        const { InternalOrder } = models;
         InternalOrder.hasOne(ExitNote, { foreignKey: 'internal_order_id' });
         ExitNote.belongsTo(InternalOrder, { foreignKey: 'internal_order_id' });
   

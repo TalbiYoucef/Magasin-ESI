@@ -8,4 +8,6 @@ router.post('/',verifyAccess([15,16]),checkAuthorization, exitNoteController.cre
 .get('/:id', exitNoteController.getExitNoteById)
 .put('/:id', verifyAccess([15,16]),checkAuthorization,exitNoteController.updateExitNote)
 .delete('/:id',verifyAccess([15,16]),checkAuthorization, exitNoteController.deleteExitNote);
+// a route to calculate the number on returned 
+// a route to update the returned value to true 
 module.exports = router;

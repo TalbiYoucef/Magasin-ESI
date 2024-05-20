@@ -1,8 +1,6 @@
 const router = require('express').Router()
 const { rankArticleProductUsage,getAllProducts, createProduct, getProductById, updateProduct, deleteProduct, removeProductFromBranch, assignProductToBranch, updateProductQuantityInCommand,deleteProductFromPurchaseOrder, getProductUsageWeek } = require('../Controllers/ProductController')
 const { verifyAccess,checkAuthorization } = require("../Middlewares/verifyAccess");
-
-
 router
 .get('/', getAllProducts)//done
 .post('/',verifyAccess([7]),checkAuthorization, createProduct)//done 
