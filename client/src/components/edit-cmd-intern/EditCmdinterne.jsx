@@ -6,8 +6,6 @@ import CmdComp from "./cmdComp";
 import axios from "axios";
 function EditCmdinterne() {
   const { id } = useParams();
-  const [cmdDataLength, setCmdDataLenght] = useState(0);
-  const [status, setstatus] = useState("");
   const [product, setProducts] = useState([]);
   const [user, setUser] = useState({});
   const navigate = useNavigate();
@@ -34,7 +32,6 @@ function EditCmdinterne() {
             const extractedQuantities = resp.data.map(
               (product) => product.quantity
             );
-            setCmdDataLenght(extractedQuantities.length);
             setQuantities(extractedQuantities);
             setCmdDataList(resp.data);
             console.log(resp.data);
@@ -122,7 +119,6 @@ function EditCmdinterne() {
       "Are you sure you want to Confirm the command?"
     );
     if (confirm) {
-      console.log(cmdDataLength);
       try {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
@@ -138,7 +134,7 @@ function EditCmdinterne() {
           try {
             const resp = await axios.put(
               `http://localhost:3036/commands/${id}/updateQuantities`,
-              { quantities: [...result], status: "" },
+              { quantities: [...result], status: "edit" },
               {
                 headers: { Authorization: `Bearer ${res.data.accessToken}` },
                 withCredentials: true,
@@ -148,37 +144,13 @@ function EditCmdinterne() {
           } catch (error) {
             console.log(error);
           }
-
-          for (let i = cmdDataLength; i < cmdDataList.length; i++) {
-            console.log(cmdDataList[i]);
-            try {
-              const response = await axios.post(
-                `http://localhost:3036/commands/${id}/products`,
-                {
-                  product_id: cmdDataList[i].product_id,
-                  quantity: cmdDataList[i].quantity,
-                  unit_price: 0,
-                  status_quanitity: "initialized",
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${res.data.accessToken}`,
-                  },
-                  withCredentials: true,
-                }
-              );
-              console.log(response);
-            } catch (error) {
-              console.log(error);
-            }
-          }
-
           console.log(cmdDataList, quantities);
           return;
         } else {
+          console.log(cmdDataList);
           cmdDataList.map(async (pro, index) => {
             //create the cmnd products
-            console.log(pro)
+            console.log(pro);
             try {
               const response = await axios.post(
                 `http://localhost:3036/commands/${id}/products`,
@@ -196,27 +168,7 @@ function EditCmdinterne() {
                 }
               );
               console.log(response.data);
-              try {
-                const response = await axios.post(
-                  `http://localhost:3036/commands/${id}/products`,
-                  {
-                    product_id: pro.product_id,
-                    quantity: quantities[index],
-                    unit_price: 0,
-                    status_quantity: "initialized",
-                  },
-                  {
-                    headers: {
-                      Authorization: `Bearer ${res.data.accessToken}`,
-                    },
-                    withCredentials: true,
-                  }
-                );
-                console.log(response.data);
-  
-              } catch (error) {
-                console.log(error)
-              }
+
               // change the command status
               try {
                 const response = await axios.get(
@@ -489,73 +441,11 @@ function EditCmdinterne() {
                   >
                     Delete
                   </button>
-                  {/* {showQuantityInput === cmdData.id && (
-                    <div style={{ display: "flex", gap: "10px" }}>
-                      <input
-                        style={{
-                          marginTop: "19px",
-                          color: "#5B548E",
-                          borderRadius: "20px",
-                          height: "35px",
-                          width: "90px",
-                          boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                          border: "none",
-                          backgroundColor: "white",
-                          paddingLeft: "10px",
-                        }}
-                        value={editedQuantity}
-                        onChange={(e) =>
-                          setEditedQuantity(parseInt(e.target.value))
-                        }
-                        type="number"
-                        placeholder="Quantity"
-                      />
-
-                      <button
-                        style={{
-                          marginTop: "19px",
-                          color: "green",
-                          borderRadius: "20px",
-                          height: "35px",
-                          width: "60px",
-                          boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                          border: "none",
-                          backgroundColor: "white",
-                        }}
-                        onClick={() =>
-                          handleEditQuantity(cmdData.product_id, editedQuantity)
-                        }
-                      >
-                        Save
-                      </button>
-                      <button
-                        style={{
-                          marginTop: "19px",
-                          color: "red",
-                          borderRadius: "20px",
-                          height: "35px",
-                          width: "60px",
-                          boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                          border: "none",
-                          backgroundColor: "white",
-                        }}
-                        onClick={() => setShowQuantityInput(null)}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  )} */}
                 </div>
               </div>
             ))}
             {/* filteredProducts.filter(pro=> pro.name === selectedPro).map(pro => pro.product_id)[0], // Générer un identifiant unique pour la commande
              */}
-            <CmdComp
-              filteredProducts={product}
-              onAddCmd={(cmdData) => {
-                handleAddCmd(cmdData);
-              }}
-            />
           </div>
 
           <div

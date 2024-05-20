@@ -38,7 +38,7 @@ const Decharge = () => {
         }
         try {
           const resp = await axios.get(
-            `http://localhost:3036/commands/${id}/products/satisfied`,
+            `http://localhost:3036/commands/${id}/products/initialized`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
@@ -419,7 +419,7 @@ const Decharge = () => {
                 </tbody>
               </table>
               <div style={styles.lieudate}>
-                <h4> Sidi Bel Abbes le: {dechargeData[0].date} </h4>
+                <h4> Sidi Bel Abbes le: {new Date().toLocaleDateString("fr-FR")} </h4>
               </div>
               <h4>
                 <div style={styles.signature}>

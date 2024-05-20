@@ -7,7 +7,7 @@ import CmdComp from "./SortieComp";
 import { MdNavigateNext } from "react-icons/md";
 import axios from "axios";
 function EditBonSortie() {
-   const { id } = useParams();
+  const { id } = useParams();
   const [date, setDate] = useState("");
   const [quantities, setQuantitie] = useState([]);
   const [initialQuantities, setInitialQuantitie] = useState([]);
@@ -26,7 +26,7 @@ function EditBonSortie() {
         setUser(res.data.user);
         try {
           const resp = await axios.get(
-            `http://localhost:3036/commands/${id}/products/satisfied`,
+            `http://localhost:3036/commands/${id}/products/initialized`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
@@ -109,21 +109,22 @@ function EditBonSortie() {
             }
           );
           console.log(respp.data);
-          if (respp.data.status == "satisfied") {
+          if (respp.data.status == "printed") {
             alert("you can not modify this exit note ");
-            return
+            return;
           } else {
             const result = products.map((product, index) => {
               return {
                 product: product.product_id,
                 quantity: quantities[index],
+                status: "initialized",
               };
             });
             console.log(result);
             try {
               const resp = await axios.put(
                 `http://localhost:3036/commands/${id}/updateQuantities`,
-                [...result],
+                { quantities: [...result], status: "bn" },
                 {
                   headers: { Authorization: `Bearer ${res.data.accessToken}` },
                   withCredentials: true,
@@ -167,7 +168,7 @@ function EditBonSortie() {
     <div>
       <Nav username={user.username} />
       <div className="dwnusers">
-        <Side link="/ExternalOrders" />
+        <Side/>
         <div
           style={{
             marginTop: "8vh",
@@ -484,7 +485,7 @@ function EditBonSortie() {
                       textAlign: "center",
                     }}
                     value={quantities[index]}
-                    onChange={(e) =>handleQuantityChange(e, index)}
+                    onChange={(e) => handleQuantityChange(e, index)}
                   />
                 </div>
               </div>

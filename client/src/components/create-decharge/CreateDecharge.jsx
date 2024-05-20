@@ -133,25 +133,60 @@ function CreateDecharge() {
           console.log(respp.data);
           if (respp.data.status == "satisfied") {
             alert("you can not recreate an exit note");
-            return
+            return;
           } else {
-            const result = products.map((product, index) => {
-              return {
-                product: product.product_id,
-                quantity: quantities[index],
-              };
+            products.map(async (pro, index) => {
+              //create the cmnd products
+              console.log(pro);
+              try {
+                const respo = await axios.post(
+                  `http://localhost:3036/commands/${id}/products`,
+                  {
+                    product_id: pro.product_id,
+                    quantity: quantities[index],
+                    unit_price: 0,
+                    status_quantity: "satisfied",
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${res.data.accessToken}`,
+                    },
+                    withCredentials: true,
+                  }
+                );
+                console.log(respo.data);
+              } catch (error) {
+                console.log(error);
+              }
             });
-            console.log(result);
+            //  change the command status
             try {
-              const resp = await axios.put(
-                `http://localhost:3036/commands/${id}/updateQuantities`,
-                [...result],
+              const response = await axios.get(
+                `http://localhost:3036/commands/${id}/internal-order`,
                 {
-                  headers: { Authorization: `Bearer ${res.data.accessToken}` },
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
                   withCredentials: true,
                 }
               );
-              console.log(resp.data);
+              console.log(response);
+              // modify the internal order status
+              try {
+                const resp = await axios.put(
+                  `http://localhost:3036/internalorders/${response.data.internal_order_id}/status`,
+                  { status: "satisfied" },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${res.data.accessToken}`,
+                    },
+                    withCredentials: true,
+                  }
+                );
+                console.log(resp);
+              } catch (error) {
+                console.log(error);
+              }
             } catch (error) {
               console.log(error);
             }

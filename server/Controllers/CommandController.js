@@ -239,7 +239,11 @@ const updateQuantities = async (req, res) => {
       });
 
       if (productCommand) {
-        if (command.type === "external" && status !== "edit") {
+        if (status =="bn") {
+          productCommand.delivered_amount = quantity.quantity;
+          productCommand.amount_left =
+            productCommand.quantity - quantity.quantity;
+        } else if (command.type === "external" || status !== "edit") {
           productCommand.delivered_amount = quantity.quantity;
           productCommand.amount_left =
             productCommand.amount_left - quantity.quantity;
@@ -340,7 +344,7 @@ const getReceiptNoteByIndex = async (req, res) => {
     const products = await db.Product_Command.findAll({
       where: { command_id: id },
     });
-    console.log(products)
+    console.log(products);
     if (!products || products.length === 0) {
       return res
         .status(404)
@@ -351,7 +355,11 @@ const getReceiptNoteByIndex = async (req, res) => {
     let productsList = [];
     for (let product of productsSet) {
       const info = await db.Product_Command.findAll({
-        where: { command_id: id, product_id: product, status_quantity:'validated' },
+        where: {
+          command_id: id,
+          product_id: product,
+          status_quantity: "validated",
+        },
         order: [["createdAt", "ASC"]],
         limit: parseInt(index, 10),
       });

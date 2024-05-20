@@ -94,7 +94,7 @@ function Rollig(props) {
             View
           </Link>
           <Link
-            to={`/edit-cmdi/${props.id}`}
+            to={`/edit-cmdi-user/${props.id}`}
             style={{
               textDecoration: "none",
               marginLeft: "20px",

@@ -13,6 +13,7 @@ function CommandInterne() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [internals, setInternals] = useState([]);
+  const [isHeadOfService, setIsHeadOfService] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -23,6 +24,7 @@ function CommandInterne() {
         });
         console.log(res.data);
         setUser(res.data.user);
+        setIsHeadOfService(res.data.isHeadOfService);
         try {
           const respo = await axios.get(
             res.data.perms.includes(15)
@@ -37,6 +39,23 @@ function CommandInterne() {
           );
           console.log(respo.data);
           setInternals([...respo.data].reverse());
+          if (res.data.perms.includes(15)) {
+            try {
+              const respo = await axios.get(
+                "http://localhost:3036/internalorders/status/satisfied",
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
+                  withCredentials: true,
+                }
+              );
+              console.log(respo.data);
+              setInternals([...respo.data, ...internals]);
+            } catch (error) {
+              console.log(error);
+            }
+          }
         } catch (error) {
           console.log(error);
           alert("something went wrong");
@@ -82,7 +101,7 @@ function CommandInterne() {
           }}
         >
           <div>
-          <div style={{ display: "flex", gap: "450px" }}>
+            <div style={{ display: "flex", gap: "450px" }}>
               <div
                 style={{
                   display: "flex",
@@ -115,109 +134,113 @@ function CommandInterne() {
                   display: "flex",
                 }}
               >
-                <div
-                  style={{
-                    padding: "10px",
-                    paddingTop: "15px",
-                    paddingLeft: "30px",
-                    paddingRight: "30px",
-                    borderRadius: "30px",
-                    boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                    width: "50%",
-                    display: "flex",
-                  }}
-                >
-                  <div style={{ width: "50%" }}>
-                    <b
-                      style={{
-                        fontSize: "26px",
-                        fontSize: "18px",
-                        color: "#555555",
-                      }}
-                    >
-                      {134}
-                    </b>
-                    <p style={{ fontSize: "18px", color: "#444444" }}>
-                      Total Orders
-                    </p>
-                  </div>
-                  <div
-                    style={{
-                      width: "50%",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
+                {isHeadOfService && (
+                  <>
                     <div
                       style={{
-                        marginTop: "15%",
-                        borderRadius: "12px",
-                        width: "29%",
+                        padding: "10px",
+                        paddingTop: "15px",
+                        paddingLeft: "30px",
+                        paddingRight: "30px",
+                        borderRadius: "30px",
                         boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                        height: "50%",
-                        marginLeft: "65%",
+                        width: "50%",
+                        display: "flex",
                       }}
                     >
-                      <PiNotebookLight
+                      <div style={{ width: "50%" }}>
+                        <b
+                          style={{
+                            fontSize: "26px",
+                            fontSize: "18px",
+                            color: "#555555",
+                          }}
+                        >
+                          {134}
+                        </b>
+                        <p style={{ fontSize: "18px", color: "#444444" }}>
+                          Total Orders
+                        </p>
+                      </div>
+                      <div
                         style={{
-                          fontSize: "25px",
-                          marginTop: "5px",
-                          marginLeft: "4px",
+                          width: "50%",
+                          justifyContent: "center",
                           alignItems: "center",
                         }}
-                      />
+                      >
+                        <div
+                          style={{
+                            marginTop: "15%",
+                            borderRadius: "12px",
+                            width: "29%",
+                            boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
+                            height: "50%",
+                            marginLeft: "65%",
+                          }}
+                        >
+                          <PiNotebookLight
+                            style={{
+                              fontSize: "25px",
+                              marginTop: "5px",
+                              marginLeft: "4px",
+                              alignItems: "center",
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    padding: "15px",
-                    width: "50%",
-                    boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                    borderRadius: "30px",
-                  }}
-                >
-                  <b
-                    style={{
-                      width: "90%",
-                      fontSize: "16px",
-                      paddingLeft: "15px",
-                      color: "#555555",
-                    }}
-                  >
-                    Employé Plus de Fourniture
-                  </b>
-                  <div
-                    style={{
-                      height: "30px",
-                      marginTop: "8px",
-                      display: "flex",
-                      gap: "20px",
-                    }}
-                  >
-                    <p
+                    <div
                       style={{
-                        fontSize: "14px",
-                        paddingLeft: "15px",
-                        color: "#444444",
+                        padding: "15px",
+                        width: "50%",
+                        boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
+                        borderRadius: "30px",
                       }}
                     >
-                      {"EmployéPlusFournitureds"}
-                    </p>
-                    <p
-                      style={{
-                        fontSize: "14px",
-                        marginLeft: "10px",
-                        color: "#616262",
-                      }}
-                    >
-                      this month
-                    </p>
-                  </div>
-                </div>
+                      <b
+                        style={{
+                          width: "90%",
+                          fontSize: "16px",
+                          paddingLeft: "15px",
+                          color: "#555555",
+                        }}
+                      >
+                        Employé Plus de Fourniture
+                      </b>
+                      <div
+                        style={{
+                          height: "30px",
+                          marginTop: "8px",
+                          display: "flex",
+                          gap: "20px",
+                        }}
+                      >
+                        <p
+                          style={{
+                            fontSize: "14px",
+                            paddingLeft: "15px",
+                            color: "#444444",
+                          }}
+                        >
+                          {"EmployéPlusFournitureds"}
+                        </p>
+                        <p
+                          style={{
+                            fontSize: "14px",
+                            marginLeft: "10px",
+                            color: "#616262",
+                          }}
+                        >
+                          this month
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
-           
+
             <div
               style={{
                 display: "flex",

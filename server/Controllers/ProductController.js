@@ -2,20 +2,20 @@
 const db = require("../models");
 const createProduct = async (req, res) => {
   try {
-    const { name, quantity,limit,description } = req.body;
+    const { name, quantity, limit, description } = req.body;
     const productExists = await db.Product.findOne({ where: { name: name } });
     if (productExists) {
       return res.status(400).json({ error: "Product already exists" });
     }
     const product = await db.Product.create({
       name: name,
-      description:description,
-      quantity:quantity,
-      limit:limit,
+      description: description,
+      quantity: quantity,
+      limit: limit,
     });
     return res.status(201).json(product);
   } catch (error) {
-    return res.status(500).json({ error: "Failed to create product" },error);
+    return res.status(500).json({ error: "Failed to create product" }, error);
   }
 };
 
@@ -138,12 +138,10 @@ const updateProductQuantityInCommand = async (req, res) => {
       return res.status(404).json({ message: "Command not found" });
     }
     if (purchaseOrder.status !== "pending") {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Cannot update product quantity in a command that is not pending",
-        });
+      return res.status(400).json({
+        message:
+          "Cannot update product quantity in a command that is not pending",
+      });
     }
     const product = await db.Product_Quantity.findOne({
       where: { product_id: id, command_id: command_id },
@@ -173,11 +171,9 @@ const deleteProductFromPurchaseOrder = async (req, res) => {
       return res.status(404).json({ message: "Command not found" });
     }
     if (purchaseOrder.status !== "pending") {
-      return res
-        .status(400)
-        .json({
-          message: "Cannot delete product from a command that is not pending",
-        });
+      return res.status(400).json({
+        message: "Cannot delete product from a command that is not pending",
+      });
     }
     const product = await db.Product_Quantity.findOne({
       where: { product_id: id, command_id: command_id },
@@ -193,7 +189,204 @@ const deleteProductFromPurchaseOrder = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+const rankArticleProductUsage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { period } = req.body;
+    const products = await db.BranchProduct.findAll({
+      where: { branch_id: id },
+    });
+    if (!products) {
+      return res
+        .status(404)
+        .json({ error: "No Products found for the branch" });
+    }
+    // console.log(product);
+    let totalUsage = 0;
+    if (period === "week") {
+      for (let product of products) {
+        totalUsage += await getProductUsageWeek(parseInt(product.product_id))
+          .usage;
+        console.log(totalUsage);
+      }
+    } else if (period === "month") {
+      for (let i = 0; i < product.length; i++) {
+        totalUsage += getProductUsageMonth(product[i].product_id).usage;
+      }
+    } else {
+      return res.status(400).json({ error: "Invalid period" });
+    }
+    return res.status(200).json({ branch_id: id, usage: totalUsage });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+async function getProductUsageWeek(id) {
+  try {
+    const product = await db.Product.findOne({ where: { product_id: id } });
+    if (!product) {
+      return { error: "Product not found" };
+    }
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    console.log(sevenDaysAgo);
+    const internalCommands = await db.InternalOrder.findAll({
+      where: {
+        createdAt: {
+          [Op.gte]: sevenDaysAgo,
+        },
+      },
+    });
+
+    let usageTotal = 0;
+    for (let command of internalCommands) {
+      const product = await db.Product_Command.findOne({
+        where: {
+          product_id: id,
+          command_id: command.command_id,
+          createdAt: {
+            [Op.gte]: sevenDaysAgo,
+          },
+        },
+        order: [["createdAt", "DESC"]],
+      });
+      if (product) {
+        usageTotal += product.delivered_amount;
+      }
+    }
+    return usageTotal;
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+async function getProductUsageMonth(id) {
+  try {
+    const product = await db.Product.findOne({ where: { product_id: id } });
+    if (!product) {
+      return { error: "Product not found" };
+    }
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const internalCommands = await db.InternalOrder.findAll({
+      where: {
+        createdAt: {
+          [Op.gte]: oneMonthAgo,
+        },
+      },
+    });
+
+    let usageTotal = 0;
+    for (let command of internalCommands) {
+      const product = await db.Product_Command.findOne({
+        where: {
+          product_id: id,
+          command_id: command.command_id,
+          createdAt: {
+            [Op.gte]: oneMonthAgo,
+          },
+        },
+        order: [["createdAt", "DESC"]],
+      });
+      if (product) {
+        usageTotal += product.delivered_amount;
+      }
+    }
+    return { productid: id, usage: usageTotal };
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+const returnProductUsageMonth = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await db.Product.findOne({ where: { product_id: id } });
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const internalCommands = await db.InternalOrder.findAll({
+      where: {
+        createdAt: {
+          [Op.gte]: oneMonthAgo,
+        },
+      },
+    });
+
+    let usageTotal = 0;
+    for (let command of internalCommands) {
+      const product = await db.Product_Command.findOne({
+        where: {
+          product_id: id,
+          command_id: command.command_id,
+          createdAt: {
+            [Op.gte]: oneMonthAgo,
+          },
+        },
+        order: [["createdAt", "DESC"]],
+      });
+      if (product) {
+        usageTotal += product.delivered_amount;
+      }
+    }
+    return res.status(200).json({ productid: id, usage: usageTotal });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+const returnProductUsageWeek = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await db.Product.findOne({ where: { product_id: id } });
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const internalCommands = await db.InternalOrder.findAll({
+      where: {
+        createdAt: {
+          [Op.gte]: oneMonthAgo,
+        },
+      },
+    });
+
+    let usageTotal = 0;
+    for (let command of internalCommands) {
+      const product = await db.Product_Command.findOne({
+        where: {
+          product_id: id,
+          command_id: command.command_id,
+          createdAt: {
+            [Op.gte]: oneMonthAgo,
+          },
+        },
+        order: [["createdAt", "DESC"]],
+      });
+      if (product) {
+        usageTotal += product.delivered_amount;
+      }
+    }
+    return res.status(200).json({ productid: id, usage: usageTotal });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
+  createProduct,
+  getAllProducts,
+  getProductById,
+  deleteProduct,
+  updateProduct,
+  assignProductToBranch,
+  removeProductFromBranch,
+  updateProductQuantityInCommand,
+  deleteProductFromPurchaseOrder,
+  rankArticleProductUsage,
+  returnProductUsageMonth,
+  getProductUsageWeek,
   createProduct,
   getAllProducts,
   getProductById,

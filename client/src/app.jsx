@@ -52,6 +52,7 @@ import CommandIntern from "./components/CmdChefService/manCmdInCS";
 import DashMagasinier from "./components/DashMagasinier/DashMagasin";
 import DashDirector from "./components/DashDirector/DashDirector";
 import DashChefService from "./components/DashChafService/DashChefService";
+import EditCmdinterneUser from "./components/edit-cmd-intern/EditCmdinterneUser";
 
 function App() {
   return (
@@ -66,41 +67,25 @@ function App() {
             // edit inventaire
             <Route path="edit-inventaire" element={<EditInventaire />} />
             // dash magasigner
-            <Route path="dash-magasigner" element={<DashMagasinier />} />
+            <Route path="storekeeperStat" element={<DashMagasinier />} />
             // dash director
-            <Route path="dash-dir" element={<DashDirector />} />
+            <Route path="DirectorStat" element={<DashDirector />} />
             // dash chef service 
-            <Route path="dash-chef-service" element={<DashChefService />} />
-            // cmd Chef service 
-            <Route path="cmd-chef-service" element={<CommandIntern />} />
-
-
+            <Route path="HeadOfServiceStat" element={<DashChefService />} />
 
             {/* to do */}
+            // delete : move to deleted status
+            // handelDownload : interdir a modifier
             // service achat is not allowed to create receipt
             // delete product function in each of the create/edit commands
             // statistics
-            // inventory 
-            // create receipt 
-            // attach pdf
+            // inventory
+            // attach pdf(la fiche d'inventaire genere est stock)
              {/* // already done */}
             <Route path="/edit-cmd/:id" element={<EditCmdEx />} />
             <Route path="/edit-cmdi-dir/:id" element={<EditCmdinterneDir />} />
-            <Route path="/edit-cmdi/:id" element={<EditCmdinterne />} />
-            <Route path="/InternalOrders" element={<CommandInterne />} />
-            <Route path="/InternalOrdersDirector" element={<CommandInterneDir />} />
             <Route path="/view-bon-decharge/:id" element={<Decharge />} />
             <Route path="/edit-bon-sortie/:id" element={<EditBonSortie />} />
-            <Route path="/edit-bon-decharge/:id" element={<EditDecharge />} />
-            <Route
-              path="/cmdi/:id/create-bon-decharge"
-              element={<CreateDecharge />}
-            />
-            <Route path="/articles" element={<AllArticles />} />
-            <Route
-              path="/:idcmd/bon-reception/:id/:index"
-              element={<BonDeReception />}
-            />
             <Route
               path="/view-bon-sortie/:id"
               element={<DemandeDeFourniture />}
@@ -108,6 +93,20 @@ function App() {
             <Route
               path="/cmdi/:id/create-bon-sortie"
               element={<CreateBonSortie />}
+            />
+            <Route
+              path="/cmdi/:id/create-bon-decharge"
+              element={<CreateDecharge />}
+            />
+            <Route path="/edit-cmdi-user/:id" element={<EditCmdinterneUser />} />
+            <Route path="/edit-cmdi/:id" element={<EditCmdinterne />} />
+            <Route path="/InternalOrders" element={<CommandInterne />} />
+            <Route path="/InternalOrdersDirector" element={<CommandInterneDir />} />
+            <Route path="/edit-bon-decharge/:id" element={<EditDecharge />} />
+            <Route path="/articles" element={<AllArticles />} />
+            <Route
+              path="/:idcmd/bon-reception/:id/:index"
+              element={<BonDeReception />}
             />
             <Route
               path="/view-demande-fourniture/:id"

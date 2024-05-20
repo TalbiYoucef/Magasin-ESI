@@ -409,7 +409,7 @@ const DemandeFourniture = () => {
                   </Link>
                 )}
                 <Link
-                  to={`/veiw-bon-sortie/${id}`}
+                  to={`/view-bon-sortie/${id}`}
                   className="viewbnsortie-link"
                 >
                   <button

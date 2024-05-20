@@ -11,12 +11,10 @@ function CreateBonSortie() {
   const [quantities, setQuantitie] = useState([]);
   const [initialQuantities, setInitialQuantitie] = useState([]);
   const [user, setUser] = useState({});
-  const navigate = useNavigate();
-  const [cmdDataList, setCmdDataList] = useState([]); //cmdDataList contient table de produit ajoute
+  const navigate = useNavigate(); //cmdDataList contient table de produit ajoute
   const [service, setServive] = useState("");
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
-  const [newProdects, setNewProducts] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,7 +39,7 @@ function CreateBonSortie() {
         }
         try {
           const resp = await axios.get(
-            `http://localhost:3036/commands/${id}/products`,
+            `http://localhost:3036/commands/${id}/products/accepted`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
@@ -49,7 +47,7 @@ function CreateBonSortie() {
               withCredentials: true,
             }
           );
-          setDate(String(resp.data[0].updatedAt).split('T')[0]);
+          setDate(String(resp.data[0].updatedAt).split("T")[0]);
           setProducts(resp.data);
           let initial = resp.data.map((ele) => ele.quantity);
           setInitialQuantitie(initial);
@@ -97,8 +95,6 @@ function CreateBonSortie() {
     }
   };
 
-
-
   const handleConfirmCommand = async () => {
     const confirm = window.confirm(
       "Are you sure you want to create this exit note?"
@@ -127,24 +123,60 @@ function CreateBonSortie() {
           console.log(respp.data);
           if (respp.data.status == "satisfied") {
             alert("you can not recreate an exit note");
+            return;
           } else {
-            const result = products.map((product, index) => {
-              return {
-                product: product.product_id,
-                quantity: quantities[index],
-              };
+            products.map(async (pro, index) => {
+              //create the cmnd products
+              console.log(pro);
+              try {
+                const respo = await axios.post(
+                  `http://localhost:3036/commands/${id}/products`,
+                  {
+                    product_id: pro.product_id,
+                    quantity: quantities[index],
+                    unit_price: 0,
+                    status_quantity: "satisfied",
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${res.data.accessToken}`,
+                    },
+                    withCredentials: true,
+                  }
+                );
+                console.log(respo.data);
+              } catch (error) {
+                console.log(error);
+              }
             });
-            console.log(result);
+            //  change the command status
             try {
-              const resp = await axios.put(
-                `http://localhost:3036/commands/${id}/updateQuantities`,
-                [...result],
+              const response = await axios.get(
+                `http://localhost:3036/commands/${id}/internal-order`,
                 {
-                  headers: { Authorization: `Bearer ${res.data.accessToken}` },
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
+                  },
                   withCredentials: true,
                 }
               );
-              console.log(resp.data);
+              console.log(response);
+              // modify the internal order status
+              try {
+                const resp = await axios.put(
+                  `http://localhost:3036/internalorders/${response.data.internal_order_id}/status`,
+                  { status: "satisfied" },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${res.data.accessToken}`,
+                    },
+                    withCredentials: true,
+                  }
+                );
+                console.log(resp);
+              } catch (error) {
+                console.log(error);
+              }
             } catch (error) {
               console.log(error);
             }
@@ -152,7 +184,7 @@ function CreateBonSortie() {
               const response = await axios.post(
                 `http://localhost:3036/exitnotes/`,
                 {
-                  exit_date: today,
+                  exit_date: new Date().toISOString(),
                   type: "exit",
                   comment: "",
                   internal_order_id:
@@ -163,7 +195,6 @@ function CreateBonSortie() {
                   withCredentials: true,
                 }
               );
-              console.log(response.data);
             } catch (error) {
               console.log(error);
             }
@@ -183,7 +214,7 @@ function CreateBonSortie() {
       "Are you sure you want to cancel the command?"
     );
     if (confirm) {
-      navigate(-1)
+      navigate(-1);
     }
   };
 
@@ -192,7 +223,7 @@ function CreateBonSortie() {
       "Are you sure you want to Leave this form ?"
     );
     if (confirm) {
-      navigate(-1)
+      navigate(-1);
     }
   };
   const today = new Date().toLocaleDateString("fr-FR");
@@ -530,17 +561,14 @@ function CreateBonSortie() {
                     display: "flex",
                     flexDirection: "column",
                   }}
-                >
-                </div>
+                ></div>
                 <div
                   style={{
                     width: "22%",
                     display: "flex",
                     flexDirection: "column",
                   }}
-                >
-                  
-                </div>
+                ></div>
               </div>
             ))}
             {/* <CmdComp

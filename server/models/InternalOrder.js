@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       comment: DataTypes.STRING,
       status: {
-        type: DataTypes.ENUM("initialized", "validated", "accepted", "satisfied"),
+        type: DataTypes.ENUM("initialized", "validated", "accepted", "satisfied","printed",'deleted'),
         allowNull: false,
         defaultValue: "initialized",
       },

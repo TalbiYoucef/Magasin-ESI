@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { getAllProducts, createProduct, getProductById, updateProduct, deleteProduct, removeProductFromBranch, assignProductToBranch, updateProductQuantityInCommand,deleteProductFromPurchaseOrder } = require('../Controllers/ProductController')
+const { rankArticleProductUsage,getAllProducts, createProduct, getProductById, updateProduct, deleteProduct, removeProductFromBranch, assignProductToBranch, updateProductQuantityInCommand,deleteProductFromPurchaseOrder, getProductUsageWeek } = require('../Controllers/ProductController')
 const { verifyAccess,checkAuthorization } = require("../Middlewares/verifyAccess");
 
 
@@ -12,6 +12,16 @@ router
 .delete('/:id/branch',verifyAccess([7]),checkAuthorization, removeProductFromBranch)//done
 .post('/:id/branch',verifyAccess([7]),checkAuthorization, assignProductToBranch )//done
 .put('/:id/command', updateProductQuantityInCommand)//done
-.delete('/:id/command', deleteProductFromPurchaseOrder)//done
+.delete('/:id/command',deleteProductFromPurchaseOrder)//done
+.get('/:id/usage/week',(req,res)=>{
+    const {id} = req.params
+    try{
+        res.status(200).json(getProductUsageWeek(id)) ;
+    }catch(err){
+        res.status(500).send('something went wrong',err)
+    }
+})
+.get('/:id/usage/',rankArticleProductUsage)
+
 
 module.exports=router

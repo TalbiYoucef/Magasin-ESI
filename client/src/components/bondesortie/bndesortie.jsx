@@ -38,7 +38,7 @@ const DemandeDeFourniture = () => {
         }
         try {
           const resp = await axios.get(
-            `http://localhost:3036/commands/${id}/products/satisfied`,
+            `http://localhost:3036/commands/${id}/products/initialized`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,

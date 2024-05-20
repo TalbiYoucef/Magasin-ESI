@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       default: 0,
     },
     status_quantity: {
-      type: DataTypes.ENUM("initialized", "validated", "accepted", "satisfied"),
+      type: DataTypes.ENUM("initialized", "validated", "accepted", "satisfied","deleted"),
       allowNull: false,
       defaultValue: "initialized",
     },
