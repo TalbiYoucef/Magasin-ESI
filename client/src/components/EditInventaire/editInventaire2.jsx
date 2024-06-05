@@ -5,37 +5,80 @@ import Nav from '../nav/nav';
 import { Link } from 'react-router-dom';
 import { MdNavigateNext } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
+import produitData from '../data/ProduitsData';
 
-function EditInventaire() {
+function EditInventaire2() {
     const [selectedChapter, setSelectedChapter] = useState(null);
     const [selectedArticle, setSelectedArticle] = useState(null);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [Products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [quantity, setQuantity] = useState([]);// Quantite Servie
+    const [Observations, setObservations] = useState([]);
 
-    
+
+    const quantityservOnChange = (productId, e) => {
+      const updatedQuantity = { ...quantity }; // Créez une copie de quantity
+      updatedQuantity[productId] = e.target.value; // Mettez à jour la quantité pour le produit spécifié
+      setQuantity(updatedQuantity); // Mettez à jour l'état quantity
+    };
+
+  const handleChapterChange = (e) => {
+    const newChapter = e.target.value;
+    setSelectedChapter(newChapter);
+    setCmdDataList([]);
+    setFilteredProducts([]);
+    console.log("Selected chapter:", newChapter);
+};
+useEffect(() => {
+  if (filteredProducts.length > 0) {
+    const initialQuantities = filteredProducts.reduce((acc, product) => {
+      acc[product.id] = product.quantitéPhysique || ''; // Assurez-vous que la clé est correcte
+      return acc;
+  }, {});
+  setQuantity(initialQuantities);
+
+      const initialObservations = filteredProducts.reduce((acc, product) => {
+          acc[product.id] = product.Observations || ''; // Assurez-vous que la clé est correcte
+          return acc;
+      }, {});
+      setObservations(initialObservations);
+  }
+}, [filteredProducts]); 
+
+const handleArticleChange = (e) => {
+    const newArticle = e.target.value;
+    console.log("Selected article:", newArticle);  
+    setSelectedArticle(newArticle);
+
+    setSelectedChapter(prevChapter => {
+        const chapterData = produitData.find(chapter => chapter.chapitre === prevChapter);
+        console.log("Chapter data:", chapterData);
+        
+        if (chapterData) {
+            const articleData = chapterData.articles.find(article => article.nom === newArticle);
+            if (articleData) {
+                const filteredProducts = articleData.produits.map(produit => produit);
+                setFilteredProducts(filteredProducts);
+                console.log("filteredProducts.map(product => product.quantitéPhysique) ", quantity);
+
+                console.log("Filtered products:", filteredProducts);
+            } else {
+                console.log("Article not found in selected chapter");
+            }
+        } else {
+            console.log("No chapter selected");
+        }
+        return prevChapter; // Return the previous state as no update is needed
+    });
+};
+      
    
 
       
-    const [Products, setProducts] = useState([]);
     const [priU, setPriU] = useState("");
-    const [inventaire, setinventaire] = useState({
-        id: '0',
-        products: [
-            { id: 0, selectedPro: 'Produit 1',Quantité:'100',quantitéPhysique:'5',Observations:''},
-            { id: 1, selectedPro: 'Produit 2' ,Quantité:'50',quantitéPhysique:'',Observations:''},
-            { id: 2,selectedPro: 'Produit 3',Quantité:'60' ,quantitéPhysique:'',Observations:''},
-            { id: 3,selectedPro : 'Produit 4',Quantité:'900' ,quantitéPhysique:'6',Observations:'' },
-            { id: 4, selectedPro: 'Produit 5',Quantité:'90' ,quantitéPhysique:'',Observations:''},
-            { id: 5, selectedPro: 'Produit 6',Quantité:'100',quantitéPhysique:'',Observations:''},
-            { id: 6, selectedPro: 'Produit 7' ,Quantité:'50',quantitéPhysique:'',Observations:''},
-            { id: 7,selectedPro: 'Produit 8',Quantité:'60' ,quantitéPhysique:'',Observations:''},
-            { id: 8,selectedPro : 'Produit 9',Quantité:'900' ,quantitéPhysique:'',Observations:'' },
-            { id: 9, selectedPro: 'Produit 10',Quantité:'90' ,quantitéPhysique:'',Observations:''}
-     
-          
-        ]
-    });
-
+   
     const handleSearchChange = (event) => {
       setSearchTerm(event.target.value);
   };
@@ -43,29 +86,28 @@ function EditInventaire() {
 
 
 //--------------------------------
-    const [Observations, setObservations] = useState(inventaire.products.map(product => product.Observations));
-    const [quantity, setQuantity] = useState(inventaire.products.map(product => product.quantitéPhysique));// Quantite Servie
+  //  const [Observations, setObservations] = useState(inventaire.products.map(product => product.Observations));
     
 
 
-  const [filteredProducts, setFilteredProducts] = useState([]);
     
-    const [cmdDataList, setCmdDataList] = useState(inventaire.products);//cmdDataList contient table de produit ajoute
-  
+    const [cmdDataList, setCmdDataList] = useState([]);//cmdDataList contient table de produit ajoute
+    useEffect(() => {
+      setCmdDataList(filteredProducts);
+    }, [filteredProducts]);
+    console.log("cmdDataList :", cmdDataList);
 
 
 
 
-    const quantityservOnChange = (index, e) => {
-        const updatedQuantityDemande = [...quantity];
-        updatedQuantityDemande[index] = e.target.value;
-        setQuantity(updatedQuantityDemande);
-      };
-      const ObservationsOnChange = (index, e) => {
-        const updatedObservations = [...Observations];
-        updatedObservations[index] = e.target.value;
-        setObservations(updatedObservations);
-      };
+
+    
+    const ObservationsOnChange = (id, e) => {
+      setObservations(prevObservations => ({
+        ...prevObservations,
+        [id]: e.target.value
+      }));
+    };
       
      
   
@@ -86,9 +128,11 @@ function EditInventaire() {
     const handleSave = (id, value, value3) => {
       // Vérifier si les valeurs sont présentes et correctes
       const numericValue = parseFloat(value);
+
+
       if (value !== undefined && value !== null && value !== "") {
         // Vérifier si la quantité est strictement positive
-        if (numericValue > 0 && !isNaN(numericValue)) {
+        if (numericValue >= 0 && !isNaN(numericValue)) {
           // Afficher une boîte de dialogue de confirmation
           const confirmSave = window.confirm(
             "Êtes-vous sûr de vouloir enregistrer les modifications?"
@@ -105,6 +149,8 @@ function EditInventaire() {
                     
                    // Mettre à jour la quantité servie et les observations
                     if (numericQuantité !== numericValue) {
+                      console.log("numericQuantité !== numericValue :", numericQuantité !== numericValue);
+
                       // L'observation est obligatoire si les quantités diffèrent
                       if (!value3 ) {
                         alert("L'observation est obligatoire si la quantité physique diffère de la quantité ");
@@ -130,7 +176,7 @@ function EditInventaire() {
             );
           }
         } else {
-          alert("La quantité doit être strictement positive");
+          alert("La quantité doit être positive");
         }
       } else {
         alert("Veuillez remplir la quantité");
@@ -160,10 +206,10 @@ function EditInventaire() {
     const today = new Date().toLocaleDateString('fr-FR');
 return (
     <div> 
-      <Nav   />
+      <Nav  username={user.username}  />
       <div className='dwnusers'   >
         <Side   link='commands'/>    
-        <div   style={{overflow:'100% auto',width:'100%',marginTop :"8vh" , marginLeft :' 60px' , height :'92vh',paddingBottom:'100px' , padding :'60px'}}   >
+        <div   style={{ overflow:'100% auto',width:'100%',marginTop :"8vh" , marginLeft :' 60px' , height :'92vh' , padding :'60px'}}   >
                 <div  style={{display :'flex ' ,width:'95%', alignItems: 'center', justifyContent:  'space-between'  , gap : '100px' , marginBottom :'40px' }}>
                    <div style={{ display :'flex ' , gap : '20px'}}>
                     <div  style={{ color :'#5B548E',marginLeft:'10px',marginRight:'60px' , fontSize :'26px'}}>   Edit Inventory </div>
@@ -186,7 +232,36 @@ return (
 
                         }}>     View inventory   <MdNavigateNext style={{marginLeft:'5px'}} /> </Link>
                  </div>
-                 <div style={{ display: 'flex', alignItems: 'center', width: '450px', height: '40px', borderRadius: '20px', boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)', padding: '20px', color: '#616262', marginTop: '30px', marginLeft: '40px' }}>
+                 
+                            <div style={{height :' 100px ' ,display :'flex' , borderRadius : '20px' ,   boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' , padding :'20px' , marginBottom :'30px' , gap :'calcl(height/3-40px)'}}>
+          <div>
+          <div  style={{fontSize:'15px' , color :'#5B548E' , marginLeft:"50px" }}>   Chapitre:   </div>
+          <select value={selectedChapter} onChange={handleChapterChange}
+          style={{ boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' , width :' 260px' ,fontSize :'15px' , height :'40px' , marginBottom :'30px' ,border:'none' ,color:'rgba(58,53,65,0.87)'}}>
+        <option value="">Choisissez un chapitre</option>
+{produitData.map((chapter, index) => (
+  <option key={index} value={chapter.chapitre}>{chapter.chapitre}</option>
+))}
+
+     
+  
+      </select>  
+      </div>
+      <div>
+      <div  style={{fontSize:'15px', color :'#5B548E' , marginLeft:"50px" }}>   Article:   </div>
+
+      <select value={selectedArticle} onChange={handleArticleChange}
+                style={{color:'rgba(58,53,65,0.87)', boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' , width :' 260px' ,fontSize :'15px' , height :'40px' , marginBottom :'30px' ,border:'none' }}>
+  <option value="">Choisissez un article</option>
+  {selectedChapter &&
+    produitData.find(chapter => chapter.chapitre === selectedChapter)?.articles.map((article, index) => (
+      <option key={index} value={article.nom}>{article.nom}</option>
+    ))
+  }
+</select>
+</div>
+
+<div style={{ display: 'flex', alignItems: 'center', width: '450px', height: '40px', borderRadius: '20px', boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)', padding: '20px', color: '#616262', marginTop: '20px', marginLeft: '40px' }}>
                                 <BsSearch style={{fontSize:'18px',marginRight:'15px'}} />
                                 <input
                                     type="search"
@@ -197,33 +272,48 @@ return (
                                     style={{ border: 'none', height: '30px', width: '150px' }}
                                 />
                             </div>
-          
+          </div>
 
 
-          <div style={{ display: 'flex',paddingLeft:'80px',marginBottom :'100px', flexDirection: 'column', marginTop: '3%', gap: '5%', width: '95%', overflowY: '100% auto', borderRadius: '30px', boxShadow: '0px 1px 18px -12px rgba(0,0,0,0.52)', WebkitBoxShadow: '0px 1px 18px -12px rgba(0,0,0,0.52)', MozBoxShadow: '0px 1px 18px -12px rgba(0,0,0,0.52)', border: 'none', position: 'relative'}}>
+          <div style={{ display: 'flex',padding:'20px', flexDirection: 'column', marginTop: '3%', gap: '5%', width: '95%', overflowY: '100% auto', backgroundColor: 'white', borderRadius: '30px', boxShadow: '0px 1px 18px -12px rgba(0,0,0,0.52)', WebkitBoxShadow: '0px 1px 18px -12px rgba(0,0,0,0.52)', MozBoxShadow: '0px 1px 18px -12px rgba(0,0,0,0.52)', border: 'none', position: 'relative'}}>
           
  
          {/* ------------------------ */}
-         <div style={{width:'100%',marginBottom:'10px',display :'flex' , gap :'15px' , alignItems: 'center'}}>
+         <div style={{ width:'100%',marginBottom:'10px',display :'flex' , gap :'15px' , alignItems: 'center'}}>
          <div style={{display :'flex',width:'26%',marginLeft:'1.75%' ,flexDirection :'column'}}>
                 <div  style={{ color :'#5B548E' , fontSize :'15px' ,marginLeft:'40px', marginTop :'20px'}}>   Product:   </div>
-              <div  style={{display :'flex',width:'100%', alignItems: 'center' , margin :"0px" }}>  </div>
-                
               </div>
-
-              <div style={{width:'9%',display :'flex' ,flexDirection :'column'}}>
+              <div style={{width:'5%',display :'flex' ,flexDirection :'column'}}>
+                <div
+                style={{ color :'#5B548E' , fontSize :'15px' ,marginLeft:'10px', marginTop :'20px'}}
+                >   Reste 2022 :   </div>
+               
+              </div>
+              <div style={{width:'5%',display :'flex' ,flexDirection :'column'}}>
+                <div
+                style={{ color :'#5B548E' , fontSize :'15px' ,marginLeft:'10px', marginTop :'20px'}}
+                >   Entrée 2023:   </div>
+               
+              </div>
+              <div style={{width:'5%',display :'flex' ,flexDirection :'column'}}>
+                <div
+                style={{ color :'#5B548E' , fontSize :'15px' ,marginLeft:'10px', marginTop :'20px'}}
+                >   Sortie 2023:   </div>
+               
+              </div>
+              <div style={{width:'6%',display :'flex' ,flexDirection :'column'}}>
                 <div
                 style={{ color :'#5B548E' , fontSize :'15px' ,marginLeft:'10px', marginTop :'20px'}}
                 >   Quantité:   </div>
                
               </div>
-              <div style={{width:'9%',display :'flex' ,flexDirection :'column'}}>
+              <div style={{width:'6%',display :'flex' ,flexDirection :'column'}}>
                 <div
                 style={{ color :'#5B548E' , fontSize :'15px' ,marginLeft:'10px', marginTop :'20px'}}
                 >   Qt.Physique:   </div>
                 
               </div>
-              <div style={{width:'22%',display :'flex' ,flexDirection :'column'}}>
+              <div style={{width:'13%',display :'flex' ,flexDirection :'column'}}>
                 <div
                 style={{ color :'#5B548E' , fontSize :'15px' ,marginLeft:'10px', marginTop :'20px'}}
                 >   Observations:   </div>
@@ -236,12 +326,11 @@ return (
 
           {/* La liste des composants de produit */}
           
-          {inventaire.products 
-.filter(product => product.selectedPro.toLowerCase().includes(searchTerm.toLowerCase()))
+          {filteredProducts
+.filter(product => product.nom.toLowerCase().includes(searchTerm.toLowerCase()))
 .filter(cmd => cmd.quantitéPhysique === '') // Filter inventaire with quantitéPhysique
-  .concat(inventaire.products  .filter(product => product.selectedPro.toLowerCase().includes(searchTerm.toLowerCase()))
-
-    .filter(cmd => cmd.quantitéPhysique !== '')) // Concatenate with produit without quantitéPhysique
+  .concat(filteredProducts.filter(product => product.nom.toLowerCase().includes(searchTerm.toLowerCase()))
+ .filter(cmd => cmd.quantitéPhysique !== '')) // Concatenate with produit without quantitéPhysique
   .map((cmdData, index) => (
         <div key={cmdData.id}   style={{width:'100%',height:'55px',marginBottom:'10px',display :'flex' , gap :'15px' , alignItems: 'center'}} >
               <div style={{display :'flex',width:'26%',marginLeft:'1.75%' ,flexDirection :'column'}}>
@@ -261,7 +350,7 @@ return (
                     paddingLeft :'20px',
                     textAlign:'center'
                   }}
-                  value={cmdData.selectedPro}
+                  value={cmdData.nom}
                   
 
                 />
@@ -269,8 +358,71 @@ return (
                        </div>
                 
               </div>
+              <div style={{width:'5%',display :'flex' ,flexDirection :'column'}}>
+                
+                <div
+                 style={{
+                    
+                    color: '#666666',
+                    borderRadius: '20px',
+                    height: '45px',
+                    
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center', 
+                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
+                    border :'none',
+                    textAlign:'center'
+                  }}
+                  
+                  
+                >  {cmdData.ResteAnneePasse } </div>
+              </div>
+              <div style={{width:'5%',display :'flex' ,flexDirection :'column'}}>
+                
+                <div
+                 style={{
+                    
+                    color: '#666666',
+                    borderRadius: '20px',
+                    height: '45px',
+                    
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center', 
+                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
+                    border :'none',
+                    textAlign:'center'
+                  }}
+                  
+                  
+                >  {cmdData.Entrée } </div>
+              </div>
+              <div style={{width:'5%',display :'flex' ,flexDirection :'column'}}>
+                
+                <div
+                 style={{
+                    
+                    color: '#666666',
+                    borderRadius: '20px',
+                    height: '45px',
+                    
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center', 
+                    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)' ,
+                    border :'none',
+                    textAlign:'center'
+                  }}
+                  
+                  
+                >  {cmdData.Sortie } </div>
+              </div>
 
-              <div style={{width:'9%',display :'flex' ,flexDirection :'column'}}>
+              <div style={{width:'6%',display :'flex' ,flexDirection :'column'}}>
                 
                 <div
                  style={{
@@ -291,7 +443,7 @@ return (
                   
                 >  {cmdData.Quantité } </div>
               </div>
-              <div style={{width:'9%',display :'flex' ,flexDirection :'column'}}>
+              <div style={{width:'6%',display :'flex' ,flexDirection :'column'}}>
                 
                 <input type='number'
                  style={{
@@ -309,13 +461,13 @@ return (
                     textAlign:'center'
                   }}
                   placeholder='Qt.Physique'
-                  value={quantity[cmdData.id] || ''}  
-               onChange={(e) => quantityservOnChange(cmdData.id, e)}
+                  value={quantity[cmdData.id] || ''}
+                  onChange={(e) => quantityservOnChange(cmdData.id, e)}
                 />  
               </div>
 
              
-              <div style={{width:'30%',display :'flex' ,flexDirection :'column'}}>
+              <div style={{width:'20%',display :'flex' ,flexDirection :'column'}}>
                
                 <input
                  style={{
@@ -334,15 +486,15 @@ return (
                     textAlign:'center'
                   }}
                   placeholder='Observation '
-                  value={Observations[index]}
-                  onChange={(e) => ObservationsOnChange(index, e)}
+                  value={Observations[cmdData.id] || ''}
+                  onChange={(e) => ObservationsOnChange(cmdData.id, e)}
                 /> 
               </div>
               
              
               <button 
               style={{borderRadius: '20px', height: '45px',   width: '100px' ,   paddingRight :'10px',    display: 'flex',   alignItems: 'center',textDecoration :"none",backgroundColor :'#17BF6B',justifyContent: 'center', color :'white',border :'none',marginTop:'0px',textAlign:'center'}}
-              onClick={() => handleSave(cmdData.id, quantity[cmdData.id], Observations[index])}>save</button>
+              onClick={() => handleSave(cmdData.id, quantity[cmdData.id], Observations[cmdData.id])}>save</button>
 
               
             </div>
@@ -363,4 +515,4 @@ return (
   );
 }
 
-export default EditInventaire;
+export default EditInventaire2;
