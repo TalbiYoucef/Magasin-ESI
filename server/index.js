@@ -3,10 +3,13 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const db = require("./models");
+const { getInfoFicheProduct } = require("./Controllers/inventory");
+const { verifyAccess, checkAuthorization } = require("./Middlewares/verifyAccess");
 const app = express();
 const port = process.env.PORT || 3036;
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -16,6 +19,12 @@ app.use(
 app.get("/", (req, res) => {
   res.json({ response: "home page" });
 });
+app.get(
+  "/inventory/:id",
+  verifyAccess([13, 15, 16, 19]),
+  checkAuthorization,
+  getInfoFicheProduct
+);
 app.use("/refresh", require("./Routes/RefreshRouter"));
 app.use("/auth", require("./Routes/AuthRouter"));
 app.use("/users", require("./Routes/UserRouter"));
@@ -482,67 +491,77 @@ app.get("/create-product", async (req, res) => {
     "Venne d'arret32",
     "Vernis 01 KG",
     "Verrou G/M",
-    "Vis parker boite 4*25"
+    "Vis parker boite 4*25",
   ];
-  
+
   try {
     products.map(async (pro) => {
-      await db.Product.create({ name: pro, quantity: 0, limit: 10,description:'' });
+      await db.Product.create({
+        name: pro,
+        quantity: 0,
+        limit: 10,
+        description: "",
+      });
     });
-    res.status(201).send('done')
+    res.status(201).send("done");
   } catch (error) {
     res.status(500).send("failed", error);
   }
 });
 
-app.post('/map-service-head', async (req,res)=>{
+app.post("/map-service-head", async (req, res) => {
   const array = [
     {
       user_id: 15,
-      service_id: 1 // Direction Générale
+      service_id: 1, // Direction Générale
     },
     {
       user_id: 16,
-      service_id: 2 // Secrétariat Général
+      service_id: 2, // Secrétariat Général
     },
     {
       user_id: 17,
-      service_id: 3 // Département du cycle préparatoire
+      service_id: 3, // Département du cycle préparatoire
     },
     {
       user_id: 18,
-      service_id: 4 // Département du second Cycle
+      service_id: 4, // Département du second Cycle
     },
     {
       user_id: 19,
-      service_id: 6 // Direction des Enseignements et des Diplômes
+      service_id: 6, // Direction des Enseignements et des Diplômes
     },
     {
       user_id: 20,
-      service_id: 5 // Direction des Relations Extérieures
+      service_id: 5, // Direction des Relations Extérieures
     },
     {
       user_id: 21,
-      service_id: 7 // Direction de la Formation Doctorale
-    }
+      service_id: 7, // Direction de la Formation Doctorale
+    },
   ];
-  
-  try {
-    array.map(async elem =>{
-      db.ServiceHead.create({user_id: elem.user_id,service_id:elem.service_id})
-    })
-  } catch (error) {
-    res.status(500).send('some thing went wrong ')
-  }
-})
 
-app.post('/add-directors', async (req, res) => {
+  try {
+    array.map(async (elem) => {
+      db.ServiceHead.create({
+        user_id: elem.user_id,
+        service_id: elem.service_id,
+      });
+    });
+  } catch (error) {
+    res.status(500).send("some thing went wrong ");
+  }
+});
+
+app.post("/add-directors", async (req, res) => {
   const generatePhoneNumber = () => {
     const prefix = "+213";
-    const number = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+    const number = Math.floor(Math.random() * 1000000000)
+      .toString()
+      .padStart(9, "0");
     return `${prefix}${number}`;
   };
-  
+
   // Directors data
   const directors = [
     { fullName: "Benslimane Sidi Mohamed", email: "sm.benslimane@esi-sba.dz" },
@@ -553,33 +572,38 @@ app.post('/add-directors', async (req, res) => {
     { fullName: "Bedjaoui Mohamed", email: "m.bedjaoui@esi-sba.dz" },
     { fullName: "Malki Mimoun", email: "m.malki@esi-sba.dz" },
   ];
-  
+
   try {
-    const directorsData = directors.map(director => {
-      const [familyName, ...restName] = director.fullName.split(' ').reverse();
-      const firstName = restName.reverse().join(' ');
-      const username = `${firstName}${familyName}`.toLowerCase().replace(/ /g, '');
+    const directorsData = directors.map((director) => {
+      const [familyName, ...restName] = director.fullName.split(" ").reverse();
+      const firstName = restName.reverse().join(" ");
+      const username = `${firstName}${familyName}`
+        .toLowerCase()
+        .replace(/ /g, "");
       return {
         username,
         firstname: firstName,
         lastname: familyName,
         email: director.email,
-        password: 'adminadmin',
-        address: 'SBA Algeria',
+        password: "adminadmin",
+        address: "SBA Algeria",
         phone_num: generatePhoneNumber(),
-        status: 'active',
+        status: "active",
       };
     });
 
     const createdDirectors = await db.User.bulkCreate(directorsData);
-    res.status(201).json({ message: 'Directors added successfully', data: createdDirectors });
+    res
+      .status(201)
+      .json({
+        message: "Directors added successfully",
+        data: createdDirectors,
+      });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'An error occurred', error });
+    res.status(500).json({ message: "An error occurred", error });
   }
 });
-
-
 
 app.get("/create", async (req, res) => {
   // const services = [

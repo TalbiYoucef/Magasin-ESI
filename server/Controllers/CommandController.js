@@ -1,4 +1,4 @@
-const { where } = require("sequelize");
+
 const db = require("../models");
 
 const getCommands = async (req, res) => {
