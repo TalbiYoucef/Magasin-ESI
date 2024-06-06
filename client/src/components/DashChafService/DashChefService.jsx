@@ -5,7 +5,7 @@ import TopConsumer from '../DashComponents/Total';
 import Barchart from '../DashComponents/histogrammeService';
 
 
-function DashDirector() {
+function DashChefService() {
 
     const [total, setTotal] = useState(255);
     const [TopServiceConsumerName, setTopServiceConsumerName] = useState('Sidi Mohamed Benslimane');
@@ -42,4 +42,4 @@ function DashDirector() {
   )
 }
 
-export default DashDirector
+export default DashChefService
