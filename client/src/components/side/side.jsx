@@ -139,7 +139,7 @@ const spaceHeight = sidebarHeightPX - (SidebarData.length + Data.length +1) * it
     <li className="nav__items" style={{marginTop:'20px'}}>
       <a href={`/DirectorStat`} className={`link ${props.link === "DirectorStat" ? 'active' : ''}`}>
         {Dashboard.icon}
-        {Dashboard.heading}2
+        {Dashboard.heading}
       </a>
     </li>
   ) :
@@ -147,14 +147,14 @@ const spaceHeight = sidebarHeightPX - (SidebarData.length + Data.length +1) * it
     <li className="nav__items" style={{marginTop:'20px'}}>
       <a href={`/storekeeperStat`} className={`link ${props.link === "storekeeperStat" ? 'active' : ''}`}>
         {Dashboard.icon}
-        {Dashboard.heading}1
+        {Dashboard.heading}
       </a>
     </li>
   ) : UserPerimssionsId.includes(24) || UserPerimssionsId.includes(25) ? ( //24 : chef  service 25 : service achat 
     <li className="nav__items" style={{marginTop:'20px'}}>
       <a href={`/HeadOfServiceStat`} className={`link ${props.link === "HeadOfServiceStat" ? 'active' : ''}`}>
         {Dashboard.icon}
-        {Dashboard.heading}3
+        {Dashboard.heading}
       </a>
     </li>
   ) : ( // si aucun  des roles precedents ==> c'est un  consommateur 
