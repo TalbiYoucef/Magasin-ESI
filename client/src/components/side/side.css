@@ -2,7 +2,6 @@
   position: fixed;
   width: 15%;
   top:8vh;
-  left: 0;
   height:  92vh;
   z-index:  101;
   overflow:hidden;
@@ -10,8 +9,11 @@
   background-color: white;
   cursor:pointer;
   box-shadow:4px 7px 10px rgba(0,0,0,.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   &:hover {
-    width: 220px;
+    width: 200px;
   }
   @media screen and (min-width: 600px) {
     width: 60px;
@@ -22,8 +24,9 @@
   text-align: center;
   width: 180px;
   color: #FA9E15;
-  text-align: center;
   transition: none;
+  text-align: left;
+
   .ic{
     color: #FA9E15;
   }
@@ -31,42 +34,41 @@
 }
 
 .navv {
-  list-style-type: none;
-  color:white;
-  color: #54a4ff;
-  display:flex;
-  flex-direction: column;
+  
   &:first-child {
-    padding-top: 2.5rem;
+    padding-top: 20px;
   }
 }
 
 .nav__items {
   display: flex; /* Afficher les éléments en ligne */
-  align-items: center; /* Centrer les éléments verticalement */
-  margin-bottom: 1rem;
    a {
     position: relative;
     padding-right:15px;
     transition:all .3s ease;
     margin-left:45px;
+    text-align: left;
     text-decoration: none;
     color :#616262;
     font-family: 'roboto';
     font-weight: 10;
-    font-size: 1em;
+    width: 20px;
+   height:30px ;
+   
+    font-size: 15px;
      &:after {
        content:'';
-       width:  180px;
-       height: 100%;
+       width:  200px;
        position: absolute;
        top:0;
        left:0;
        border-radius:2px;
-       background:radial-gradient(circle at 94.02% 88.03%, #7da1e3, transparent 100%);
+       background:radial-gradient(circle at 94.02% 88.03%, #f5dab0, transparent 100%);
        opacity:0;
        transition:all .5s ease;
        z-index: -10;
+       height:100% ;
+
      }
   }
   &:hover a:after {
@@ -88,6 +90,8 @@
 }
 
 
-
+.bottom-nav {
+  padding-bottom: 20px;
+}
 
 

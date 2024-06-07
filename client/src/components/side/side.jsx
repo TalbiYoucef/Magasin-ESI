@@ -13,7 +13,7 @@ import { PiStorefront } from "react-icons/pi";
 import { GrDeliver } from "react-icons/gr";
 function Side( props) {
    const [selected, setSelected] = useState(0);
-   const [UserPerimssionsId, setUserPerimssionsId] = useState([22,1,3,9])
+   const [UserPerimssionsId, setUserPerimssionsId] = useState([22,23,24,1,3,9])
   const Dashboard = {
     icon: <TbHomeSignal className='ic' style={{}} />,
     heading: "Dashboard",
@@ -128,37 +128,43 @@ const spaceHeight = sidebarHeightPX - (SidebarData.length + Data.length +1) * it
    
 
  return (
-    <nav className="nav__cont">
-
+  <nav className="nav__cont">
+      <div>
         <div
-  className={selected === 0 ? "menuItem active" : "menuItem"}
+     className={selected === 0 ? "menuItem active" : "menuItem"}
 
   onClick={() => setSelected(0)}
 >
-  {UserPerimssionsId.includes(22) ? (
-    <li className="nav__items" style={{marginTop:'20px'}}>
-      <a href={`/storekeeperStat`} className={`link ${props.link === "storekeeperStat" ? 'active' : ''}`}>
-        {Dashboard.icon}
-        {Dashboard.heading}
-      </a>
-    </li>
-  ) : null}
-  {UserPerimssionsId.includes(23) ? (
+  { UserPerimssionsId.includes(23) ? ( //23 : director 
     <li className="nav__items" style={{marginTop:'20px'}}>
       <a href={`/DirectorStat`} className={`link ${props.link === "DirectorStat" ? 'active' : ''}`}>
         {Dashboard.icon}
-        {Dashboard.heading}
+        {Dashboard.heading}2
       </a>
     </li>
-  ) : null}
-  {UserPerimssionsId.includes(24) ? (
+  ) :
+  UserPerimssionsId.includes(22)  ? ( // 22 : magasinier 
+    <li className="nav__items" style={{marginTop:'20px'}}>
+      <a href={`/storekeeperStat`} className={`link ${props.link === "storekeeperStat" ? 'active' : ''}`}>
+        {Dashboard.icon}
+        {Dashboard.heading}1
+      </a>
+    </li>
+  ) : UserPerimssionsId.includes(24) || UserPerimssionsId.includes(25) ? ( //24 : chef  service 25 : service achat 
     <li className="nav__items" style={{marginTop:'20px'}}>
       <a href={`/HeadOfServiceStat`} className={`link ${props.link === "HeadOfServiceStat" ? 'active' : ''}`}>
         {Dashboard.icon}
-        {Dashboard.heading}
+        {Dashboard.heading}3
       </a>
     </li>
-  ) : null}
+  ) : ( // si aucun  des roles precedents ==> c'est un  consommateur 
+    <li className="nav__items" style={{marginTop:'20px'}}> 
+      <a href={`/ConsumerStat`} className={`link ${props.link === "ConsumerStat" ? 'active' : ''}`}>
+        {Dashboard.icon}
+        {Dashboard.heading}1
+      </a>
+    </li>
+  ) }
 </div>
 
       <ul  className='navv'>
@@ -179,9 +185,9 @@ const spaceHeight = sidebarHeightPX - (SidebarData.length + Data.length +1) * it
         </div>
       ))}
       </ul>
-      <div style={{ height: spaceHeight }}></div>
+      </div>
 
-      <ul>
+      <ul className='navv bottom-nav'>
       {Data.map((item, index) => (
         <div
           className={selected === index ? "menuItem active" : "menuItem"}
@@ -199,6 +205,9 @@ const spaceHeight = sidebarHeightPX - (SidebarData.length + Data.length +1) * it
         </div>
       ))}
             </ul>
+            
+
+            
 
     </nav>
   );
