@@ -3,8 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const db = require("./models");
-const { getInfoFicheProduct } = require("./Controllers/inventory");
-const { verifyAccess, checkAuthorization } = require("./Middlewares/verifyAccess");
+const { getInfoFicheProduct, getInfoFicheArticle } = require("./Controllers/inventory");
 const app = express();
 const port = process.env.PORT || 3036;
 app.use(express.json());
@@ -19,12 +18,7 @@ app.use(
 app.get("/", (req, res) => {
   res.json({ response: "home page" });
 });
-app.get(
-  "/inventory/:id",
-  verifyAccess([13, 15, 16, 19]),
-  checkAuthorization,
-  getInfoFicheProduct
-);
+app.use('/inventory',require("./Routes/InventoryRouter"));
 app.use("/refresh", require("./Routes/RefreshRouter"));
 app.use("/auth", require("./Routes/AuthRouter"));
 app.use("/users", require("./Routes/UserRouter"));

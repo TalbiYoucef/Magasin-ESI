@@ -19,7 +19,7 @@ function Profils() {
         });
         console.log("reres", res.data);
         setUser(res.data.user);
-        console.log(user)
+        console.log(user);
       } catch (error) {
         // If an error occurs, redirect to the login page
         navigate("/login");
@@ -34,7 +34,7 @@ function Profils() {
     <div>
       <Nav username={user.username} />
       <div className="dwnuser">
-        <Side link="setting" />
+        <Side link="Settings" />
         <div className=" Sect2user">
           <div className="downuser">
             <div className="upusers1">
@@ -51,9 +51,20 @@ function Profils() {
                     <div className="imgBox">
                       <img src={pro} alt="profil" />
                     </div>
-                    <div style={{ marginLeft: "2%",display:"flex",alignItems:"center" }}>
-                      <p className="name"> {user.firstname}</p>
-                      <p className="admin">{user.role}</p>
+                    <div
+                      style={{
+                        marginLeft: "2%",
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "flex-start",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <p className="name">
+                        {" "}
+                        {`${user.firstname} ${user.lastname}`}
+                      </p>
+                      <p className="admin">{user.username}</p>
                     </div>
                   </div>
                   <p className="ena" style={{ marginLeft: "1px" }}>

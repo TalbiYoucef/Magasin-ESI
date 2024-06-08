@@ -48,7 +48,7 @@ function EditPass() {
               }
             )
             .then((resp) => {
-              navigate("/setting");
+              navigate("/Settings");
             })
             .catch((err) => console.log(err));
         })
@@ -81,7 +81,7 @@ function EditPass() {
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      navigate("/setting");
+      navigate("/Settings");
       setMessage("");
     }
   };

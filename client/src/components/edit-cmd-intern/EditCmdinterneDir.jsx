@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import CmdComp from "./cmdComp";
 import axios from "axios";
 function EditCmdinterneDir() {
   const { id } = useParams();
@@ -27,9 +26,9 @@ function EditCmdinterneDir() {
               withCredentials: true,
             }
           );
-          const extractedQuantities = resp.data.map(
-            (product) => product.quantity
-          );
+          const extractedQuantities = resp.data.map((product) => {
+            return { id: product.product_id, qt: product.quantity };
+          });
           setQuantities(extractedQuantities);
           setCmdDataList(resp.data);
           console.log(resp.data);
@@ -63,7 +62,6 @@ function EditCmdinterneDir() {
 
   // Format the date as "day month year"
   const formattedDate = new Date().toLocaleDateString("fr-FR");
-
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [cmdDataList, setCmdDataList] = useState([]);
   const [showQuantityInput, setShowQuantityInput] = useState(true);
@@ -72,11 +70,12 @@ function EditCmdinterneDir() {
 
   const handleEditQuantity = (id, value) => {
     if (value > 0) {
-      // Create a new array to update the quantities
-      const updatedQuantities = [...quantities];
-      updatedQuantities[id] = value;
-      // Update the state with the new quantities array
-      setQuantities(updatedQuantities);
+      const replaceObservation = (id, newObs) => {
+        setQuantities((prevArray) =>
+          prevArray.map((obj) => (obj.id === id ? { ...obj, qt: newObs } : obj))
+        );
+      };
+      replaceObservation(id, value);
       console.log(quantities);
     } else {
       alert("Quantity must be strictly positive");
@@ -116,7 +115,7 @@ function EditCmdinterneDir() {
               `http://localhost:3036/commands/${id}/products`,
               {
                 product_id: pro.product_id,
-                quantity: quantities[index],
+                quantity: quantities.find(prod => pro.product_id === prod.id)?.qt,
                 unit_price: 0,
                 status_quantity: "accepted",
               },
@@ -374,9 +373,14 @@ function EditCmdinterneDir() {
                         borderRadius: "20px",
                         border: "none",
                       }}
-                      value={quantities[index]}
+                      value={
+                        quantities.find(pro => pro.id === cmdData.product_id)?.qt
+                      }
                       onChange={(e) =>
-                        handleEditQuantity(index, Number(e.target.value))
+                        handleEditQuantity(
+                          cmdData.product_id,
+                          Number(e.target.value)
+                        )
                       }
                     />
                   </div>

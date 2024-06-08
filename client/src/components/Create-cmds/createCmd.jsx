@@ -22,7 +22,7 @@ function CreateCmd() {
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [priU, setPriU] = useState("");
-  const [allProducts,setAllProducts] = useState([])
+  const [allProducts, setAllProducts] = useState([]);
   const getPrixUnitaire = (selectedPro) => {
     const product = Products.find((prod) => prod.nom === selectedPro);
     return product ? product.prixUnitaire : "";
@@ -89,7 +89,7 @@ function CreateCmd() {
             withCredentials: true,
           }
         );
-        setAllProducts(resp.data)
+        setAllProducts(resp.data);
         setProducts(resp.data);
         // console.log(resp.data)
       } catch (error) {
@@ -147,31 +147,33 @@ function CreateCmd() {
 
   const handleRemoveCmd = (id) => {
     setCmdDataList(cmdDataList.filter((cmdData) => cmdData.id !== id));
-    const removedProduct = allProducts.find(product => product.product_id === id);
+    const removedProduct = allProducts.find(
+      (product) => product.product_id === id
+    );
     if (removedProduct) {
-      setProducts([...products, removedProduct].sort((a, b) => {
-        return a.name.localeCompare(b.name);
-      }));
-      
+      setProducts(
+        [...products, removedProduct].sort((a, b) => {
+          return a.name.localeCompare(b.name);
+        })
+      );
     }
   };
   const handleAddCmd = (cmdData) => {
     setPrixTotal((prev) => (prev += cmdData.price * cmdData.quantity));
     setCmdDataList([...cmdDataList, cmdData]);
     // console.log(cmdData)
-    console.log(getProduct(cmdData.product_id))
-    console.log(filteredProducts)
+    console.log(getProduct(cmdData.product_id));
+    console.log(filteredProducts);
 
     setProducts(
       products.filter((pro) => pro.name !== getProduct(cmdData.product_id))
     );
   };
   const getSuppId = (name) => {
-    const supp= suppliers.find((sup) => sup.name == name)
-    if(supp) {
-      return supp.supplier_id
-    }
-    else{
+    const supp = suppliers.find((sup) => sup.name == name);
+    if (supp) {
+      return supp.supplier_id;
+    } else {
       return null;
     }
   };
@@ -187,9 +189,9 @@ function CreateCmd() {
     );
     if (confirm) {
       console.log(getSuppId(selectedSupplier));
-      if(!(getSuppId(selectedSupplier) && expectedDate)){
-        alert("all field are obligatory")
-        return
+      if (!(getSuppId(selectedSupplier) && expectedDate)) {
+        alert("all field are obligatory");
+        return;
       }
       try {
         const res = await axios.get("http://localhost:3036/refresh", {
@@ -237,22 +239,21 @@ function CreateCmd() {
           cmdDataList.map(async (Element) => {
             // creer cmnd
             try {
-              const data = await axios
-                .post(
-                  `http://localhost:3036/commands/${resp.data.command_id}/products`,
-                  {
-                    product_id: Element.product_id,
-                    quantity: Element.quantity,
-                    unit_price: Element.price,
+              const data = await axios.post(
+                `http://localhost:3036/commands/${resp.data.command_id}/products`,
+                {
+                  product_id: Element.product_id,
+                  quantity: Element.quantity,
+                  unit_price: Element.price,
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${res.data.accessToken}`,
                   },
-                  {
-                    headers: {
-                      Authorization: `Bearer ${res.data.accessToken}`,
-                    },
-                    withCredentials: true,
-                  }
-                )
-                
+                  withCredentials: true,
+                }
+              );
+
               navigate("/ExternalOrders");
             } catch (error) {
               console.log(error);
@@ -267,15 +268,14 @@ function CreateCmd() {
       }
     }
   };
-  const getProduct=(id)=>{
-  const pro = products.find(pro=> pro.product_id === id)
-   if(pro){
-    return pro.name
-   }
-   else{
-    return ""
-   }
-  }
+  const getProduct = (id) => {
+    const pro = products.find((pro) => pro.product_id == id);
+    if (pro) {
+      return pro.name;
+    } else {
+      return "";
+    }
+  };
   const handleCancel = () => {
     const confirm = window.confirm(
       "Are you sure you want to cancel the command?"
@@ -449,8 +449,8 @@ function CreateCmd() {
                 marginLeft: "30px",
                 marginBottom: "30px",
                 border: "none",
-                padding:"0px 10px",
-                color:"#B71C1C"
+                padding: "0px 10px",
+                color: "#B71C1C",
               }}
             />
           </div>
@@ -520,7 +520,7 @@ function CreateCmd() {
                         paddingLeft: "20px",
                       }}
                     >
-                      {getProduct(cmdData.product_id)}{" "}
+                      {getProduct(cmdData.product_id)}
                     </div>
                   </div>
                 </div>

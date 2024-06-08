@@ -10,11 +10,19 @@ const {
   updateProductQuantityInCommand,
   deleteProductFromPurchaseOrder,
   MostUsed,
+  rankArticleProductUsage,
+  getServiceConsommation,
+  getUserConsommation,
+  getUsageUser,
+  getConsumedProducts,
 } = require("../Controllers/ProductController");
 const {
   verifyAccess,
   checkAuthorization,
 } = require("../Middlewares/verifyAccess");
+
+
+
 router
   .get("/", getAllProducts) //done
   .get("/mostUsed", MostUsed)
@@ -34,7 +42,13 @@ router
     checkAuthorization,
     assignProductToBranch
   ) //done
-  .put("/:id/command", updateProductQuantityInCommand) //done
+  .put("/:id/command", updateProductQuantityInCommand)
+  .get('/usage/product/:id/:user_id',rankArticleProductUsage)
+  .get('/usage-user/:user_id',getUsageUser)
+  .get('/usage/:user_id/user/:id',getUserConsommation)
+  .get('/consumed/:user_id',getConsumedProducts)
+  .get('/usage/:service_id/service/:id',getServiceConsommation)
+  //done
   .delete("/:id/command", deleteProductFromPurchaseOrder); //done
 
 module.exports = router;

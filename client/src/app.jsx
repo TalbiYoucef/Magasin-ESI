@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import {
   Card,
   Card2,
@@ -48,40 +53,39 @@ import EditCmdinterneDir from "./components/edit-cmd-intern/EditCmdinterneDir";
 import CommandInterneDir from "./components/CommandINMan/manCommandINDir";
 import FicheInventaire from "./components/ViewFicheInventaire/ficheInventaire";
 import EditInventaire from "./components/EditInventaire/EditInventaire";
-import CommandIntern from "./components/CmdChefService/manCmdInCS";
 import DashMagasinier from "./components/DashMagasinier/DashMagasin";
 import DashDirector from "./components/DashDirector/DashDirector";
 import DashChefService from "./components/DashChafService/DashChefService";
 import EditCmdinterneUser from "./components/edit-cmd-intern/EditCmdinterneUser";
-
+import DashConsumer from "./components/DashConsumer/DashConsumer";
+import Art from "./components/ViewFicheInventaire/Art";
 function App() {
   return (
     <AppProvider>
       <Router>
         <div>
           <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/" element={<Navigate to="/login" />} />
             {/* new routes */}
-            // view fiche inventaire 
-            <Route path="fiche-inventaire" element={<FicheInventaire />} />
+            // view fiche inventaire
+            <Route path="/view-inventory/:id" element={<FicheInventaire />} />
+            <Route path="/list-inventory" element={<Art />}/>
             // edit inventaire
-            <Route path="edit-inventaire" element={<EditInventaire />} />
+            <Route path="/Inventory" element={<EditInventaire />} />
             // dash magasigner
-            <Route path="storekeeperStat" element={<DashMagasinier />} />
+            <Route path="/storekeeperStat" element={<DashMagasinier />} />
             // dash director
-            <Route path="DirectorStat" element={<DashDirector />} />
-            // dash chef service 
-            <Route path="HeadOfServiceStat" element={<DashChefService />} />
-
+            <Route path="/DirectorStat" element={<DashDirector />} />
+            // dash chef service
+            <Route path="/HeadOfServiceStat" element={<DashChefService />} />
+            <Route path="/consumerDash" element={<DashConsumer />} />
+            <Route path="/purshasingAgentDash" element={<DashChefService />} />
             {/* to do */}
-            // delete : move to deleted status
-            // handelDownload : interdir a modifier
-            // service achat is not allowed to create receipt
-            // delete product function in each of the create/edit commands
-            // statistics
-            // inventory
-            // attach pdf(la fiche d'inventaire genere est stock)
-             {/* // already done */}
+            // delete : move to deleted status // handelDownload : interdir a
+            modifier // delete product function in each of the create/edit
+            commands // statistics // inventory // attach pdf(la fiche
+            d'inventaire genere est stock)
+            {/* // already done */}
             <Route path="/edit-cmd/:id" element={<EditCmdEx />} />
             <Route path="/edit-cmdi-dir/:id" element={<EditCmdinterneDir />} />
             <Route path="/view-bon-decharge/:id" element={<Decharge />} />
@@ -98,10 +102,16 @@ function App() {
               path="/cmdi/:id/create-bon-decharge"
               element={<CreateDecharge />}
             />
-            <Route path="/edit-cmdi-user/:id" element={<EditCmdinterneUser />} />
+            <Route
+              path="/edit-cmdi-user/:id"
+              element={<EditCmdinterneUser />}
+            />
             <Route path="/edit-cmdi/:id" element={<EditCmdinterne />} />
             <Route path="/InternalOrders" element={<CommandInterne />} />
-            <Route path="/InternalOrdersDirector" element={<CommandInterneDir />} />
+            <Route
+              path="/InternalOrdersDirector"
+              element={<CommandInterneDir />}
+            />
             <Route path="/edit-bon-decharge/:id" element={<EditDecharge />} />
             <Route path="/articles" element={<AllArticles />} />
             <Route
@@ -113,10 +123,10 @@ function App() {
               element={<DemandeFourniture />}
             />
             <Route path="/MyOrders" element={<CommandInterneUser />} />
-            <Route path="/bonsdereception/:id" element={<ListBonRecp />} />
+            <Route path="/bonsdereception/:id/:order_id" element={<ListBonRecp />} />
             <Route path="/cr-cmdi" element={<CreateCmdint />} />
             <Route path="/bon-cmd/:id" element={<BonDeComande />} />
-             <Route
+            <Route
               path="/order/:id/create-bon-reception"
               element={<CreateRec />}
             />
@@ -125,8 +135,8 @@ function App() {
             <Route path="/chapter/:id" element={<Articles />} />
             <Route path="/article/:id/produits" element={<Produits />} />
             <Route path="/create-cmd" element={<CreateCmd />} />
-            <Route path="SuppliersManagement" element={<Fornisseur />} />
-            <Route path="viewRole/:id" element={<ViewRole />} />
+            <Route path="/SuppliersManagement" element={<Fornisseur />} />
+            <Route path="/viewRole/:id" element={<ViewRole />} />
             <Route path="/ExternalOrders" element={<Cmds />} />
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -136,7 +146,7 @@ function App() {
             <Route path="/RolesManagement" element={<Role />} />
             <Route path="/permissions-management" element={<Permissions />} />
             <Route path="/UsersManagement" element={<Users />} />
-            <Route path="/setting" element={<Profils />} />
+            <Route path="/Settings" element={<Profils />} />
             <Route path="/CreateUser" element={<CreateUser />} />
             <Route path="/reset1" element={<Card />} />
             <Route path="/reset2" element={<Card2 />} />

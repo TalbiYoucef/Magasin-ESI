@@ -1,12 +1,12 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const ListBonRecp = ({ onClose }) => {
-  const {id} = useParams();
-  console.log(id)
+  const { id, order_id } = useParams();
+  console.log(id);
   const navigate = useNavigate();
-  const [receipts,setReceipts]=useState([])
+  const [receipts, setReceipts] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -15,7 +15,7 @@ const ListBonRecp = ({ onClose }) => {
         });
         try {
           const resp = await axios.get(
-            `http://localhost:3036/purchaseorders/${id}/receipts`,
+            `http://localhost:3036/purchaseorders/${order_id}/receipts`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
@@ -23,9 +23,8 @@ const ListBonRecp = ({ onClose }) => {
               withCredentials: true,
             }
           );
-          console.log('smth',resp.data.receipts)
-          setReceipts(resp.data.receipts)
-
+          console.log("smth", resp.data.receipts);
+          setReceipts(resp.data.receipts);
         } catch (error) {
           alert(error.response.data.message);
           console.log(error);
@@ -42,28 +41,30 @@ const ListBonRecp = ({ onClose }) => {
 
   const [brData, setBrData] = useState([
     {
-      id: '0',
-      numrc: '1',
-      date: '09-03-2024',
-      numcmd: '1',
+      id: "0",
+      numrc: "1",
+      date: "09-03-2024",
+      numcmd: "1",
     },
     {
-      id: '1',
-      numrc: '2',
-      date: '15-01-2024',
-      numcmd: '1',
+      id: "1",
+      numrc: "2",
+      date: "15-01-2024",
+      numcmd: "1",
     },
     {
-      id: '2',
-      numrc: '3',
-      date: '26-05-2024',
-      numcmd: '1',
+      id: "2",
+      numrc: "3",
+      date: "26-05-2024",
+      numcmd: "1",
     },
   ]);
   const handleDelete = (index, event) => {
     event.preventDefault(); // Prevent default behavior
     event.stopPropagation(); // Stop event propagation
-    const confirmDelete = window.confirm('Are you sure you want to delete this bon de reception?');
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this bon de reception?"
+    );
     if (confirmDelete) {
       const newData = [...brData];
       newData.splice(index, 1); // Remove the item at the specified index
@@ -183,26 +184,48 @@ const ListBonRecp = ({ onClose }) => {
       <style>{styles}</style>
       <form className="create-user-form">
         <div className="title"> Bon de Receptions</div>
-        <div className='bar'>
-          <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
-          <div className='champ' >N° </div>
-          <div className='champ'>Date</div>
+        <div className="bar">
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={handleCheckboxChange}
+          />
+          <div className="champ">N° </div>
+          <div className="champ">Date</div>
         </div>
         {receipts.map((recept, index) => (
-          <div key={recept.receipt_id} className='recept'>
-            <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
-            <div className='champ'>{recept.receipt_id}</div>
-            <div className='champdate'>{String(recept.delivery_date).split('T')[0]}</div>
-            <Link to={`/${id}/bon-reception/${recept.order_id}/${recept.receipt_id}`} className='v'>View </Link>
-            <button onClick={(event) => handleDelete(index, event)} className='d'>Delete</button>
+          <div key={recept.receipt_id} className="recept">
+            <input
+              type="checkbox"
+              checked={isChecked}
+              onChange={handleCheckboxChange}
+            />
+            <div className="champ">{recept.receipt_id}</div>
+            <div className="champdate">
+              {String(recept.delivery_date).split("T")[0]}
+            </div>
+            <Link
+              to={`/${id}/bon-reception/${order_id}/${index+1}`}
+              className="v"
+            >
+              View{" "}
+            </Link>
+            <button
+              onClick={(event) => handleDelete(index, event)}
+              className="d"
+            >
+              Delete
+            </button>
           </div>
         ))}
-        <div className='btns' style={{ marginTop: "20px" }}>
-          <button type="button" onClick={onClose} className='cancel btn'>Cancel</button>
+        <div className="btns" style={{ marginTop: "20px" }}>
+          <button type="button" onClick={onClose} className="cancel btn">
+            Cancel
+          </button>
         </div>
       </form>
     </>
   );
-}
+};
 
 export default ListBonRecp;

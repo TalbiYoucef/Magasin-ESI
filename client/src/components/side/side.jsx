@@ -8,7 +8,6 @@ import { TbHomeSignal } from "react-icons/tb";
 import { LuClipboardList } from "react-icons/lu";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { LuSettings } from "react-icons/lu";
-import { IoMdLogOut } from "react-icons/io";
 import { MdFormatListBulletedAdd } from "react-icons/md";
 import { MdOutlineLocalGroceryStore } from "react-icons/md";
 import { PiStorefront } from "react-icons/pi";
@@ -18,14 +17,14 @@ function Side(props) {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
   const [UserPerimssionsId, setUserPerimssionsId] = useState([]);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get("http://localhost:3036/refresh", {
           withCredentials: true,
         });
-        setUserPerimssionsId(res.data.perms)
+        setUserPerimssionsId(res.data.perms);
       } catch (error) {
         // If an error occurs, redirect to the login page
         navigate("/login");
@@ -114,13 +113,15 @@ function Side(props) {
         addSidebarData(Inventory);
         break;
       case 14: //consult  bci
-      case 20: // manage bci
       case 17: //validate bci
         addSidebarData(InternalOrders);
         break;
-      case 22 : 
-      addSidebarData(InternalOrdersDir);
-      break;
+      case 20:
+        addSidebarData(MyOrders);
+        break; // manage bci
+      case 22:
+        addSidebarData(InternalOrdersDir);
+        break;
       default:
         break;
     }
@@ -223,6 +224,7 @@ function Side(props) {
             className={selected === index ? "menuItem active" : "menuItem"}
             key={index}
             onClick={() => setSelected(index)}
+            style={{ position: "absolute", bottom: "10px", left: "0px" }}
           >
             <li className="nav__items ">
               <a
@@ -235,10 +237,20 @@ function Side(props) {
                 {item.heading}
               </a>
             </li>
-            <li className="nav__items" style={{color:'red'}}>
-              <Link onClick={handleLogOut}>
+            <li className="nav__items">
+              <Link
+                onClick={handleLogOut}
+                style={{
+                  color: "red",
+                }}
+              >
                 log out
-                <FiLogOut className="ic" />
+                <FiLogOut
+                  className="ic"
+                  style={{
+                    color: "red",
+                  }}
+                />
               </Link>
             </li>
           </div>

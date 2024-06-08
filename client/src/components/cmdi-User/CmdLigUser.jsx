@@ -8,32 +8,32 @@ function Rollig(props) {
     setIsChecked(!isChecked);
   };
   const navigate = useNavigate();
-  const handleDelete = async () => {
-    try {
-      const res = await axios.get("http://localhost:3036/refresh", {
-        withCredentials: true,
-      });
-      try {
-        const resp = await axios.delete(
-          `http://localhost:3036/commands/${props.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${res.data.accessToken}`,
-            },
-            withCredentials: true,
-          }
-        );
-        console.log("deleted", props.id);
-      } catch (error) {
-        console.log(error);
-      }
-    } catch (error) {
-      // If an error occurs, redirect to the login page
-      navigate("/login");
-      console.log(error);
-    }
-    setIsVisible(false);
-  };
+  // const handleDelete = async () => {
+  //   try {
+  //     const res = await axios.get("http://localhost:3036/refresh", {
+  //       withCredentials: true,
+  //     });
+  //     try {
+  //       const resp = await axios.delete(
+  //         `http://localhost:3036/commands/${props.id}`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${res.data.accessToken}`,
+  //           },
+  //           withCredentials: true,
+  //         }
+  //       );
+  //       console.log("deleted", props.id);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   } catch (error) {
+  //     // If an error occurs, redirect to the login page
+  //     navigate("/login");
+  //     console.log(error);
+  //   }
+  //   setIsVisible(false);
+  // };
 
   //-------------------------
 
@@ -104,20 +104,7 @@ function Rollig(props) {
           >
             Edit
           </Link>
-          <button
-            style={{
-              textDecoration: "none",
-              width: "100px",
-              marginRight: "50px",
-              color: "#D42803",
-              backgroundColor: "white",
-              border: "none",
-              fontSize: "18px",
-            }}
-            onClick={handleDelete}
-          >
-            Delete
-          </button>
+          
         </div>
       )}
     </div>

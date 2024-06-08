@@ -49,7 +49,9 @@ function CreateBonSortie() {
           );
           setDate(String(resp.data[0].updatedAt).split("T")[0]);
           setProducts(resp.data);
-          let initial = resp.data.map((ele) => ele.quantity);
+          const initial = resp.data.map((product) => {
+            return { id: product.product_id, qt: product.quantity };
+          });
           setInitialQuantitie(initial);
           setQuantitie(initial);
           console.log(resp.data);
@@ -88,10 +90,18 @@ function CreateBonSortie() {
   };
   const handleQuantityChange = (e, index) => {
     console.log(e.target.value);
-    if (initialQuantities[index] >= e.target.value) {
-      const newQuantities = [...quantities];
-      newQuantities[index] = Number(e.target.value); // Update the quantity at the specified index
-      setQuantitie(newQuantities);
+    if (
+      initialQuantities.find((pro) => pro.id === index)?.qt >= e.target.value
+    ) {
+      const replaceObservation = (id, newObs) => {
+        setQuantitie((prevArray) =>
+          prevArray.map((obj) =>
+            obj.id === index ? { ...obj, qt: newObs } : obj
+          )
+        );
+      };
+
+      replaceObservation(index, e.target.value);
     }
   };
 
@@ -125,7 +135,7 @@ function CreateBonSortie() {
             alert("you can not recreate an exit note");
             return;
           } else {
-            products.map(async (pro, index) => {
+            for(let pro of products) {
               //create the cmnd products
               console.log(pro);
               try {
@@ -133,7 +143,9 @@ function CreateBonSortie() {
                   `http://localhost:3036/commands/${id}/products`,
                   {
                     product_id: pro.product_id,
-                    quantity: quantities[index],
+                    quantity: quantities.find(
+                      (prod) => prod.id === pro.product_id
+                    )?.qt,
                     unit_price: 0,
                     status_quantity: "satisfied",
                   },
@@ -145,10 +157,41 @@ function CreateBonSortie() {
                   }
                 );
                 console.log(respo.data);
+                console.log({
+                  product_id: pro.product_id,
+                  delivered_amount: quantities.find(
+                    (prod) => prod.id === pro.product_id
+                  )?.qt,
+                  amount_left:
+                    initialQuantities.find(
+                      (prod) => prod.id === pro.product_id
+                    )?.qt -
+                    quantities.find((prod) => prod.id === pro.product_id)?.qt,
+                })
+                let result = quantities.map(qtt =>
+                  {
+                    return {
+                      product:qtt.id,
+                      status:"initialized",
+                      quantity:qtt.qt
+                    }
+                  }
+                )
+                const response = await axios.put(
+                  `http://localhost:3036/commands/${id}/updateQuantities`,
+                  { quantities:result, status:"bn" },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${res.data.accessToken}`,
+                    },
+                    withCredentials: true,
+                  }
+                );
+                console.log(response.data);
               } catch (error) {
                 console.log(error);
               }
-            });
+            };
             //  change the command status
             try {
               const response = await axios.get(
@@ -538,9 +581,14 @@ function CreateBonSortie() {
                     }}
                   >
                     <input
-                      onChange={(e) => handleQuantityChange(e, index)}
+                      onChange={(e) =>
+                        handleQuantityChange(e, cmdData.product_id)
+                      }
                       type="number"
-                      value={quantities[index]}
+                      value={
+                        quantities.find((pro) => pro.id === cmdData.product_id)
+                          ?.qt
+                      }
                       style={{
                         height: "45px",
                         width: "100%",
@@ -571,12 +619,6 @@ function CreateBonSortie() {
                 ></div>
               </div>
             ))}
-            {/* <CmdComp
-              filteredProducts={filteredProducts}
-              onAddCmd={(cmdData) => {
-                handleAddCmd(cmdData);
-              }}
-            /> */}
           </div>
           <div
             style={{

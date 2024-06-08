@@ -32,7 +32,7 @@ const EditPassword = () => {
     <div>
       <Nav username={user.username} />
       <div className="dwnuser">
-        <Side link="setting" />
+        <Side link="Settings" />
         <div className=" Sect2user">
           <div className="downuser">
             <EditPass />

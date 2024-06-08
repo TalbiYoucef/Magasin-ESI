@@ -423,7 +423,7 @@ const Graph = () => {
               width: "0px",
               height: "150px",
             },
-            colors: ["#ED1C24"], // Setting color to red
+            colors: ["#ED1C24"], // Settings color to red
           }}
           series={produitmoinsconsomee[selectedRange2].series}
           type="area"

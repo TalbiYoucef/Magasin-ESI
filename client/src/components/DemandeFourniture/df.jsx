@@ -96,10 +96,10 @@ const DemandeFourniture = () => {
           );
           console.log(respV.data)
 
-          const extractedQuantitiesV = respV.data.map(
-            (product) => product.quantity
-          );
-          setvalidated(extractedQuantitiesV)
+          const extractedQuantities = respV.data.map((product) => {
+            return { id: product.product_id, qt: product.quantity };
+          });
+          setvalidated(extractedQuantities)
         } catch (error) {
           console.log(error)
         }
@@ -115,9 +115,10 @@ const DemandeFourniture = () => {
             }
           );
           console.log(respA.data)
-          const extractedQuantitiesA = respA.data.map(
-            (product) => product.quantity
-          );
+          const extractedQuantitiesA = respA.data.map((product) => {
+            return { id: product.product_id, qt: product.quantity };
+          });
+          console.log(extractedQuantitiesA)
           setAccorded(extractedQuantitiesA)
         } catch (error) {
           console.log(error)
@@ -479,8 +480,8 @@ const DemandeFourniture = () => {
                         <td style={styles.infoprodDemender}>
                           {product.quantity}
                         </td>
-                        <td style={styles.infoprodDemender}>{accorded.length != 0 ? accorded[index] : ''}</td>
-                        <td style={styles.infoprodDemender}>{validated.length != 0 ? validated[index] : ''}</td>
+                        <td style={styles.infoprodDemender}>{accorded.length != 0 ? accorded.find(pro => pro.id === product.product_id)?.qt : ''}</td>
+                        <td style={styles.infoprodDemender}>{validated.length != 0 ? validated.find(pro => pro.id === product.product_id)?.qt : ''}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -1,4 +1,3 @@
-
 const db = require("../models");
 
 const getCommands = async (req, res) => {
@@ -132,14 +131,15 @@ const assignProductToCommand = async (req, res) => {
 const updateProductToCommand = async (req, res) => {
   try {
     const { id } = req.params;
-    const { product_id, delivered_amount, amount_left } = req.body;
+    const { product_id, delivered_amount, amount_left, status } = req.body;
     const productCommand = await db.Product_Command.findOne({
-      where: { command_id: id, product_id: product_id },
+      where: { command_id: id, product_id: product_id, status: status },
     });
     if (productCommand) {
       productCommand.delivered_amount = delivered_amount;
       productCommand.amount_left = amount_left;
       await productCommand.save();
+      res.status(200).json({ message: "success !" });
     } else {
       return res.status(400).json({ message: "Product not found" });
     }
@@ -237,21 +237,24 @@ const updateQuantities = async (req, res) => {
       const command = await db.Command.findOne({
         where: { command_id: id },
       });
+      console.log("//pr:\n\n\n\n", productCommand);
 
       if (productCommand) {
-        if (status =="bn") {
+        if (status == "bn") {
           productCommand.delivered_amount = quantity.quantity;
-          productCommand.amount_left =
-            productCommand.quantity - quantity.quantity;
+          await productCommand.save();
         } else if (command.type === "external" || status !== "edit") {
           productCommand.delivered_amount = quantity.quantity;
           productCommand.amount_left =
             productCommand.amount_left - quantity.quantity;
+          productCommand.quantity += quantity.quantity;
+          await productCommand.save();
+          console.log("//pr:\n\n\n\n", productCommand);
         } else {
           productCommand.quantity = quantity.quantity;
+          await productCommand.save();
         }
-        await productCommand.save();
-        return productCommand;
+        console.log(productCommand);
       } else {
         return { message: "Product not found" };
       }

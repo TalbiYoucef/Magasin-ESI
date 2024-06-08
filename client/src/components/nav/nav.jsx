@@ -15,7 +15,7 @@ function Nav(props) {
           <IoMdNotificationsOutline className='icn-nav icn-size' />
           <IoMoonOutline className='icn-nav icn-size' />
            <div className='nav-profil'>
-          <Link className='link' to={'/setting'}>
+          <Link className='link' to={'/Settings'}>
           <CgProfile className='icn-nav icn-size' />
           <p className='username'>{props.username}</p>
           </Link>

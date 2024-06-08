@@ -81,8 +81,8 @@ function EditPro() {
   const handleCancelClick = () => {
     const isConfirmed = window.confirm("Are you sure you want to exit ?");
     if (isConfirmed) {
-      // Navigate to the setting page
-      navigate("/setting");
+      // Navigate to the Settings page
+      navigate("/Settings");
     }
   };
 

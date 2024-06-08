@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import CmdComp from "./cmdComp";
 import axios from "axios";
 function EditCmdinterne() {
   const { id } = useParams();
@@ -29,9 +28,9 @@ function EditCmdinterne() {
                 withCredentials: true,
               }
             );
-            const extractedQuantities = resp.data.map(
-              (product) => product.quantity
-            );
+            const extractedQuantities = resp.data.map((product) => {
+              return { id: product.product_id, qt: product.quantity };
+            });
             setQuantities(extractedQuantities);
             setCmdDataList(resp.data);
             console.log(resp.data);
@@ -73,17 +72,17 @@ function EditCmdinterne() {
 
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [cmdDataList, setCmdDataList] = useState([]);
-  const [showQuantityInput, setShowQuantityInput] = useState(true);
-  const [editedQuantity, setEditedQuantity] = useState("");
   const [quantities, setQuantities] = useState([]);
 
   const handleEditQuantity = (id, value) => {
     if (value > 0) {
-      // Create a new array to update the quantities
-      const updatedQuantities = [...quantities];
-      updatedQuantities[id] = value;
-      // Update the state with the new quantities array
-      setQuantities(updatedQuantities);
+      const replaceObservation = (id, newObs) => {
+        setQuantities((prevArray) =>
+          prevArray.map((obj) => (obj.id === id ? { ...obj, qt: newObs } : obj))
+        );
+      };
+
+      replaceObservation(id, value);
       console.log(quantities);
     } else {
       alert("Quantity must be strictly positive");
@@ -106,14 +105,6 @@ function EditCmdinterne() {
 
   console.log("cmdDataList", cmdDataList);
 
-  const handleAddCmd = (cmdData) => {
-    setCmdDataList([...cmdDataList, cmdData]);
-    setFilteredProducts(
-      filteredProducts.filter((product) => product.nom !== cmdData.selectedPro)
-    );
-    quantities.push(Number(cmdData.quantity));
-  };
-
   const handleConfirmCommand = async () => {
     const confirm = window.confirm(
       "Are you sure you want to Confirm the command?"
@@ -124,10 +115,13 @@ function EditCmdinterne() {
           withCredentials: true,
         });
         if (!res.data.isHeadOfService) {
+          console.log('not head of service',cmdDataList)
+
           const result = cmdDataList.map((product, index) => {
             return {
               product: product.product_id,
-              quantity: quantities[index],
+              quantity: quantities.find((pro) => pro.id === product.product_id)
+                ?.qt,
               status: "initialized",
             };
           });
@@ -156,9 +150,12 @@ function EditCmdinterne() {
                 `http://localhost:3036/commands/${id}/products`,
                 {
                   product_id: pro.product_id,
-                  quantity: quantities[index],
+                  quantity: quantities.find(
+                    (prod) => prod.id === pro.product_id
+                  )?.qt,
                   unit_price: 0,
                   status_quantity: "validated",
+                  num_inventaire:''
                 },
                 {
                   headers: {
@@ -170,6 +167,10 @@ function EditCmdinterne() {
               console.log(response.data);
 
               // change the command status
+              } catch (error) {
+                console.log(error);
+                }
+                });
               try {
                 const response = await axios.get(
                   `http://localhost:3036/commands/${id}/internal-order`,
@@ -200,11 +201,7 @@ function EditCmdinterne() {
               } catch (error) {
                 console.log(error);
               }
-            } catch (error) {
-              console.log(error);
-            }
-          });
-        }
+                }
       } catch (error) {
         navigate("/login");
       }
@@ -414,9 +411,12 @@ function EditCmdinterne() {
                         borderRadius: "20px",
                         border: "none",
                       }}
-                      value={quantities[index]}
+                      value={
+                        quantities.find((pro) => pro.id === cmdData.product_id)
+                          ?.qt
+                      }
                       onChange={(e) =>
-                        handleEditQuantity(index, Number(e.target.value))
+                        handleEditQuantity(cmdData.product_id, Number(e.target.value))
                       }
                     />
                   </div>

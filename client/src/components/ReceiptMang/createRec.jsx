@@ -15,9 +15,20 @@ function CreateRec() {
     ) {
       alert("illegal quantity");
     } else {
-      const newQuantities = [...quantities];
-      newQuantities[index] = Number(event.target.value); // Update the quantity at the specified index
-      setQuantities(newQuantities);
+      if (
+        event.target.value <=
+        initialQuantities.find((pro) => pro.id == index)?.qt
+      ) {
+        const replaceObservation = (id, newObs) => {
+          setQuantities((prevArray) =>
+            prevArray.map((obj) =>
+              obj.id === id ? { ...obj, qt: newObs } : obj
+            )
+          );
+        };
+
+        replaceObservation(index, Number(event.target.value)); // Update the quantity at the specified index
+      }
     }
   };
   const [type, setType] = useState("total");
@@ -25,7 +36,7 @@ function CreateRec() {
   const [quantities, setQuantities] = useState([]);
   const [initialQuantities, setInitialQuantities] = useState([]);
   const [order, setOrder] = useState({});
-  const [date,setDate]=useState('')
+  const [date, setDate] = useState("");
   const [user, setUser] = useState({});
   const [supplier, setSupplier] = useState({});
   const [article, setArticle] = useState({});
@@ -39,7 +50,6 @@ function CreateRec() {
           withCredentials: true,
         });
         setUser(res.data.user);
-
         try {
           const pro = await axios.get(`http://localhost:3036/products`, {
             headers: {
@@ -89,9 +99,11 @@ function CreateRec() {
               }
             );
 
-            setDate(String(article.data[0].updatedAt).split('T')[0]);
+            setDate(String(article.data[0].updatedAt).split("T")[0]);
             setProducts(article.data);
-            const initial = article.data.map((product) => product.amount_left);
+            const initial = article.data.map((product) => {
+              return { id: product.product_id, qt: product.amount_left };
+            });
             setInitialQuantities(initial);
             setQuantities(initial);
           } catch (error) {
@@ -144,6 +156,7 @@ function CreateRec() {
 
     fetchData();
   }, []);
+  console.log(products)
   const getproduct = (id) => {
     const product = allProducts.find((pro) => pro.product_id === id);
     if (product) {
@@ -175,11 +188,42 @@ function CreateRec() {
               withCredentials: true,
             }
           );
-          const result = products.map(async(product, index) => {
+          try {
+             let result = quantities.map(qtt =>
+                  {
+                    return {
+                      product:qtt.id,
+                      status:"initialized",
+                      quantity:qtt.qt
+                    }
+                  }
+                )
+                console.log(commandId)
+                const response = await axios.put(
+                  `http://localhost:3036/commands/${commandId}/updateQuantities`,
+                  { quantities:result, status:"" },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${res.data.accessToken}`,
+                    },
+                    withCredentials: true,
+                  }
+                );
+                console.log(response.data);
+              
+          } catch (error) {
+            console.log(error)
+          }
+          const result = products.map(async (product, index) => {
             try {
               const resp = await axios.post(
                 `http://localhost:3036/commands/${commandId}/create-receipt-products`,
-                { product_id: product.product_id, quantity:product.quantity, unit_price:product.unit_price, delivered_amount:quantities[index] } ,
+                {
+                  product_id: product.product_id,
+                  quantity: product.quantity,
+                  unit_price: product.unit_price,
+                  delivered_amount: quantities.find(pro => pro.id == product.product_id)?.qt,
+                },
                 {
                   headers: { Authorization: `Bearer ${res.data.accessToken}` },
                   withCredentials: true,
@@ -191,7 +235,6 @@ function CreateRec() {
             }
           });
           console.log(result);
-          
         } catch (error) {
           console.log(error);
         }
@@ -207,8 +250,8 @@ function CreateRec() {
     const confirm = window.confirm(
       "Are you sure you want to cancel the command?"
     );
-    if(confirm){
-      return
+    if (confirm) {
+      return;
     }
   };
 
@@ -216,8 +259,8 @@ function CreateRec() {
     const confirm = window.confirm(
       "Are you sure you want to Leave this form ?"
     );
-    if(confirm){
-      navigate(-1)
+    if (confirm) {
+      navigate(-1);
     }
   };
   const today = new Date().toLocaleDateString("fr-FR");
@@ -533,8 +576,13 @@ function CreateRec() {
                   >
                     <input
                       type="number"
-                      value={quantities[index]}
-                      onChange={(e) => handleEditQuantity(e, index)}
+                      value={
+                        quantities.find((pro) => pro.id == cmdData.product_id)
+                          ?.qt
+                      }
+                      onChange={(e) =>
+                        handleEditQuantity(e, cmdData.product_id)
+                      }
                       style={{
                         outline: "none",
                         border: "none",

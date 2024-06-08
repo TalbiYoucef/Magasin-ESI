@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const db = require("../models");
 async function getProductEntry(id) {
   const product = await db.Product.findOne({ where: { product_id: id } });
@@ -8,7 +8,7 @@ async function getProductEntry(id) {
       product_id: id,
     },
   });
-  if(branch_ids.length == 0){
+  if (branch_ids.length == 0) {
     return null;
   }
   let totalEntry = 0;
@@ -41,7 +41,8 @@ async function getRestProduct(id) {
     return "product not found";
   }
   const productEntryTotal = await getProductEntry(product.product_id);
-  return productEntryTotal - product.quantity;
+  const productExitTotal = await getExitProduct(product.product_id);
+  return product.quantity + productExitTotal - productEntryTotal;
 }
 
 async function getEntryProduct(id) {
@@ -93,8 +94,8 @@ const getInfoFicheProduct = async (req, res) => {
   const exit = await getExitProduct(id);
   const logicalQuantity = await getLogicalQuantity(id);
   const rest = await getRestProduct(id);
-  if(!entry){
-   return res.status(500).json('no entry for this product!')
+  if (!entry) {
+    return res.status(500).json("no entry for this product!");
   }
   res.status(200).json({
     product_id: product.product_id,
@@ -104,4 +105,92 @@ const getInfoFicheProduct = async (req, res) => {
     logicalQuantity: logicalQuantity,
   });
 };
-module.exports = { getInfoFicheProduct };
+const getInfoFicheArticle = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const products = await db.BranchProduct.findAll({
+      where: { branch_id: id },
+    });
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No products for this branch!" });
+    }
+
+    const resp = await Promise.all(
+      products.map(async (product) => {
+        const rest = await getRestProduct(product.product_id);
+        const entryTotal = await getEntryProduct(product.product_id);
+        const exitTotal = await getExitProduct(product.product_id);
+        const logicalQuantity = await getLogicalQuantity(product.product_id);
+
+        return {
+          product_id: product.product_id,
+          rest,
+          entryTotal,
+          exitTotal,
+          logicalQuantity,
+        };
+      })
+    );
+
+    res.status(200).json(resp);
+  } catch (error) {
+    console.error("Error fetching product info:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+const inventoryArticles = async (req, res) => {
+  const { branch_id } = req.params;
+  const inventory = await db.Inventory.findAll({
+    where: {
+      branch_id: branch_id,
+    },
+  });
+  if (inventory.length === 0) {
+    return res.status(500).json("no inventory for this branch ");
+  } else {
+    return res.status(200).json(inventory);
+  }
+};
+
+const addProductToInventory = async (req, res) => {
+  const { branch_id } = req.params;
+  const { product_id, observation, qt_physique, num_inv } = req.body;
+  try {
+    await db.Inventory.create({
+      product_id,
+      observation,
+      qt_physique,
+      num_inv,
+      branch_id
+    });
+    res.status(201).json("created successfully !");
+  } catch (error) {
+    res.status(500).json("something went wrong");
+  }
+};
+
+const updateProductToInventory = async (req, res) => {
+  const { branch_id } = req.params;
+  const { product_id, observation, qt_physique, num_inv } = req.body;
+  try {
+    const product = await db.Inventory.findOne({
+      where: {
+        branch_id: branch_id,
+        product_id: product_id,
+      },
+    });
+    if (!product) {
+      return res.status(500).json("no product found in inventory");
+    }
+    product.num_inv = num_inv;
+    product.observation = observation;
+    product.qt_physique = qt_physique;
+    product.save();
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json("something went wrong", error);
+  }
+};
+module.exports = { getInfoFicheProduct, getInfoFicheArticle ,inventoryArticles ,addProductToInventory,updateProductToInventory};

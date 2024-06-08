@@ -49,17 +49,10 @@ function CreateCmdint() {
     // Supprimer la commande avec l'ID spécifié de cmdDataList
     
   };
-  const getProductId = (name) => {
-    const pro = Products.find((pro) => pro.name === name);
-    if (pro) {
-      return pro.product_id;
-    } else {
-      return "";
-    }
-  };
   const handleAddCmd = (cmdData) => {
+    console.log(cmdData)
     setFilteredProducts(
-      filteredProducts.filter((pro) => pro.name !== cmdData.selectedPro)
+      filteredProducts.filter((pro) => pro.name !== cmdData.name)
     );
     setCmdDataList([...cmdDataList, cmdData]);
     console.log("selected", [...cmdDataList, cmdData]);

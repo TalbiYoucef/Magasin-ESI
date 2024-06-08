@@ -8,13 +8,15 @@ import jsPDF from "jspdf";
 import axios from "axios";
 
 const BonDeComande = () => {
+  const [isAllowed, setIsAllowed] = useState(false);
+  const [VAT,setVAT]=useState(0.19)
   const { id } = useParams();
-  const [order,setOrder]=useState({})
+  const [order, setOrder] = useState({});
   const [user, setUser] = useState({});
   const [supplier, setSupplier] = useState({});
   const [article, setArticle] = useState({});
   const [products, setProducts] = useState([]);
-  const [allProducts,setAllProducts]=useState([])
+  const [allProducts, setAllProducts] = useState([]);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -24,6 +26,8 @@ const BonDeComande = () => {
           withCredentials: true,
         });
         setUser(res.data.user);
+        setIsAllowed(res.data.perms.includes(15));
+
         try {
           const resp = await axios.get(
             `http://localhost:3036/commands/${id}/products/initialized`,
@@ -34,7 +38,7 @@ const BonDeComande = () => {
               withCredentials: true,
             }
           );
-          console.log(resp.data)
+          console.log(resp.data);
           setProducts(resp.data);
         } catch (error) {
           alert(error.response.data.message);
@@ -42,15 +46,12 @@ const BonDeComande = () => {
           console.log(error);
         }
         try {
-          const pro = await axios.get(
-            `http://localhost:3036/products`,
-            {
-              headers: {
-                Authorization: `Bearer ${res.data.accessToken}`,
-              },
-              withCredentials: true,
-            }
-          );
+          const pro = await axios.get(`http://localhost:3036/products`, {
+            headers: {
+              Authorization: `Bearer ${res.data.accessToken}`,
+            },
+            withCredentials: true,
+          });
           setAllProducts(pro.data);
         } catch (error) {
           console.log(error);
@@ -65,8 +66,8 @@ const BonDeComande = () => {
               withCredentials: true,
             }
           );
-          setOrder(resp.data.order)
-          console.log(resp.data.order)
+          setOrder(resp.data.order);
+          console.log(resp.data.order);
           try {
             const article = await axios.get(
               `http://localhost:3036/branches/${resp.data.order.branch_id}/`,
@@ -77,8 +78,9 @@ const BonDeComande = () => {
                 withCredentials: true,
               }
             );
-            console.log(article.data)
+            console.log(article.data);
             setArticle(article.data);
+            setVAT(article.data.VAT / 100)
           } catch (error) {
             console.log(error);
           }
@@ -93,7 +95,7 @@ const BonDeComande = () => {
               }
             );
             // setCmdDataList(resp.data);
-            console.log(supplier.data.supplier)
+            console.log(supplier.data.supplier);
             setSupplier(supplier.data.supplier);
           } catch (error) {
             console.log(error);
@@ -112,13 +114,13 @@ const BonDeComande = () => {
 
     fetchData();
   }, []);
-  const getproduct = (id)=>{
-      const product = allProducts.find(pro => pro.product_id === id);
-      if (product) {
-         return product        
-      }
-      return '';
-  }
+  const getproduct = (id) => {
+    const product = allProducts.find((pro) => pro.product_id === id);
+    if (product) {
+      return product;
+    }
+    return "";
+  };
   const [selectedOption, setSelectedOption] = useState(null);
   const frameRef = useRef(null);
   //data of bon de commande
@@ -138,7 +140,7 @@ const BonDeComande = () => {
       ],
     },
   ];
- 
+
   const handleRadioChange = (event) => {
     setSelectedOption(event.target.value);
   };
@@ -264,7 +266,7 @@ const BonDeComande = () => {
           let chunkStr = "";
 
           // Hundreds
-          const hundreds = Math.floor(chunk / 100);// Add this line for debugging
+          const hundreds = Math.floor(chunk / 100); // Add this line for debugging
           if (hundreds > 0) {
             chunkStr += units[hundreds] + " cent ";
           }
@@ -321,8 +323,8 @@ const BonDeComande = () => {
     ["-Téléphone et Fax:(048) 74- 94 -52"],
   ];
   const totalAmount = order.total_price;
-  const tva = totalAmount * 0.19;
- 
+  const tva = totalAmount * VAT;
+
   // Calculate the Total TTC
   const totalTTC = totalAmount + tva;
   // Convert the total TTC amount to words
@@ -331,13 +333,11 @@ const BonDeComande = () => {
     <>
       <div>
         <nav>
-          {" "}
           <Nav username={user.username} />{" "}
         </nav>
         <div className="row">
           <section>
             <div>
-              {" "}
               <Side />{" "}
             </div>
             <div className="pageEpc">
@@ -352,22 +352,30 @@ const BonDeComande = () => {
                       Commands List
                     </button>
                   </Link>
-                  <Link to={`/order/${order.order_id}/create-bon-reception`} className="create-receipt-link">
-                    <button
-                      className="create-receipt"
-                      onClick={() => console.log("Create Receipt clicked")}
-                      style={{
-                        display:
-                          cmdData[0].state === "partially" ||
-                          cmdData[0].state === "validated"
-                            ? "block"
-                            : "none",
-                      }}
+                  {isAllowed && (
+                    <Link
+                      to={`/order/${order.order_id}/create-bon-reception`}
+                      className="create-receipt-link"
                     >
-                      + Create Receipt
-                    </button>
-                  </Link>
-                  <Link to={`/bonsdereception/${order.order_id}`} className="view-receipt-link">
+                      <button
+                        className="create-receipt"
+                        onClick={() => console.log("Create Receipt clicked")}
+                        style={{
+                          display:
+                            cmdData[0].state === "partially" ||
+                            cmdData[0].state === "validated"
+                              ? "block"
+                              : "none",
+                        }}
+                      >
+                        + Create Receipt
+                      </button>
+                    </Link>
+                  )}
+                  <Link
+                    to={`/bonsdereception/${id}/${order.order_id}`}
+                    className="view-receipt-link"
+                  >
                     <button
                       className="view-receipt"
                       onClick={() => console.log("View Receipt clicked")}
@@ -400,7 +408,7 @@ const BonDeComande = () => {
                             <br /> MINISTERE DE L'ENSEIGNEMENT SUPERIEUR ET DE
                             LA RECHERCHE SCIENTIFIQUE <br /> <br /> BON DE
                             COMMANDE <br /> N° {order.order_id} date:
-                            {String(order.createdAt).split('T')[0]}
+                            {String(order.createdAt).split("T")[0]}
                           </th>
                         </td>
                       </tr>
@@ -444,28 +452,24 @@ const BonDeComande = () => {
                         </tr>
                         <tr>
                           <td className="info-service" colSpan="2">
-                            Adresse:{" "}
-                            {supplier.address}
-                             </td>
+                            Adresse: {supplier.address}
+                          </td>
                         </tr>
                         <tr>
                           <td className="info-service" colSpan="2">
-                            Téléphone et Fax:{" "}
-                            {supplier.phone_num}
-                            </td>{" "}
+                            Téléphone et Fax: {supplier.phone_num}
+                          </td>{" "}
                         </tr>
                         <tr>
                           <td className="info-service" colSpan="2">
                             {" "}
-                            N° R.C:{" "}
-                            {supplier.registre_c}
-                             </td>{" "}
+                            N° R.C: {supplier.registre_c}
+                          </td>{" "}
                         </tr>
                         <tr>
                           <td className="info-service" colSpan="2">
-                            RIB (ou RIP):{" "}
-                            {supplier.RIB}
-                             </td>
+                            RIB (ou RIP): {supplier.RIB}
+                          </td>
                         </tr>
                       </tr>
                     </tbody>
@@ -540,21 +544,20 @@ const BonDeComande = () => {
                           quantity,
                           prixUnitaire
                         );
-                        
-                          return (
-                            <tr key={index}>
-                              <td>{index+1}</td> {/* N° = idp */}
-                              <td>
-                                {getproduct(product.product_id).name} {getproduct(product.product_id).description}
-                              </td>{" "}
-                              {/* Désignation = description */}
-                              <td>{quantity}</td>{" "}
-                              {/* Quantité = quantite */}
-                              <td>{prixUnitaire}</td> {/* Prix unitaire */}
-                              <td>{montant}</td> {/* Montant */}
-                            </tr>
-                          );
-                        
+
+                        return (
+                          <tr key={index}>
+                            <td>{index + 1}</td> {/* N° = idp */}
+                            <td>
+                              {getproduct(product.product_id).name}{" "}
+                              {getproduct(product.product_id).description}
+                            </td>{" "}
+                            {/* Désignation = description */}
+                            <td>{quantity}</td> {/* Quantité = quantite */}
+                            <td>{prixUnitaire}</td> {/* Prix unitaire */}
+                            <td>{montant}</td> {/* Montant */}
+                          </tr>
+                        );
                       })}
                       <tr>
                         <td colSpan="2" className="td-table"></td>
@@ -566,7 +569,7 @@ const BonDeComande = () => {
                       <tr>
                         <td colSpan="2" className="td-table"></td>
                         <td colSpan="2" style={{ textAlign: "center" }}>
-                          TVA 19%:
+                          TVA {VAT*100}%:
                         </td>
                         <td>{tva.toLocaleString("en-US")}</td>
                       </tr>

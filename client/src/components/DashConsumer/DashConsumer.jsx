@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
-import TopConsumer from "../DashComponents/Total";
-import Barchart from "../DashComponents/histogramme";
+import Barchart from "../DashComponents/histogrammeConsumer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function DashDirector() {
-  const [total, setTotal] = useState(255);
-  const [TopConsumerName, setTopConsumer] = useState("Sidi Mohamed Benslimane");
+function DashConsumer() {
   const [user, setUser] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
@@ -38,30 +35,10 @@ function DashDirector() {
             marginLeft: " 7%",
             width: "90%",
             height: "92vh",
-            padding: "10px",
+            padding: "100px",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              borderRadius: "20px",
-              width: "30%",
-              boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-              padding: "10px",
-              marginBottom: "10px",
-              marginLeft: "35%",
-            }}
-          >
-            <TopConsumer
-              Title={"Top Consumer"}
-              item={TopConsumerName}
-              total={total}
-              unit="product"
-              service="service des oeuvres socials "
-            />
-          </div>
-
-          <div className="crcmd1" style={{ display: "flex ", gap: "20px" }}>
+          <div className="crcmd1" style={{ display: "flex " }}>
             <div
               style={{
                 width: "100% ",
@@ -69,9 +46,11 @@ function DashDirector() {
                 boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
                 borderRadius: "20px",
                 paddingTop: "20px",
+                paddingLeft: "70px",
               }}
             >
               <div style={{ display: "flex" }}>
+                {" "}
                 <Barchart />
               </div>
             </div>
@@ -82,4 +61,4 @@ function DashDirector() {
   );
 }
 
-export default DashDirector;
+export default DashConsumer;

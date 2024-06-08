@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("../models");
 const createProduct = async (req, res) => {
   try {
@@ -189,19 +190,17 @@ const deleteProductFromPurchaseOrder = async (req, res) => {
   }
 };
 
-
 const getProductOccurence = async (id) => {
- try {
-  const products = await db.Product_Command.findAll({
-    where: {
-      product_id: id,
-    },
-  })
-  return products.length
- } catch (error) {
-  return 0
- }
-  
+  try {
+    const products = await db.Product_Command.findAll({
+      where: {
+        product_id: id,
+      },
+    });
+    return products.length;
+  } catch (error) {
+    return 0;
+  }
 };
 // console.log(getProductOccurence(17))
 const MostUsed = async (req, res) => {
@@ -215,10 +214,12 @@ const MostUsed = async (req, res) => {
     res.status(200).json(occurences);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "An error occurred while processing your request." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing your request." });
   }
 };
-async function getProductUsageYear(id,user_id) {
+async function getProductUsageYear(id, user_id) {
   try {
     const product = await db.Product.findOne({ where: { product_id: id } });
     if (!product) {
@@ -227,174 +228,367 @@ async function getProductUsageYear(id,user_id) {
     const yearAgo = new Date();
     yearAgo.setMonth(yearAgo.getMonth() - 12);
     console.log(yearAgo);
-    const internalCommands = await db.InternalOrder.findAll({
-      where: {
-        createdAt: {
-          [Op.gte]: yearAgo,
-        },
+    const whereConditions = {
+      type: "internal",
+      createdAt: {
+        [Op.gte]: yearAgo,
       },
-    });
-    const userCommands = await db.Command.findAll({
-      where: {
-        user_id: user_id, createdAt: {
-          [Op.gte]: yearAgo,
-        }
-      }
-    });
-    let usageTotal = 0;
-    let filteredCommands = [];
-    console.log('userCommands :>> ', userCommands);
-    for (let fcommand of internalCommands) {
-      for(let command of userCommands){  
-      if (fcommand.command_id == command.command_id) {
-        filteredCommands.push(command);
-      }}
+    };
+
+    if (user_id != 0) {
+      whereConditions.user_id = user_id;
     }
-    console.log('filteredCommands :>> ', filteredCommands);
-    let usageArray=[0,0,0,0,0,0,0,0,0,0,0,0];
-    for (let command of filteredCommands) {
-      console.log(`after filtered commands`)
+
+    const userCommands = await db.Command.findAll({
+      where: whereConditions,
+    });
+    console.log("cmd:\n",userCommands)
+    let usageTotal = 0;
+    let usageArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let command of userCommands) {
+      console.log(command.command_id);
       const products = await db.Product_Command.findAll({
         where: {
           product_id: id,
+          command_id: command.command_id,
+          status_quantity:"initialized",
+          createdAt: {
+            [Op.gte]: yearAgo,
+          },
+        },
+        order: [["createdAt", "DESC"]],
+        limit: 1,
+      });
+      if (products) {
+        for (let product of products) {
+          switch (new Date(product.createdAt).getMonth()) {
+            case 0:
+              usageArray[0] += product.delivered_amount;
+              break;
+            case 1:
+              usageArray[1] += product.delivered_amount;
+              break;
+            case 2:
+              usageArray[2] += product.delivered_amount;
+              break;
+            case 3:
+              usageArray[3] += product.delivered_amount;
+              break;
+            case 4:
+              usageArray[4] += product.delivered_amount;
+              break;
+            case 5:
+              usageArray[5] += product.delivered_amount;
+              break;
+            case 6:
+              usageArray[6] += product.delivered_amount;
+              break;
+            case 7:
+              usageArray[7] += product.delivered_amount;
+              break;
+            case 8:
+              usageArray[8] += product.delivered_amount;
+              break;
+            case 9:
+              usageArray[9] += product.delivered_amount;
+              break;
+            case 10:
+              usageArray[10] += product.delivered_amount;
+              break;
+            case 11:
+              usageArray[11] += product.delivered_amount;
+              break;
+          }
+          usageTotal += product.delivered_amount;
+        }
+      }
+    }
+    return { productid: id, usage: usageArray, total: usageTotal };
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+async function getServiceUsage(id) {
+  //id :service id
+  try {
+    const service = await db.Service.findOne({ where: { service_id: id } });
+    if (!service) {
+      return { error: "Service not found" };
+    }
+    const yearAgo = new Date();
+    yearAgo.setMonth(yearAgo.getMonth() - 12);
+    console.log(yearAgo);
+    const users = await db.User.findAll({
+      where: {
+        service_id: id,
+      },
+    });
+    const userIds = users.map((user) => user.user_id);
+
+    // Construct where conditions
+    const whereConditions = {
+      user_id: {
+        [Op.in]: userIds,
+      },
+      type: "internal",
+      createdAt: {
+        [Op.gte]: yearAgo,
+      },
+    };
+    const userCommands = await db.Command.findAll({
+      where: whereConditions,
+    });
+    let usageTotal = 0;
+    let usageArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let command of userCommands) {
+      const products = await db.Product_Command.findAll({
+        where: {
           command_id: command.command_id,
           createdAt: {
             [Op.gte]: yearAgo,
           },
         },
-        order: [['createdAt', 'DESC']],
-        limit: 1
       });
       if (products) {
         for (let product of products) {
-          switch(new Date(product.createdAt).getMonth()){
+          switch (new Date(product.createdAt).getMonth()) {
             case 0:
-              usageArray[0]+=product.delivered_amount;
+              usageArray[0] += product.delivered_amount;
               break;
             case 1:
-              usageArray[1]+=product.delivered_amount;
+              usageArray[1] += product.delivered_amount;
               break;
             case 2:
-              usageArray[2]+=product.delivered_amount;
+              usageArray[2] += product.delivered_amount;
               break;
             case 3:
-              usageArray[3]+=product.delivered_amount;
+              usageArray[3] += product.delivered_amount;
               break;
             case 4:
-              usageArray[4]+=product.delivered_amount;
+              usageArray[4] += product.delivered_amount;
               break;
             case 5:
-              usageArray[5]+=product.delivered_amount;
+              usageArray[5] += product.delivered_amount;
               break;
             case 6:
-              usageArray[6]+=product.delivered_amount;
+              usageArray[6] += product.delivered_amount;
               break;
             case 7:
-              usageArray[7]+=product.delivered_amount;
+              usageArray[7] += product.delivered_amount;
               break;
             case 8:
-              usageArray[8]+=product.delivered_amount;
+              usageArray[8] += product.delivered_amount;
               break;
             case 9:
-              usageArray[9]+=product.delivered_amount;
+              usageArray[9] += product.delivered_amount;
               break;
             case 10:
-              usageArray[10]+=product.delivered_amount;
+              usageArray[10] += product.delivered_amount;
               break;
             case 11:
-              usageArray[11]+=product.delivered_amount;
+              usageArray[11] += product.delivered_amount;
               break;
-          } 
+          }
           usageTotal += product.delivered_amount;
         }
       }
     }
-return { productid: id, usage: usageArray,total:usageTotal };
+    return { usage: usageArray, total: usageTotal };
   } catch (error) {
     return { error: error.message };
   }
 }
-const getUserConsommation= async (req,res)=>{ //get a certain user's product consommation
-  try{
-    const {id,user_id} = req.params
 
-    const userConsommation = await getProductUsageYear(id,user_id);
-    console.log(userConsommation)
-    return res.status(200).json({user_id:id,consommation:userConsommation.usage,total:userConsommation.total})
-  }catch(error){
-    return res.status(500).json({error:error.message})
-  }
-}
-const getServiceConsommation = async (req, res) => { //get a certain service's product consommation
+const getConsumedProducts = async (req, res) => {
+  const yearAgo = new Date();
+  yearAgo.setMonth(yearAgo.getMonth() - 12);
+  const { user_id } = req.params;
   try {
-      const { id,service_id } = req.params;
-    const service = await db.Service.findOne({ where: { service_id: service_id } });
-    if (!service) {
-      return res.status(404).json({ error: "Service not found" });
+    const commands = await db.Command.findAll({
+      where: {
+        type: "internal",
+        createdAt: {
+          [Op.gte]: yearAgo,
+        },
+        user_id: user_id,
+      },
+    });
+    console.log(commands)
+    let products = [];
+    for (let command of commands) {
+      const product = await db.Product_Command.findAll({
+        where: {
+          command_id: command.command_id,
+          status_quantity:"initialized",
+          delivered_amount: {
+            [Op.gt]: 0
+          }
+        },
+      });
+      console.log("//pr\n",product)
+
+      products.push(...product);
     }
-    const users=await db.User.findAll({where:{service_id:service_id}})
-    let consommationMap=new Map();    
-    for(let user of users){const userConsommation = await getProductUsageYear(id,user.user_id);
-      consommationMap.set(user.user_id,userConsommation.usage)
-    }
-    console.log(`consommationMap :>> , consommationMap`);
-    let totalConsommation = new Map();
-    for(let month=1; month<=12; month++){
-      for (let [userId, consommation] of consommationMap.entries()){
-        console.log(`consommation for user ${userId} in month ${month} :>> , consommation[month-1]`);
-        totalConsommation.set(month-1, (totalConsommation.get(month-1) || 0) + consommation[month-1]);
-      }
+    console.log("//pr\n",products)
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json(error);
   }
-    console.log(`totalConsommation :>> `, totalConsommation);
-    const serviceConsommation=[0,0,0,0,0,0,0,0,0,0,0,0];
-    for(let i=0;i<12;i++){
-      serviceConsommation[i]=totalConsommation.get(i);
+};
+
+const getUsageUser = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const yearAgo = new Date();
+    yearAgo.setMonth(yearAgo.getMonth() - 12);
+    const whereConditions = {
+      user_id: user_id,
+      type: "internal",
+      createdAt: {
+        [Op.gte]: yearAgo,
+      },
+    };
+    const userCommands = await db.Command.findAll({
+      where: whereConditions,
+    });
+    let usageTotal = 0;
+    console.log("userCommands :>> ", userCommands);
+    let usageArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let command of userCommands) {
+      const products = await db.Product_Command.findAll({
+        where: {
+          command_id: command.command_id,
+          createdAt: {
+            [Op.gte]: yearAgo,
+          },
+        },
+      });
+      if (products) {
+        for (let product of products) {
+          switch (new Date(product.createdAt).getMonth()) {
+            case 0:
+              usageArray[0] += product.delivered_amount;
+              break;
+            case 1:
+              usageArray[1] += product.delivered_amount;
+              break;
+            case 2:
+              usageArray[2] += product.delivered_amount;
+              break;
+            case 3:
+              usageArray[3] += product.delivered_amount;
+              break;
+            case 4:
+              usageArray[4] += product.delivered_amount;
+              break;
+            case 5:
+              usageArray[5] += product.delivered_amount;
+              break;
+            case 6:
+              usageArray[6] += product.delivered_amount;
+              break;
+            case 7:
+              usageArray[7] += product.delivered_amount;
+              break;
+            case 8:
+              usageArray[8] += product.delivered_amount;
+              break;
+            case 9:
+              usageArray[9] += product.delivered_amount;
+              break;
+            case 10:
+              usageArray[10] += product.delivered_amount;
+              break;
+            case 11:
+              usageArray[11] += product.delivered_amount;
+              break;
+          }
+          usageTotal += product.delivered_amount;
+        }
+      }
     }
-    return res
-      .status(200)
-      .json({ service_id: id, consommation: serviceConsommation });
+    res.status(200).json({ usage: usageArray, total: usageTotal });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getUserConsommation = async (req, res) => {
+  //get a certain user's product consommation
+  try {
+    const { id, user_id } = req.params;
+    const userConsommation = await getProductUsageYear(id, user_id);
+    console.log(userConsommation);
+    return res.status(200).json({
+      user_id: user_id,
+      consommation: userConsommation.usage,
+      total: userConsommation.total,
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
-}
-const rankArticleProductUsage = async (req, res) => { //most consumed product f service
+};
+const getServiceConsommation = async (req, res) => {
+  //get a certain service's product consommation
   try {
-    //id : branch_id
-    const { id, period } = req.params;
-    const products = await db.BranchProduct.findAll({
-      where: { branch_id: id },
+    const { id, service_id } = req.params;
+    const service = await db.Service.findOne({
+      where: { service_id: service_id },
     });
-    if (!products) {
-      return res
-        .status(404)
-        .json({ error: "No Products found for the branch" });
+    if (!service) {
+      return res.status(404).json({ error: "Service not found" });
     }
-    let totalUsage = 0;
-    if (period === "week") {
-      for (let product of products) {
-        totalUsage += await getProductUsageWeek(parseInt(product.product_id));
-        console.log(totalUsage);
-      }
-    } else if (period === "month") {
-      for (let product of products) {
-        totalUsage += await getProductUsageMonth(parseInt(product.product_id));
-      }
-    } else if (period === "six") {
-      for (let i = 0; i < products.length; i++) {
-        totalUsage += (await getProductUsageSixMonth(products[i].product_id)).usage;
-      }
-    } else if (period === "nine") {
-      for (let i = 0; i < products.length; i++) {
-        totalUsage += (await getProductUsageNineMonth(products[i].product_id)).usage;
-      }
-    } else if (period === "year") {
-      for (let i = 0; i < products.length; i++) {
-        totalUsage += (await getProductUsageYear(products[i].product_id)).usage;
-      }
-    } else {
-      return res.status(400).json({ error: "Invalid period" });
+    const users = await db.User.findAll({ where: { service_id: service_id } });
+    let consommationMap = new Map();
+    const total = await getServiceUsage(service_id);
+    for (let user of users) {
+      const userConsommation = await getProductUsageYear(id, user.user_id);
+      consommationMap.set(user.user_id, userConsommation.usage);
     }
-    return res.status(200).json({ branch_id: id, usage: totalUsage });
+    console.log(`consommationMap :>> , consommationMap`);
+    let totalConsommation = new Map();
+    for (let month = 1; month <= 12; month++) {
+      for (let [userId, consommation] of consommationMap.entries()) {
+        console.log(
+          `consommation for user ${userId} in month ${month} :>> , consommation[month-1]`
+        );
+        totalConsommation.set(
+          month - 1,
+          (totalConsommation.get(month - 1) || 0) + consommation[month - 1]
+        );
+      }
+    }
+    console.log(`totalConsommation :>> `, totalConsommation);
+    const serviceConsommation = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 12; i++) {
+      serviceConsommation[i] = totalConsommation.get(i);
+    }
+    return res.status(200).json({
+      service_id: service_id,
+      total,
+      consommation: serviceConsommation,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+const rankArticleProductUsage = async (req, res) => {
+  //most consumed product f service
+  try {
+    const { id, user_id } = req.params;
+    console.log("\n/////", id, user_id, "\n/////");
+    const product = await db.Product.findOne({
+      where: {
+        product_id: id,
+      },
+    });
+    if (!product) {
+      return res.status(404).json({ error: "No Product found " });
+    }
+
+    const usage = await getProductUsageYear(id, user_id);
+    return res.status(200).json(usage);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -411,8 +605,10 @@ module.exports = {
   updateProductQuantityInCommand,
   deleteProductFromPurchaseOrder,
   MostUsed,
- //
- getUserConsommation,
- getServiceConsommation,
- rankArticleProductUsage
+  //
+  getUserConsommation,
+  getServiceConsommation,
+  rankArticleProductUsage,
+  getUsageUser,
+  getConsumedProducts
 };

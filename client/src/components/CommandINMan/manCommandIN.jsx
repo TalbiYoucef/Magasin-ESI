@@ -50,8 +50,8 @@ function CommandInterne() {
                   withCredentials: true,
                 }
               );
-              console.log(respo.data);
-              setInternals([...respo.data, ...internals]);
+              console.log("////",respo.data);
+              setInternals(prev=> [...prev,...respo.data].reverse());
             } catch (error) {
               console.log(error);
             }
@@ -81,6 +81,7 @@ function CommandInterne() {
     <Per
       key={index}
       link={"edit-cmdi"}
+      status={produit.status}
       id={produit.command_id}
       date={String(produit.updatedAt).split("T")[0]}
     />

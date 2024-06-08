@@ -28,11 +28,11 @@ function Sid() {
          <p className='side-bar-text'>Roles management</p>
     </a>
     </div>
-   <div className='container-fluid settings '>
+   <div className='container-fluid Settings '>
     
-    <a  className={`link ${selectedItem === 'Setting' ? 'active' : ''}`} onClick={() => handleItemClick('Setting')}  href="#"  >
+    <a  className={`link ${selectedItem === 'Settings' ? 'active' : ''}`} onClick={() => handleItemClick('Settings')}  href="#"  >
         <IoSettingsOutline className='icn'/>
-         <p className='side-bar-text'>Setting</p>
+         <p className='side-bar-text'>Settings</p>
     </a>
 
 

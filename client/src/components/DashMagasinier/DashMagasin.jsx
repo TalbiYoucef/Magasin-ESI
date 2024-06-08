@@ -1,26 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Side from "../side/side";
 import Nav from "../nav/nav";
-import Total from "../DashComponents/Total";
-import Circle from "../DashComponents/Circle";
-import Stock from "../DashComponents/Stock";
-import Graph from "../DashComponents/MostGraphsMagasinier";
-import { LuClipboardList } from "react-icons/lu";
-import { MdOutlineLocalGroceryStore } from "react-icons/md";
-import { PiStorefront } from "react-icons/pi";
-import { GrDeliver } from "react-icons/gr";
-import { FaCircle } from "react-icons/fa";
+import Barchart from "../DashComponents/histogrammeMagasinier";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function DashMagasinier() {
-  const [ReturnedDischarge, setReturnedDischarge] = useState(35);
-  const [TotalinternalOrders, setTotalinternalOrders] = useState(258);
-  const [TotalExternalOrders, setTotalExternalOrders] = useState(258);
-  const [TotalReceipts, setReceipts] = useState(40);
-  const [TotalProducts, setTotalProducts] = useState(4000);
+  const [user, setUser] = useState({});
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3036/refresh", {
+          withCredentials: true,
+        });
+        setUser(res.data.user)
+        
+      } catch (error) {
+        // If an error occurs, redirect to the login page
+        navigate("/login");
+        console.log(error);
+      }
+    };
 
+    fetchData();
+  }, [navigate]);
   return (
     <div>
-      <Nav />
+      <Nav username={user.username} />
       <div className="dwnusers">
         <Side link="commands" />
         <div
@@ -29,131 +36,33 @@ function DashMagasinier() {
             marginLeft: " 7%",
             width: "90%",
             height: "92vh",
-            padding: "10px",
+            padding: "100px",
           }}
         >
-          <div
-            className="crcmd1"
-            style={{
-              display: "flex ",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+          <div className="crcmd1" style={{ display: "flex " }}>
             <div
               style={{
+                width: "100% ",
+                height: "450px",
+                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
+                borderRadius: "20px",
+                paddingTop: "20px",
+                paddingLeft: "70px",
                 display: "flex",
-                height: "  auto ",
-                borderRadius: "20px",
-                marginLeft: "4.5%",
-                width: "91.5%",
-                gap: "20px",
-                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                padding: "2px",
-                marginBottom: "10px",
-              }}
-            >
-              <Total
-                total={TotalinternalOrders}
-                item="Total internal Orders"
-                icon={<LuClipboardList />}
-              />
-              <div
-                style={{
-                  width: "1px",
-                  height: "50px",
-                  marginTop: "12px",
-                  backgroundColor: "#ccc",
-                }}
-              />
-              <Total
-                total={TotalProducts}
-                item="Total Products"
-                icon={<PiStorefront />}
-              />
-              <div
-                style={{
-                  width: "1px",
-                  height: "50px",
-                  marginTop: "12px",
-                  backgroundColor: "#ccc",
-                }}
-              />
-              <Total
-                total={TotalExternalOrders}
-                item="Total External Orders"
-                icon={<MdOutlineLocalGroceryStore />}
-              />
-              <div
-                style={{
-                  width: "1px",
-                  height: "50px",
-                  marginTop: "12px",
-                  backgroundColor: "#ccc",
-                }}
-              />
-              <Total
-                total={TotalReceipts}
-                item="Total Receipts"
-                icon={<GrDeliver />}
-              />
-            </div>
-          </div>
-
-          <div className="crcmd1" style={{ display: "flex ", gap: "20px" }}>
-            <div
-              style={{
-                width: "70% ",
-                height: "260px",
-                marginLeft: "4.5%",
-                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                borderRadius: "20px",
-                padding: "20px",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <div
                 style={{
-                  color: "#333333",
-                  fontSize: "20px",
-                  marginLeft: "40%",
+                  display: "flex",
+                  height: "100%",
                 }}
               >
-                {" "}
-                <strong>Stock Analytics </strong>
-              </div>
-              <Stock />
-            </div>
-
-            <div
-              style={{
-                width: "20%",
-                height: "260px",
-                boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.1)",
-                borderRadius: "20px",
-                padding: "20px 50px",
-              }}
-            >
-              <div
-                style={{
-                  color: "#333333",
-                  fontSize: "20px",
-                  marginBottom: "10px",
-                  marginLeft: "8%",
-                }}
-              >
-                <strong>Dischrge status</strong>
-              </div>
-              <Circle DischargeReturned={ReturnedDischarge} />
-              <div
-                style={{ color: "#557BDD", fontSize: "15px", marginTop: "5px" }}
-              >
-                <FaCircle style={{ fontSize: "10px", marginRight: "8px" }} />
-                Returned Discharge{" "}
+                <Barchart />
               </div>
             </div>
           </div>
-
-          <Graph />
         </div>
       </div>
     </div>

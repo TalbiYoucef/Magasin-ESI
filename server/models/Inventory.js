@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       product_id: DataTypes.INTEGER,
       qt_physique:DataTypes.INTEGER,
-      observation:DataTypes.STRING
+      observation:DataTypes.STRING,
+      num_inv:DataTypes.STRING
     });
     Inventory.associate = (models) => {
       const { Branch } = models;

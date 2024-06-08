@@ -51,28 +51,28 @@ function Rollig(props) {
     fetchData();
   }, []);
 
-  const handleDelete = async () => {
-    alert("Are you sure You Wanna Delete This Command ?");
-    try {
-      const res = await axios.get("http://localhost:3036/refresh", {
-        withCredentials: true,
-      });
-      await axios
-        .delete(`http://localhost:3036/commands/${id}`, {
-          headers: {
-            Authorization: `Bearer ${res.data.accessToken}`,
-          },
-          withCredentials: true,
-        })
-        .then((resp) => console.log(resp))
-        .catch((err) => console.log(err));
-      setIsVisible(false);
-      console.log("deleted");
-    } catch (error) {
-      console.log(error);
-      navigate("/login");
-    }
-  };
+  // const handleDelete = async () => {
+  //   alert("Are you sure You Wanna Delete This Command ?");
+  //   try {
+  //     const res = await axios.get("http://localhost:3036/refresh", {
+  //       withCredentials: true,
+  //     });
+  //     await axios
+  //       .delete(`http://localhost:3036/commands/${id}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${res.data.accessToken}`,
+  //         },
+  //         withCredentials: true,
+  //       })
+  //       .then((resp) => console.log(resp))
+  //       .catch((err) => console.log(err));
+  //     setIsVisible(false);
+  //     console.log("deleted");
+  //   } catch (error) {
+  //     console.log(error);
+  //     navigate("/login");
+  //   }
+  // };
 
   return (
     <div>
@@ -99,9 +99,7 @@ function Rollig(props) {
               Edit
             </Link>
           )}
-          <button className="del29" onClick={handleDelete}>
-            Delete
-          </button>
+          
         </div>
       )}
     </div>

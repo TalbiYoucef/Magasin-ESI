@@ -26,7 +26,7 @@ const BonDeReception = () => {
           withCredentials: true,
         });
         setUser(res.data.user);
-
+        console.log(res.data)
         try {
           const pro = await axios.get(`http://localhost:3036/products`, {
             headers: {
@@ -38,11 +38,9 @@ const BonDeReception = () => {
         } catch (error) {
           console.log(error);
         }
-        // get id de commande from id de purshsing order
-        // idcmd : id de bon de commande
         try {
           const cmd = await axios.get(
-            `http://localhost:3036/purchaseorders/${idcmd}/command`,
+            `http://localhost:3036/purchaseorders/${id}/command`,
             {
               headers: {
                 Authorization: `Bearer ${res.data.accessToken}`,
@@ -53,7 +51,7 @@ const BonDeReception = () => {
           console.log(cmd.data);
           try {
             const resp = await axios.get(
-              `http://localhost:3036/commands/${cmd.data}/purchasing-order`,
+              `http://localhost:3036/commands/${idcmd}/purchasing-order`,
               {
                 headers: {
                   Authorization: `Bearer ${res.data.accessToken}`,
@@ -66,7 +64,7 @@ const BonDeReception = () => {
             console.log(resp.data.order);
             try {
               const article = await axios.get(
-                `http://localhost:3036/commands/${cmd.data}/`,
+                `http://localhost:3036/commands/${idcmd}/`,
                 {
                   headers: {
                     Authorization: `Bearer ${res.data.accessToken}`,
@@ -169,7 +167,6 @@ const BonDeReception = () => {
       }
     );
   };
-
   return (
     <>
       <div>

@@ -58,9 +58,9 @@ function Side( props) {
         </>
         )} 
         <li className="nav__items ">
-        <a href='setting' className={`link ${props.link === 'setting' ? 'active' : ''}`}   >
+        <a href='Settings' className={`link ${props.link === 'Settings' ? 'active' : ''}`}   >
         <IoSettingsOutline className='ic' />
-        Setting</a>
+        Settings</a>
         </li>
 
 
